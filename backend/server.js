@@ -27,17 +27,28 @@ async function startServer() {
     const dbDir = path.dirname(DB_FILE);
     if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir, { recursive: true });
 
-    // If target DB missing, try to recover from a previous version (investpro_v*.db)
-    if (!fs.existsSync(DB_FILE)) {
-        const candidates = ['investpro_v3.db','investpro_v2.db','investpro_v1.db','investpro.db'];
-        for (const name of candidates) {
-            const alt = path.join(dbDir, name);
-            if (alt !== DB_FILE && fs.existsSync(alt)) {
-                console.log(`♻️  Recovering DB from ${name} → ${path.basename(DB_FILE)}`);
-                fs.copyFileSync(alt, DB_FILE);
-                break;
-            }
-        }
+    // Recovery: find the best DB (most users) among all versions on the volume
+    const allCandidates = ['investpro.db','investpro_v1.db','investpro_v2.db','investpro_v3.db','investpro_v4.db'];
+    let bestFile = null;
+    let bestUserCount = -1;
+    for (const name of allCandidates) {
+        const candidate = path.join(dbDir, name);
+        if (!fs.existsSync(candidate)) continue;
+        try {
+            const SQL2 = await initSqlJs();
+            const tmpDb = new SQL2.Database(fs.readFileSync(candidate));
+            const result = tmpDb.exec(`SELECT COUNT(*) as c FROM users`);
+            const count = result[0]?.values[0][0] || 0;
+            tmpDb.close();
+            console.log(`📂 Found ${name}: ${count} users`);
+            if (count > bestUserCount) { bestUserCount = count; bestFile = candidate; }
+        } catch(e) { /* not a valid db */ }
+    }
+    if (bestFile && bestFile !== DB_FILE && bestUserCount > 0) {
+        console.log(`♻️  Recovering DB from ${path.basename(bestFile)} (${bestUserCount} users) → ${path.basename(DB_FILE)}`);
+        fs.copyFileSync(bestFile, DB_FILE);
+    } else if (!fs.existsSync(DB_FILE)) {
+        console.log('🆕 No existing DB found — will create fresh');
     }
 
     const isNewDb = !fs.existsSync(DB_FILE);
