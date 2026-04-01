@@ -4,15 +4,15 @@
 
 const API_BASE = '/api';
 
-function getAdminToken()   { return localStorage.getItem('admin_token'); }
-function getAdminInfo()    { try { return JSON.parse(localStorage.getItem('admin_info')); } catch { return null; } }
+function getAdminToken()   { return sessionStorage.getItem('admin_token'); }
+function getAdminInfo()    { try { return JSON.parse(sessionStorage.getItem('admin_info')); } catch { return null; } }
 function saveAdminSession(token, info) {
-    localStorage.setItem('admin_token', token);
-    localStorage.setItem('admin_info', JSON.stringify(info));
+    sessionStorage.setItem('admin_token', token);
+    sessionStorage.setItem('admin_info', JSON.stringify(info));
 }
 function clearAdminSession() {
-    localStorage.removeItem('admin_token');
-    localStorage.removeItem('admin_info');
+    sessionStorage.removeItem('admin_token');
+    sessionStorage.removeItem('admin_info');
 }
 function requireAdminAuth() {
     if (!getAdminToken()) { window.location.href = 'index.html'; return false; }
