@@ -36,7 +36,15 @@
     <a href="withdrawals.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span> Withdrawals</a>
     <div class="nav-group-label">System</div>
     <a href="spin-prizes.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></span> Spin Prizes</a>
-    <a href="settings.html" class="sidebar-link active"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span> Settings</a>
+    <div class="sidebar-dropdown open" id="settingsDropdown">
+      <div class="sidebar-link sidebar-dropdown-toggle" onclick="toggleDropdown('settingsDropdown')">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span> Settings
+      </div>
+      <div class="sidebar-dropdown-menu">
+        <a href="settings.html" class="sidebar-sub-link active"><span class="dot"></span> Site Settings</a>
+        <a href="events.html" class="sidebar-sub-link"><span class="dot"></span> Events Manager</a>
+      </div>
+    </div>
     <a href="#" onclick="Admin.logout()" class="sidebar-link" style="color:rgba(239,68,68,0.75);"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Logout</a>
   </nav>
   <div class="sidebar-footer">Logged in as: <strong id="adminName">Admin</strong></div>
@@ -68,10 +76,13 @@
   let allSettings = [];
 
   const settingGroups = {
-    'Site Information': ['site_name', 'site_logo', 'support_email', 'support_telegram'],
+    'Contact Link': ['support_email', 'support_telegram', 'telegram_link', 'whatsapp_link'],
+    'About Us Setting': ['about_story'],
+    'Certificate': ['cert_image'],
     'Financial Rules': ['min_deposit', 'min_withdrawal', 'withdrawal_fee', 'referral_bonus'],
     'Wallet Addresses': ['usdt_wallet'],
-    'System': ['maintenance_mode']
+    'System': ['maintenance_mode'],
+    'Invitation Settings': ['invitation_codes']
   };
 
   const settingLabels = {
@@ -82,15 +93,21 @@
     min_deposit: 'Minimum Deposit ($)',
     min_withdrawal: 'Minimum Withdrawal ($)',
     withdrawal_fee: 'Withdrawal Fee (%)',
-    referral_bonus: 'Referral Bonus ($)',
+    referral_bonus: 'Welcome Bonus for new clients ($)',
     usdt_wallet: 'USDT (TRC20) Wallet Address',
-    maintenance_mode: 'Maintenance Mode (true/false)'
+    maintenance_mode: 'Maintenance Mode (true/false)',
+    invitation_codes: 'Staff Invitation Codes',
+    about_story: 'Our Story',
+    telegram_link: 'Telegram Link (Deposit page)',
+    whatsapp_link: 'WhatsApp Link (Deposit page)',
+    cert_image: 'Certificate Image'
   };
 
   const settingIcons = {
     site_name: '🌐', site_logo: '🖼️', support_email: '📧', support_telegram: '💬',
     min_deposit: '💰', min_withdrawal: '💸', withdrawal_fee: '💹', referral_bonus: '🎁',
-    usdt_wallet: '👛', maintenance_mode: '🔧'
+    usdt_wallet: '👛', maintenance_mode: '🔧', invitation_codes: '🔑', about_story: '📖',
+    telegram_link: '✈️', whatsapp_link: '💬', cert_image: '🏆'
   };
 
   async function loadSettings() {
@@ -108,6 +125,75 @@
 
     let html = '';
     for (const [groupName, keys] of Object.entries(settingGroups)) {
+      // Build About Us Setting card with preview + story textarea
+      if (groupName === 'About Us Setting') {
+        const logoVal = settingsMap['site_logo'] || '';
+        const nameVal = settingsMap['site_name'] || '';
+        const defaultStory = `SINGULAR WORK BENCH INC was founded on June 30, 2004, serving clients in Canada and the United States. From a small team of passionate technologists, we have grown into a leading software development and digital engineering company that continues to break new ground in innovation.
+
+SINGULAR WORK BENCH INC is a group of technology enthusiasts with diverse backgrounds in business automation, software development, design, and optimization. We are passionate about using our skills to maximize our clients' businesses. Our web and software development experts can help you automate everyday processes, improve workflows, and create custom web and mobile applications.
+
+With skilled designers, efficient developers, and a practical approach to web and software development, we ensure that your business can automate everyday processes, enhance workflows, and create custom solutions that fit your specific needs.
+
+We pride ourselves not only on delivering best-in-class solutions, but also on providing exceptional customer service and support. Whether you need to deploy an enterprise system or develop an application that revolutionizes the way your customers interact with your products or brand, we have the expertise and experience to deliver the right results.
+
+Our SINGULAR WORK BENCH INC team is made up of a fun, energetic, highly qualified, and bunch of creative people. We are committed to working together to continually seek ways to improve the company, ourselves, and our clients.
+
+SINGULAR WORK BENCH INC was founded with a vision to transform the software development industry by using cutting-edge technology to deliver exceptional results. From a small basement office, we have achieved many milestones. Today, we have offices in three locations around the world and work with some of the most renowned companies in the industry who trust us with their most challenging projects.
+
+Our success is rooted in our strong values and corporate culture. At SINGULAR WORK BENCH INC, we are committed to creating an environment where our teams thrive. We attract and retain top talent by fostering a culture of transparency, collaboration, and continuous learning.
+
+Our journey has been challenging, but we have always stayed true to our purpose. We are committed to transforming the software development and digital engineering industry, one step at a time. We look to the future with great anticipation. With our passion, expertise, and commitment to excellence, we are confident that SINGULAR WORK BENCH INC will continue to grow and thrive.
+
+As a leader in digital innovation, SINGULAR WORK BENCH INC is committed to transforming businesses through advanced digital services. We are committed to excellence, helping businesses embrace the future, create a better life, and achieve extraordinary success in the evolving digital landscape.
+
+To ensure the safety of user funds, SINGULAR WORK BENCH INC has adopted the terms of service of Tether Limited. We use Tether ETH BTC TRC's blockchain technology, which meets international compliance standards and regulations and adopts blockchain decentralization for transparency, traceability and world-class security. All user deposits are pledged in blockchain smart contracts. SINGULAR WORK BENCH INC and merchants automatically deposit 50% of user funds as a margin. After the order is completed, the smart contract releases the funds. If the order transaction cannot be completed due to the SINGULAR WORK BENCH INC platform or the merchant, the smart contract will compensate the user with the merchant and platform deposits. User fund security is our top priority.
+
+SINGULAR WORK BENCH INC currently provides product maintenance services for global online e-commerce retailers, helping merchants maintain product exposure and positive reviews. Using our AI system, we improve merchants' ratings and exposure, ensure that their products are updated and attract buyers.
+
+SINGULAR WORK BENCH INC has successfully created a platform for merchants and users to make money together. From concept to design, website development, digital marketing and consulting, we complete the business process and provide end-to-end solutions.
+
+Our clients have a 94.7% satisfaction rating for service and support and a 96.3% service quality index. We serve clients in 44 countries and 15 industries, solving their toughest challenges with unparalleled service. We believe in a client-centric approach and emphasize team development.
+
+We are servant leaders who put the interests of others at the center of everything we do, define reality and commit to serving others.`;
+        const storyVal = (settingsMap['about_story'] || defaultStory).replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        html += `
+          <div class="card" style="grid-column:1/-1;">
+            <div class="card-head"><h3>📄 About Us Setting</h3></div>
+            <div class="card-body">
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+                <!-- Site Name -->
+                <div class="form-group" style="margin:0;">
+                  <label class="form-label">🌐 Site Name</label>
+                  <input type="text" id="setting_site_name" class="form-control" value="${nameVal.replace(/"/g,'&quot;')}" placeholder="Enter site name">
+                </div>
+                <!-- Company Logo -->
+                <div class="form-group" style="margin:0;">
+                  <label class="form-label">🖼️ Company Logo</label>
+                  <input type="hidden" id="setting_site_logo" value="${logoVal}">
+                  ${logoVal ? `<div style="margin-bottom:8px;"><img id="logoPreview" src="${logoVal}" alt="Logo" style="max-height:60px;max-width:140px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);padding:4px;background:#fff;"></div>` : `<div style="margin-bottom:8px;"><img id="logoPreview" src="" alt="" style="max-height:60px;max-width:140px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);padding:4px;background:#fff;display:none;"></div>`}
+                  <div style="display:flex;gap:10px;align-items:center;">
+                    <label style="flex:1;cursor:pointer;background:rgba(255,255,255,0.07);border:1px dashed rgba(255,255,255,0.25);border-radius:10px;padding:8px 12px;text-align:center;color:rgba(255,255,255,0.6);font-size:13px;" id="logoUploadLabel">
+                      📁 Click to choose logo...
+                      <input type="file" accept="image/*" style="display:none;" onchange="uploadLogo(this)">
+                    </label>
+                    <span id="logoUploadStatus" style="font-size:12px;color:rgba(255,255,255,0.4);"></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Our Story -->
+              <div class="form-group" style="margin:0;">
+                <label class="form-label">📖 Our Story</label>
+                <textarea id="setting_about_story" class="form-control" rows="16" style="resize:vertical;font-size:13px;line-height:1.7;">${storyVal}</textarea>
+                <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:6px;">This story will be displayed on the About Us page for all users.</div>
+              </div>
+            </div>
+          </div>`;
+        continue;
+      }
+
       html += `
         <div class="card">
           <div class="card-head"><h3>${groupName}</h3></div>
@@ -115,7 +201,56 @@
             ${keys.map(key => `
               <div class="form-group">
                 <label class="form-label">${settingIcons[key] || '⚙️'} ${settingLabels[key] || key}</label>
-                ${key === 'maintenance_mode'
+                ${key === 'invitation_codes'
+                  ? (() => {
+                      let codes = [];
+                      try { codes = JSON.parse(settingsMap[key] || '[]'); } catch(e) {}
+                      const rows = codes.map((c, i) => `
+                        <div class="inv-row" style="display:flex;gap:8px;margin-bottom:8px;align-items:center;">
+                          <input type="text" class="form-control inv-name" placeholder="Staff Name" value="${c.name.replace(/"/g,'&quot;')}" style="flex:1;">
+                          <input type="text" class="form-control inv-code" placeholder="Code" value="${c.code}" style="width:130px;font-family:monospace;letter-spacing:1px;">
+                          <button type="button" onclick="removeInvRow(this)" style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#f87171;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:16px;line-height:1;">×</button>
+                        </div>`).join('');
+                      return `
+                        <div style="font-size:12px;color:rgba(255,255,255,0.45);margin-bottom:10px;">Clients must enter one of these codes to register. Each code belongs to a staff member.</div>
+                        <div id="invitationRows">${rows}</div>
+                        <input type="hidden" id="setting_invitation_codes" value="">
+                        <button type="button" onclick="addInvRow()" style="background:rgba(139,92,246,0.15);border:1px dashed rgba(139,92,246,0.4);color:rgba(139,92,246,0.9);border-radius:8px;padding:8px 16px;cursor:pointer;font-size:13px;width:100%;margin-top:4px;">+ Add Staff</button>`;
+                    })()
+                  : key === 'about_story'
+                  ? (() => {
+                      const defaultStory = `SINGULAR WORK BENCH INC was founded on June 30, 2004, serving clients in Canada and the United States. From a small team of passionate technologists, we have grown into a leading software development and digital engineering company that continues to break new ground in innovation.
+
+SINGULAR WORK BENCH INC is a group of technology enthusiasts with diverse backgrounds in business automation, software development, design, and optimization. We are passionate about using our skills to maximize our clients' businesses. Our web and software development experts can help you automate everyday processes, improve workflows, and create custom web and mobile applications.
+
+With skilled designers, efficient developers, and a practical approach to web and software development, we ensure that your business can automate everyday processes, enhance workflows, and create custom solutions that fit your specific needs.
+
+We pride ourselves not only on delivering best-in-class solutions, but also on providing exceptional customer service and support. Whether you need to deploy an enterprise system or develop an application that revolutionizes the way your customers interact with your products or brand, we have the expertise and experience to deliver the right results.
+
+Our SINGULAR WORK BENCH INC team is made up of a fun, energetic, highly qualified, and bunch of creative people. We are committed to working together to continually seek ways to improve the company, ourselves, and our clients.
+
+SINGULAR WORK BENCH INC was founded with a vision to transform the software development industry by using cutting-edge technology to deliver exceptional results. From a small basement office, we have achieved many milestones. Today, we have offices in three locations around the world and work with some of the most renowned companies in the industry who trust us with their most challenging projects.
+
+Our success is rooted in our strong values and corporate culture. At SINGULAR WORK BENCH INC, we are committed to creating an environment where our teams thrive. We attract and retain top talent by fostering a culture of transparency, collaboration, and continuous learning.
+
+Our journey has been challenging, but we have always stayed true to our purpose. We are committed to transforming the software development and digital engineering industry, one step at a time. We look to the future with great anticipation. With our passion, expertise, and commitment to excellence, we are confident that SINGULAR WORK BENCH INC will continue to grow and thrive.
+
+As a leader in digital innovation, SINGULAR WORK BENCH INC is committed to transforming businesses through advanced digital services. We are committed to excellence, helping businesses embrace the future, create a better life, and achieve extraordinary success in the evolving digital landscape.
+
+To ensure the safety of user funds, SINGULAR WORK BENCH INC has adopted the terms of service of Tether Limited. We use Tether ETH BTC TRC's blockchain technology, which meets international compliance standards and regulations and adopts blockchain decentralization for transparency, traceability and world-class security. All user deposits are pledged in blockchain smart contracts. SINGULAR WORK BENCH INC and merchants automatically deposit 50% of user funds as a margin. After the order is completed, the smart contract releases the funds. If the order transaction cannot be completed due to the SINGULAR WORK BENCH INC platform or the merchant, the smart contract will compensate the user with the merchant and platform deposits. User fund security is our top priority.
+
+SINGULAR WORK BENCH INC currently provides product maintenance services for global online e-commerce retailers, helping merchants maintain product exposure and positive reviews. Using our AI system, we improve merchants' ratings and exposure, ensure that their products are updated and attract buyers.
+
+SINGULAR WORK BENCH INC has successfully created a platform for merchants and users to make money together. From concept to design, website development, digital marketing and consulting, we complete the business process and provide end-to-end solutions.
+
+Our clients have a 94.7% satisfaction rating for service and support and a 96.3% service quality index. We serve clients in 44 countries and 15 industries, solving their toughest challenges with unparalleled service. We believe in a client-centric approach and emphasize team development.
+
+We are servant leaders who put the interests of others at the center of everything we do, define reality and commit to serving others.`;
+                      const val = (settingsMap[key] || defaultStory).replace(/"/g,'&quot;');
+                      return `<textarea id="setting_about_story" class="form-control" rows="14" style="resize:vertical;font-size:13px;line-height:1.7;">${val}</textarea>
+                        <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:6px;">This story will be displayed on the About Us page.</div>`;
+                    })()
+                  : key === 'maintenance_mode'
                   ? `<select id="setting_${key}" class="form-control">
                       <option value="false" ${settingsMap[key] === 'false' ? 'selected' : ''}>Disabled</option>
                       <option value="true"  ${settingsMap[key] === 'true'  ? 'selected' : ''}>Enabled</option>
@@ -130,6 +265,20 @@
                        </label>
                        <span id="logoUploadStatus" style="font-size:12px;color:rgba(255,255,255,0.4);"></span>
                      </div>`
+                  : key === 'cert_image'
+                  ? `<input type="hidden" id="setting_cert_image" value="${settingsMap[key] || ''}">
+                     <div style="margin-bottom:12px;">
+                       <img id="certPreview" src="${settingsMap[key] || ''}" alt="Certificate"
+                         style="width:100%;max-height:300px;object-fit:contain;background:#fff;border-radius:12px;border:2px solid rgba(245,217,107,0.4);display:${settingsMap[key] ? 'block' : 'none'};">
+                     </div>
+                     <div style="display:flex;gap:10px;align-items:center;">
+                       <label style="flex:1;cursor:pointer;background:rgba(255,255,255,0.07);border:1px dashed rgba(245,217,107,0.4);border-radius:10px;padding:12px 14px;text-align:center;color:rgba(255,255,255,0.6);font-size:13px;" id="certUploadLabel">
+                         🏆 Click to upload Certificate image...
+                         <input type="file" accept="image/*" style="display:none;" onchange="uploadCertBase64(this)">
+                       </label>
+                       <span id="certUploadStatus" style="font-size:12px;color:rgba(255,255,255,0.4);"></span>
+                     </div>
+                     <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:8px;">✅ Stored directly in database — image will never be lost after deploy.</div>`
                   : `<input type="${key.includes('email') ? 'email' : 'text'}"
                             id="setting_${key}"
                             class="form-control"
@@ -146,11 +295,43 @@
     grid.innerHTML = html;
   }
 
+  function syncInvitationCodes() {
+    const el = document.getElementById('setting_invitation_codes');
+    if (!el) return;
+    const rows = document.querySelectorAll('#invitationRows .inv-row');
+    const codes = [];
+    rows.forEach(row => {
+      const name = row.querySelector('.inv-name').value.trim();
+      const code = row.querySelector('.inv-code').value.trim();
+      if (name && code) codes.push({ name, code });
+    });
+    el.value = JSON.stringify(codes);
+  }
+
+  function addInvRow() {
+    const container = document.getElementById('invitationRows');
+    if (!container) return;
+    const div = document.createElement('div');
+    div.className = 'inv-row';
+    div.style.cssText = 'display:flex;gap:8px;margin-bottom:8px;align-items:center;';
+    div.innerHTML = `
+      <input type="text" class="form-control inv-name" placeholder="Staff Name" style="flex:1;">
+      <input type="text" class="form-control inv-code" placeholder="Code" style="width:130px;font-family:monospace;letter-spacing:1px;">
+      <button type="button" onclick="removeInvRow(this)" style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#f87171;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:16px;line-height:1;">×</button>
+    `;
+    container.appendChild(div);
+  }
+
+  function removeInvRow(btn) {
+    btn.closest('.inv-row').remove();
+  }
+
   async function saveSettings() {
+    syncInvitationCodes();
     const btn = document.getElementById('saveBtn');
     btn.disabled = true; btn.textContent = 'Saving...';
 
-    const allKeys = Object.values(settingGroups).flat();
+    const allKeys = [...new Set(['site_name', 'site_logo', ...Object.values(settingGroups).flat()])];
     const settings = allKeys.map(key => ({
       key,
       value: document.getElementById('setting_' + key)?.value || ''
@@ -167,44 +348,121 @@
     showMsg('alertBox', '✅ Settings saved successfully!', 'success');
   }
 
-  async function uploadLogo(input) {
+  function uploadLogo(input) {
     if (!input.files || !input.files[0]) return;
     const file = input.files[0];
     const status = document.getElementById('logoUploadStatus');
     const label = document.getElementById('logoUploadLabel');
-    status.textContent = 'Uploading...';
+
+    if (file.size > 2 * 1024 * 1024) {
+      status.textContent = 'Image too large. Max 2MB.';
+      status.style.color = '#f87171';
+      return;
+    }
+
+    status.textContent = 'Reading...';
+    status.style.color = '#a78bfa';
     label.style.opacity = '0.5';
 
-    const formData = new FormData();
-    formData.append('image', file);
-
-    try {
-      const token = getAdminToken();
-      const res = await fetch('/api/admin/upload', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` },
-        body: formData
-      });
-      const data = await res.json();
-      if (res.ok && data.url) {
-        document.getElementById('setting_site_logo').value = data.url;
-        const preview = document.getElementById('logoPreview');
-        preview.src = data.url;
-        preview.style.display = '';
-        label.querySelector('input').value = '';
-        const name = file.name.length > 24 ? file.name.substring(0, 21) + '...' : file.name;
-        label.childNodes[0].textContent = `✅ ${name} `;
-        status.textContent = 'Uploaded!';
-        status.style.color = '#4ade80';
-      } else {
-        status.textContent = 'Upload failed.';
-        status.style.color = '#f87171';
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+      const base64 = e.target.result;
+      document.getElementById('setting_site_logo').value = base64;
+      const preview = document.getElementById('logoPreview');
+      preview.src = base64;
+      preview.style.display = '';
+      label.querySelector('input').value = '';
+      const name = file.name.length > 22 ? file.name.substring(0, 19) + '...' : file.name;
+      label.childNodes[0].textContent = `✅ ${name} `;
+      status.textContent = 'Saving...';
+      status.style.color = '#a78bfa';
+      try {
+        const token = getAdminToken();
+        const res = await fetch('/api/admin/settings', {
+          method: 'PUT',
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ settings: [{ key: 'site_logo', value: base64 }] })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          status.textContent = '✅ Saved!';
+          status.style.color = '#4ade80';
+        } else {
+          status.textContent = '⚠️ Click Save All to apply.';
+          status.style.color = '#fbbf24';
+        }
+      } catch(err) {
+        status.textContent = '⚠️ Click Save All to apply.';
+        status.style.color = '#fbbf24';
       }
-    } catch(e) {
-      status.textContent = 'Network error.';
+      label.style.opacity = '1';
+    };
+    reader.onerror = function() {
+      status.textContent = 'Failed to read file.';
       status.style.color = '#f87171';
+      label.style.opacity = '1';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function uploadCertBase64(input) {
+    if (!input.files || !input.files[0]) return;
+    const file = input.files[0];
+    const status = document.getElementById('certUploadStatus');
+    const label = document.getElementById('certUploadLabel');
+
+    // Check size — warn if > 2MB before base64
+    if (file.size > 2 * 1024 * 1024) {
+      status.textContent = 'Image too large. Max 2MB.';
+      status.style.color = '#f87171';
+      return;
     }
-    label.style.opacity = '1';
+
+    status.textContent = 'Reading...';
+    status.style.color = '#a78bfa';
+    label.style.opacity = '0.5';
+
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+      const base64 = e.target.result; // data:image/xxx;base64,...
+      document.getElementById('setting_cert_image').value = base64;
+      const preview = document.getElementById('certPreview');
+      preview.src = base64;
+      preview.style.display = 'block';
+      label.querySelector('input').value = '';
+      const name = file.name.length > 22 ? file.name.substring(0, 19) + '...' : file.name;
+      label.childNodes[0].textContent = `🏆 ${name} `;
+      status.textContent = 'Saving to database...';
+      status.style.color = '#a78bfa';
+
+      // Save base64 directly to DB — no filesystem, survives every deploy
+      try {
+        const token = getAdminToken();
+        const res = await fetch('/api/admin/settings', {
+          method: 'PUT',
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ settings: [{ key: 'cert_image', value: base64 }] })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          status.textContent = '✅ Saved to database!';
+          status.style.color = '#4ade80';
+        } else {
+          status.textContent = '⚠️ Click Save All to apply.';
+          status.style.color = '#fbbf24';
+        }
+      } catch(err) {
+        status.textContent = '⚠️ Click Save All to apply.';
+        status.style.color = '#fbbf24';
+      }
+      label.style.opacity = '1';
+    };
+    reader.onerror = function() {
+      status.textContent = 'Failed to read file.';
+      status.style.color = '#f87171';
+      label.style.opacity = '1';
+    };
+    reader.readAsDataURL(file);
   }
 
   loadSettings();

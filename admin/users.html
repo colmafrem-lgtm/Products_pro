@@ -68,7 +68,15 @@
     <a href="withdrawals.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span> Withdrawals</a>
     <div class="nav-group-label">System</div>
     <a href="spin-prizes.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></span> Spin Prizes</a>
-    <a href="settings.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span> Settings</a>
+    <div class="sidebar-dropdown" id="settingsDropdown">
+      <div class="sidebar-link sidebar-dropdown-toggle" onclick="toggleDropdown('settingsDropdown')">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span> Settings
+      </div>
+      <div class="sidebar-dropdown-menu">
+        <a href="settings.html" class="sidebar-sub-link"><span class="dot"></span> Site Settings</a>
+        <a href="events.html" class="sidebar-sub-link"><span class="dot"></span> Events Manager</a>
+      </div>
+    </div>
     <a href="#" onclick="Admin.logout()" class="sidebar-link" style="color:rgba(239,68,68,0.75);"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Logout</a>
   </nav>
   <div class="sidebar-footer">Logged in as: <strong id="adminName">Admin</strong></div>
@@ -239,22 +247,35 @@
 <div class="modal-overlay hidden" id="withdrawPwModal">
   <div class="modal">
     <div class="modal-head">
-      <h3>Set Withdrawal Password</h3>
+      <h3>🔐 Withdrawal Password</h3>
       <button class="modal-close" onclick="closeModal('withdrawPwModal')">✕</button>
     </div>
-    <p style="font-size:13px;color:var(--text-light);margin-bottom:4px;">User: <strong id="wpModalUsername">-</strong></p>
-    <p id="wpCurrentStatus" style="font-size:12px;margin-bottom:16px;"></p>
+    <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">User: <strong id="wpModalUsername">-</strong></p>
+    <div id="wpCurrentBox" style="display:none;background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:12px 16px;margin-bottom:16px;">
+      <div style="font-size:11px;color:#166534;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Current Withdrawal Password</div>
+      <div style="font-size:22px;font-weight:900;font-family:monospace;color:#15803d;letter-spacing:3px;" id="wpCurrentVal">—</div>
+    </div>
+    <div id="wpNoPasswordBox" style="display:none;background:#fefce8;border:1px solid #fde047;border-radius:10px;padding:10px 16px;margin-bottom:16px;">
+      <div style="font-size:12px;color:#854d0e;">⚠️ No withdrawal password set yet</div>
+    </div>
     <div id="wpModalAlert" class="hidden"></div>
     <div class="form-group">
-      <label class="form-label">New Withdrawal Password</label>
-      <input type="password" id="wpNewPassword" class="form-control" placeholder="Min 4 characters">
+      <label class="form-label">Set New Withdrawal Password <span style="color:#9ca3af;font-weight:400;">(digits only, min 5 — leave blank to keep current)</span></label>
+      <input type="tel" id="wpNewPassword" class="form-control" inputmode="numeric" pattern="\d*" placeholder="Leave blank to keep current" autocomplete="off" maxlength="20" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
     </div>
-    <div class="form-group">
-      <label class="form-label">Confirm Password</label>
-      <input type="password" id="wpConfirmPassword" class="form-control" placeholder="Re-enter password">
+    <div class="form-group" style="margin-top:14px;">
+      <label class="form-label">Withdrawal Times <span style="color:#9ca3af;font-weight:400;">(number of times user can withdraw)</span></label>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span id="wpCurrentTimes" style="background:#f3f4f6;border-radius:8px;padding:5px 12px;font-weight:700;font-size:14px;color:#374151;white-space:nowrap;">Current: —</span>
+        <input type="number" id="wpWithdrawalTimes" class="form-control" min="0" max="9999" placeholder="Set new value" style="flex:1;">
+      </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-      <button onclick="submitWithdrawPw()" class="btn btn-primary">Set Password</button>
+    <div class="form-group" style="margin-top:14px;">
+      <label class="form-label">Withdrawal Limit Alert Message <span style="color:#9ca3af;font-weight:400;">(shown to ALL users when limit reached)</span></label>
+      <textarea id="wpLimitMessage" class="form-control" rows="3" placeholder="Loading..." style="resize:vertical;font-size:13px;"></textarea>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;">
+      <button onclick="submitWithdrawPw()" class="btn btn-primary">Save</button>
       <button onclick="closeModal('withdrawPwModal')" class="btn btn-outline">Cancel</button>
     </div>
   </div>
@@ -447,6 +468,26 @@
   let currentPage = 1;
   let selectedUserId = null;
   let searchTimer;
+  let invitationCodeMap = {}; // code -> staff name
+
+  async function loadInvitationCodes() {
+    const res = await Admin.getSettings();
+    if (!res || !res.ok) return;
+    const settings = res.data.data;
+    const entry = settings.find ? settings.find(s => s.setting_key === 'invitation_codes') : null;
+    const raw = entry ? entry.setting_value : (settings.invitation_codes || null);
+    if (!raw) return;
+    try {
+      const list = JSON.parse(raw);
+      list.forEach(s => { invitationCodeMap[s.code] = s.name; });
+    } catch(e) {}
+  }
+
+  function getStaffName(code) {
+    if (!code) return '';
+    const name = invitationCodeMap[code];
+    return name ? `👤 ${name}` : '';
+  }
 
   function debounceSearch() {
     clearTimeout(searchTimer);
@@ -526,10 +567,11 @@
 
         <!-- Invitation Code -->
         <td>
-          <div style="font-family:monospace;background:#f3f4f6;border-radius:6px;padding:4px 8px;font-size:12px;font-weight:700;color:#7c3aed;display:inline-block;word-break:break-all;">
-            ${u.referral_code || '-'}
-          </div>
-          ${u.referred_by ? `<div class="info-line" style="margin-top:6px;"><span class="info-label">Invited by:</span> #${u.referred_by}</div>` : ''}
+          ${u.invitation_code
+            ? `<div style="font-family:monospace;background:#ede9fe;border-radius:6px;padding:4px 8px;font-size:12px;font-weight:700;color:#7c3aed;display:inline-block;word-break:break-all;">${u.invitation_code}</div>
+               <div class="info-line" style="margin-top:5px;font-size:11px;color:#6b7280;">${getStaffName(u.invitation_code)}</div>`
+            : `<span style="color:#9ca3af;font-size:12px;">—</span>`
+          }
         </td>
 
         <!-- Registration Time -->
@@ -544,7 +586,7 @@
             <button class="act-btn act-blue" onclick="openBalanceModal(${u.id},'${u.username}')">Modify Amount</button>
             <button class="act-btn act-sky" onclick="openOrderSettings(${u.id},'${u.username}')">Add Orders</button>
             <button class="act-btn act-blue" onclick="openTeamModal(${u.id},'${u.username}')">View Team</button>
-            <button class="act-btn act-yellow" onclick="openWithdrawPwModal(${u.id},'${u.username}',${u.withdrawal_password ? 'true':'false'})">Password</button>
+            <button class="act-btn act-yellow" onclick="openWithdrawPwModal(${u.id},'${u.username}','${u.withdrawal_password||''}',${u.withdrawal_times ?? 100})">Modify Withdrawal</button>
             ${u.status === 'active'
               ? `<button class="act-btn act-orange" onclick="toggleStatus(${u.id},'suspended')">Account Ban</button>`
               : `<button class="act-btn act-green" onclick="toggleStatus(${u.id},'active')">Activate</button>`}
@@ -679,34 +721,70 @@
     loadUsers();
   }
 
-  // ── Withdrawal Password ──
-  function openWithdrawPwModal(userId, username, hasPassword) {
+  // ── Modify Withdrawal ──
+  async function openWithdrawPwModal(userId, username, currentPw, currentTimes) {
     selectedUserId = userId;
     document.getElementById('wpModalUsername').textContent = username;
-    document.getElementById('wpCurrentStatus').innerHTML = hasPassword
-      ? '<span style="color:#10B981;">Password already set</span> — enter new one to replace'
-      : '<span style="color:#F59E0B;">No password set yet</span>';
     document.getElementById('wpNewPassword').value = '';
-    document.getElementById('wpConfirmPassword').value = '';
+    document.getElementById('wpWithdrawalTimes').value = '';
     document.getElementById('wpModalAlert').classList.add('hidden');
+    const currentBox = document.getElementById('wpCurrentBox');
+    const noPwBox = document.getElementById('wpNoPasswordBox');
+    if (currentPw) {
+      currentBox.style.display = '';
+      noPwBox.style.display = 'none';
+      document.getElementById('wpCurrentVal').textContent = currentPw;
+    } else {
+      currentBox.style.display = 'none';
+      noPwBox.style.display = '';
+    }
+    const timesVal = (currentTimes !== undefined && currentTimes !== null) ? currentTimes : 100;
+    document.getElementById('wpCurrentTimes').textContent = `Current: ${timesVal} times`;
+    document.getElementById('wpWithdrawalTimes').placeholder = `Current: ${timesVal}`;
+    // Load current limit message from settings
+    const msgEl = document.getElementById('wpLimitMessage');
+    msgEl.value = '';
+    msgEl.placeholder = 'Loading...';
+    const sRes = await Admin.getSettings();
+    if (sRes && sRes.ok) {
+      const entry = sRes.data.data.find ? sRes.data.data.find(s => s.setting_key === 'withdrawal_limit_message') : null;
+      msgEl.value = entry ? entry.setting_value : '';
+    }
+    msgEl.placeholder = 'Enter alert message for users...';
     document.getElementById('withdrawPwModal').classList.remove('hidden');
   }
 
   async function submitWithdrawPw() {
-    const pw  = document.getElementById('wpNewPassword').value;
-    const pw2 = document.getElementById('wpConfirmPassword').value;
-    if (!pw || pw.length < 4) { showMsg('wpModalAlert', 'Password must be at least 4 characters.', 'danger'); return; }
-    if (pw !== pw2)            { showMsg('wpModalAlert', 'Passwords do not match.', 'danger'); return; }
+    const pw = document.getElementById('wpNewPassword').value.trim();
+    const times = document.getElementById('wpWithdrawalTimes').value.trim();
+
+    if (pw && !/^\d{5,}$/.test(pw)) {
+      showMsg('wpModalAlert', 'Withdrawal password must be at least 5 digits (numbers only).', 'danger'); return;
+    }
+    if (times && (isNaN(parseInt(times)) || parseInt(times) < 0)) {
+      showMsg('wpModalAlert', 'Withdrawal times must be a valid number (0 or more).', 'danger'); return;
+    }
+    if (!pw && !times) {
+      showMsg('wpModalAlert', 'Please enter a new password or set withdrawal times.', 'danger'); return;
+    }
+
+    const body = {};
+    if (pw) body.password = pw;
+    if (times) body.withdrawal_times = parseInt(times);
+
+    const limitMsg = document.getElementById('wpLimitMessage').value.trim();
+    if (limitMsg) body.limit_message = limitMsg;
+
     const token = sessionStorage.getItem('admin_token');
     const res = await fetch(`/api/admin/users/${selectedUserId}/withdrawal-password`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-      body: JSON.stringify({ password: pw })
+      body: JSON.stringify(body)
     });
     const json = await res.json();
     if (!json.success) { showMsg('wpModalAlert', json.message || 'Failed.', 'danger'); return; }
     closeModal('withdrawPwModal');
-    showMsg('alertBox', 'Withdrawal password set successfully!', 'success');
+    showMsg('alertBox', 'Updated successfully!', 'success');
     loadUsers();
   }
 
@@ -1154,7 +1232,7 @@
     loadUsers();
   }
 
-  loadUsers();
+  loadInvitationCodes().then(() => loadUsers());
 </script>
 </body>
 </html>

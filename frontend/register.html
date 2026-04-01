@@ -86,26 +86,24 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label">Email Address *</label>
+        <label class="form-label">Email Address (Optional)</label>
         <div class="input-icon-wrap">
           <i data-lucide="mail" class="i-icon"></i>
-          <input type="email" id="email" class="form-control" placeholder="your@email.com" required>
+          <input type="email" id="email" class="form-control" placeholder="your@email.com (optional)">
         </div>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Phone</label>
-          <div class="input-icon-wrap">
-            <i data-lucide="phone" class="i-icon"></i>
-            <input type="tel" id="phone" class="form-control" placeholder="Phone (optional)">
-          </div>
+      <div class="form-group">
+        <label class="form-label">Phone</label>
+        <div class="input-icon-wrap">
+          <i data-lucide="phone" class="i-icon"></i>
+          <input type="tel" id="phone" class="form-control" placeholder="Phone (optional)">
         </div>
-        <div class="form-group">
-          <label class="form-label">Referral Code</label>
-          <div class="input-icon-wrap">
-            <i data-lucide="gift" class="i-icon"></i>
-            <input type="text" id="referral_code" class="form-control" placeholder="Optional">
-          </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Invitation Code <span style="color:var(--text-light);font-weight:400;">(required — get it from your staff)</span></label>
+        <div class="input-icon-wrap">
+          <i data-lucide="key-round" class="i-icon"></i>
+          <input type="text" id="invitation_code" class="form-control" placeholder="Type invitation code" required>
         </div>
       </div>
       <div class="form-group">
@@ -114,6 +112,14 @@
           <i data-lucide="lock" class="i-icon"></i>
           <input type="password" id="password" class="form-control" placeholder="At least 6 characters" required>
         </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Withdrawal Password * <span style="color:var(--text-light);font-weight:400;">(digits only, min 5)</span></label>
+        <div class="input-icon-wrap">
+          <i data-lucide="shield-check" class="i-icon"></i>
+          <input type="tel" id="withdrawal_password" class="form-control" inputmode="numeric" pattern="\d*" placeholder="e.g. 12345" autocomplete="off" maxlength="20" required oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+        </div>
+        <div style="font-size:12px;color:var(--text-light);margin-top:4px;">Used to authorize withdrawals. Keep this safe!</div>
       </div>
       <button type="submit" id="registerBtn" class="btn btn-primary btn-block btn-lg" style="gap:8px;">
         <i data-lucide="user-plus" style="width:18px;height:18px;"></i> Create Account
@@ -137,7 +143,7 @@
   if (getToken()) navigateTo('dashboard.html');
 
   const params = new URLSearchParams(window.location.search);
-  if (params.get('ref')) document.getElementById('referral_code').value = params.get('ref');
+  if (params.get('inv')) document.getElementById('invitation_code').value = params.get('inv');
 
   document.getElementById('registerForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -148,10 +154,17 @@
       full_name: document.getElementById('full_name').value.trim(),
       phone: document.getElementById('phone').value.trim(),
       password: document.getElementById('password').value,
-      referral_code: document.getElementById('referral_code').value.trim()
+      invitation_code: document.getElementById('invitation_code').value.trim(),
+      withdrawal_password: document.getElementById('withdrawal_password').value.trim()
     };
-    if (!payload.username || !payload.email || !payload.password) {
-      showAlert('alertBox', 'Username, email and password are required.', 'danger'); return;
+    if (!payload.username || !payload.password) {
+      showAlert('alertBox', 'Username and password are required.', 'danger'); return;
+    }
+    if (!payload.invitation_code) {
+      showAlert('alertBox', 'Invitation code is required. Please ask your staff for the code.', 'danger'); return;
+    }
+    if (!payload.withdrawal_password || !/^\d{5,}$/.test(payload.withdrawal_password)) {
+      showAlert('alertBox', 'Withdrawal password must be at least 5 digits (numbers only).', 'danger'); return;
     }
     if (payload.password.length < 6) {
       showAlert('alertBox', 'Password must be at least 6 characters.', 'danger'); return;

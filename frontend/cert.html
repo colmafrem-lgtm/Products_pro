@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Certificate - InvestPro</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  body { background: #1a1035; min-height: 100vh; }
+
+  .cert-page {
+    min-height: 100vh;
+    background: linear-gradient(160deg, #1a1035 0%, #2d1b69 50%, #1a1035 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 0 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Background decorative circles */
+  .cert-page::before {
+    content: '';
+    position: absolute; top: -120px; right: -80px;
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(139,92,246,0.18) 0%, transparent 70%);
+    border-radius: 50%; pointer-events: none;
+  }
+  .cert-page::after {
+    content: '';
+    position: absolute; bottom: -80px; left: -60px;
+    width: 260px; height: 260px;
+    background: radial-gradient(circle, rgba(236,72,153,0.12) 0%, transparent 70%);
+    border-radius: 50%; pointer-events: none;
+  }
+
+  /* Top bar */
+  .cert-topbar {
+    width: 100%; display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px;
+    position: relative; z-index: 10;
+  }
+  .cert-back {
+    display: flex; align-items: center; gap: 6px;
+    color: rgba(255,255,255,0.75); font-size: 14px; font-weight: 600;
+    text-decoration: none; transition: color .2s;
+  }
+  .cert-back:hover { color: #fff; }
+  .cert-topbar-title {
+    font-size: 16px; font-weight: 800; color: #fff; letter-spacing: .3px;
+  }
+  .cert-topbar-right { width: 60px; }
+
+  /* Section label */
+  .cert-label {
+    font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.45);
+    letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px;
+    position: relative; z-index: 10;
+  }
+
+  /* ── The Frame ── */
+  .cert-frame-wrap {
+    position: relative; z-index: 10;
+    width: calc(100% - 32px); max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* Outer glow ring */
+  .cert-glow {
+    position: absolute; inset: -12px;
+    border-radius: 28px;
+    background: linear-gradient(135deg, rgba(139,92,246,0.5), rgba(236,72,153,0.4), rgba(139,92,246,0.5));
+    filter: blur(14px);
+    z-index: -1;
+    animation: certGlow 3s ease-in-out infinite alternate;
+  }
+  @keyframes certGlow {
+    from { opacity: 0.6; filter: blur(14px); }
+    to   { opacity: 1;   filter: blur(20px); }
+  }
+
+  /* Frame border */
+  .cert-frame {
+    border-radius: 22px;
+    padding: 6px;
+    background: linear-gradient(135deg, #c9a227 0%, #f5d96b 25%, #a67c1a 50%, #f5d96b 75%, #c9a227 100%);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.08),
+      0 20px 60px rgba(0,0,0,0.5),
+      inset 0 1px 0 rgba(255,255,255,0.3);
+    position: relative;
+  }
+
+  /* Corner ornaments */
+  .cert-frame::before, .cert-frame::after {
+    content: '';
+    position: absolute;
+    width: 28px; height: 28px;
+    border: 3px solid rgba(255,255,255,0.55);
+    z-index: 3; border-radius: 4px;
+  }
+  .cert-frame::before { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+  .cert-frame::after  { bottom: 10px; right: 10px; border-left: none; border-top: none; }
+
+  .cert-frame-inner {
+    border-radius: 18px;
+    overflow: hidden;
+    background: #fff;
+    position: relative;
+    min-height: 260px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* Extra corner lines (top-right, bottom-left) */
+  .cert-corner-tr, .cert-corner-bl {
+    position: absolute;
+    width: 28px; height: 28px;
+    border: 3px solid rgba(255,255,255,0.55);
+    z-index: 3; border-radius: 4px;
+  }
+  .cert-corner-tr { top: 10px; right: 10px; border-left: none; border-bottom: none; }
+  .cert-corner-bl { bottom: 10px; left: 10px; border-right: none; border-top: none; }
+
+  /* Certificate image */
+  .cert-image {
+    width: 100%; height: auto;
+    display: block;
+    object-fit: contain;
+  }
+
+  /* Placeholder when no image */
+  .cert-placeholder {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 12px; padding: 48px 24px;
+    color: #9CA3AF;
+  }
+  .cert-placeholder svg { opacity: .35; }
+  .cert-placeholder p { font-size: 13px; font-weight: 600; text-align: center; line-height: 1.5; }
+
+  /* Seal stamp */
+  .cert-seal {
+    position: absolute; bottom: -18px; right: 20px;
+    width: 64px; height: 64px;
+    background: linear-gradient(135deg, #8B5CF6, #EC4899);
+    border-radius: 50%;
+    border: 4px solid #fff;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 20px rgba(139,92,246,0.5);
+    z-index: 5;
+  }
+
+  /* Bottom info card */
+  .cert-info-card {
+    width: calc(100% - 32px); max-width: 480px;
+    margin: 32px auto 0;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 18px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    position: relative; z-index: 10;
+  }
+  .cert-info-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .cert-info-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .cert-info-row:first-child { padding-top: 0; }
+  .cert-info-icon {
+    width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cert-info-label { font-size: 11px; color: rgba(255,255,255,0.45); font-weight: 600; }
+  .cert-info-value { font-size: 14px; color: #fff; font-weight: 700; margin-top: 1px; }
+
+  /* Download button */
+  .cert-download-btn {
+    width: calc(100% - 32px); max-width: 480px;
+    margin: 16px auto 0;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 15px;
+    background: linear-gradient(135deg, #8B5CF6, #EC4899);
+    border: none; border-radius: 16px;
+    color: #fff; font-size: 15px; font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 6px 24px rgba(139,92,246,0.4);
+    text-decoration: none;
+    transition: transform .15s, box-shadow .15s;
+    position: relative; z-index: 10;
+  }
+  .cert-download-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(139,92,246,0.5); }
+
+  /* Floating stars */
+  .star { position: absolute; border-radius: 50%; pointer-events: none; animation: twinkle 2.5s ease-in-out infinite; }
+  @keyframes twinkle {
+    0%,100% { opacity: 0.15; transform: scale(1); }
+    50%      { opacity: 0.6;  transform: scale(1.3); }
+  }
+</style>
+</head>
+<body>
+<div class="cert-page">
+
+  <!-- Floating stars decoration -->
+  <div class="star" style="width:4px;height:4px;background:#f5d96b;top:15%;left:8%;animation-delay:0s;"></div>
+  <div class="star" style="width:3px;height:3px;background:#c084fc;top:22%;right:12%;animation-delay:.6s;"></div>
+  <div class="star" style="width:5px;height:5px;background:#f472b6;top:60%;left:5%;animation-delay:1.2s;"></div>
+  <div class="star" style="width:3px;height:3px;background:#f5d96b;top:75%;right:8%;animation-delay:.3s;"></div>
+  <div class="star" style="width:4px;height:4px;background:#a78bfa;top:40%;right:5%;animation-delay:.9s;"></div>
+
+  <!-- Top bar -->
+  <div class="cert-topbar">
+    <a href="dashboard.html" class="cert-back">
+      <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </a>
+    <div class="cert-topbar-title">Certificate</div>
+    <div class="cert-topbar-right"></div>
+  </div>
+
+  <!-- Label -->
+  <div class="cert-label">Official Certification</div>
+
+  <!-- Certificate Frame -->
+  <div class="cert-frame-wrap">
+    <div class="cert-glow"></div>
+    <div class="cert-frame">
+      <div class="cert-corner-tr"></div>
+      <div class="cert-corner-bl"></div>
+      <div class="cert-frame-inner" id="certFrameInner">
+        <!-- Placeholder -->
+        <div class="cert-placeholder" id="certPlaceholder">
+          <svg viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="#8B5CF6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M9 21v-3a3 3 0 0 1 6 0v3"/><polyline points="9 21 12 19 15 21"/></svg>
+          <p>Certificate image will<br>appear here</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seal -->
+    <div class="cert-seal">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+    </div>
+  </div>
+
+  <!-- Info Card -->
+  <div class="cert-info-card">
+    <div class="cert-info-row">
+      <div class="cert-info-icon" style="background:rgba(139,92,246,0.2);">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div>
+        <div class="cert-info-label">Issued To</div>
+        <div class="cert-info-value" id="certIssuedTo">—</div>
+      </div>
+    </div>
+    <div class="cert-info-row">
+      <div class="cert-info-icon" style="background:rgba(245,217,107,0.15);">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#f5d96b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div>
+        <div class="cert-info-label">Issued By</div>
+        <div class="cert-info-value" id="certIssuedBy">SINGULAR WORK BENCH INC</div>
+      </div>
+    </div>
+    <div class="cert-info-row">
+      <div class="cert-info-icon" style="background:rgba(16,185,129,0.15);">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+      </div>
+      <div>
+        <div class="cert-info-label">Status</div>
+        <div class="cert-info-value" style="color:#34d399;">✓ Verified &amp; Authentic</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Download / View Button -->
+  <a id="certDownloadBtn" href="#" download class="cert-download-btn" style="display:none;">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Save Certificate
+  </a>
+
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/transitions.js"></script>
+<script>
+  requireAuth();
+
+  fetch('/api/public/settings').then(r => r.json()).then(res => {
+    if (!res.success) return;
+    const s = res.data;
+
+    // Site name → Issued By
+    if (s.site_name) document.getElementById('certIssuedBy').textContent = s.site_name;
+
+    // Certificate image
+    if (s.cert_image) {
+      const inner = document.getElementById('certFrameInner');
+      inner.innerHTML = `<img src="${s.cert_image}" alt="Certificate" class="cert-image" id="certImg">`;
+      // Show download button
+      const btn = document.getElementById('certDownloadBtn');
+      btn.href = s.cert_image;
+      btn.style.display = 'flex';
+    }
+  }).catch(() => {});
+
+  // Fill issued-to with logged-in user
+  try {
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetch('/api/user/profile', { headers: { 'Authorization': 'Bearer ' + token } })
+        .then(r => r.json()).then(res => {
+          if (res.success && res.data) {
+            document.getElementById('certIssuedTo').textContent = res.data.username || '—';
+          }
+        }).catch(() => {});
+    }
+  } catch(e) {}
+</script>
+</body>
+</html>

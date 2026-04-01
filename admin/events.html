@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Events Manager - Admin Panel</title>
+<link rel="stylesheet" href="css/admin.css">
+<style>
+  .events-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+  .color-swatches { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+  .color-swatch {
+    width: 28px; height: 28px; border-radius: 6px; cursor: pointer;
+    border: 2px solid transparent; transition: all .15s;
+  }
+  .color-swatch:hover { transform: scale(1.15); }
+  .color-swatch.selected { border-color: #fff; box-shadow: 0 0 0 2px #7c3aed; }
+  .accent-options { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+  .accent-opt {
+    width: 48px; height: 28px; border-radius: 6px; cursor: pointer;
+    border: 2px solid transparent; transition: all .15s;
+  }
+  .accent-opt:hover { transform: scale(1.1); }
+  .accent-opt.selected { border-color: #7c3aed; box-shadow: 0 0 0 2px rgba(139,92,246,.4); }
+  .upcoming-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; background: #f9fafb; border-radius: 8px;
+    border: 1px solid #e5e7eb; margin-bottom: 8px;
+  }
+  .upcoming-item-title { font-size: 14px; font-weight: 600; color: #1e1b4b; }
+  .btn-del { background: #fee2e2; color: #dc2626; border: none; border-radius: 6px; padding: 4px 10px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background .15s; }
+  .btn-del:hover { background: #fecaca; }
+  .section-save-btn { margin-top: 14px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media(max-width:700px) { .form-row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <div><div>InvestPro</div><span>Admin Panel</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">Main</div>
+    <a href="dashboard.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Dashboard</a>
+    <div class="nav-group-label">Manage</div>
+    <!-- Users Dropdown -->
+    <div class="sidebar-dropdown open" id="usersDropdown">
+      <div class="sidebar-link sidebar-dropdown-toggle" onclick="toggleDropdown('usersDropdown')">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+        Users
+        <span class="chevron"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+      </div>
+      <div class="sidebar-dropdown-menu">
+        <a href="users.html" class="sidebar-sub-link"><span class="dot"></span> Member List</a>
+        <a href="prize-records.html" class="sidebar-sub-link"><span class="dot"></span> Prize Records</a>
+        <a href="vip-levels.html" class="sidebar-sub-link"><span class="dot"></span> VIP Levels</a>
+        <a href="points-records.html" class="sidebar-sub-link"><span class="dot"></span> Points Records</a>
+      </div>
+    </div>
+    <a href="products.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span> Products</a>
+    <a href="deposits.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span> Deposits</a>
+    <a href="withdrawals.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span> Withdrawals</a>
+    <div class="nav-group-label">System</div>
+    <a href="spin-prizes.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></span> Spin Prizes</a>
+    <div class="sidebar-dropdown open" id="settingsDropdown">
+      <div class="sidebar-link sidebar-dropdown-toggle" onclick="toggleDropdown('settingsDropdown')">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span> Settings
+      </div>
+      <div class="sidebar-dropdown-menu">
+        <a href="settings.html" class="sidebar-sub-link"><span class="dot"></span> Site Settings</a>
+        <a href="events.html" class="sidebar-sub-link active"><span class="dot"></span> Events Manager</a>
+      </div>
+    </div>
+    <a href="#" onclick="Admin.logout()" class="sidebar-link" style="color:rgba(239,68,68,0.75);"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Logout</a>
+  </nav>
+  <div class="sidebar-footer">Logged in as: <strong id="adminName">Admin</strong></div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">Events Manager</div>
+    <div class="topbar-right">
+      <div class="admin-avatar" id="adminInitial">A</div>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div id="alertBox" class="hidden"></div>
+
+    <div class="events-grid">
+
+      <!-- Section 1: Countdown Settings -->
+      <div class="card">
+        <div class="card-head">
+          <h3>⏳ Countdown Settings</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label class="form-label">Next Event Target Date/Time</label>
+            <input type="datetime-local" id="countdown_date" class="form-control">
+            <p style="font-size:12px;color:var(--text-light);margin-top:6px;">This date will be used for the countdown timer displayed on the frontend Events page.</p>
+          </div>
+          <div class="section-save-btn">
+            <button onclick="saveCountdown()" id="saveCdBtn" class="btn btn-primary">💾 Save Countdown</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Featured Event Editor -->
+      <div class="card">
+        <div class="card-head">
+          <h3>⭐ Featured Event Editor</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Emoji Icon</label>
+              <input type="text" id="feat_icon" class="form-control" placeholder="🎁" maxlength="4">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Badge Text</label>
+              <input type="text" id="feat_badge" class="form-control" placeholder="LIVE NOW">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Title</label>
+            <input type="text" id="feat_title" class="form-control" placeholder="Featured event title">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea id="feat_description" class="form-control" rows="3" placeholder="Describe the featured event..."></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Schedule</label>
+              <input type="text" id="feat_schedule" class="form-control" placeholder="Sat–Sun only">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Audience</label>
+              <input type="text" id="feat_audience" class="form-control" placeholder="All members">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select id="feat_status" class="form-control">
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+          <div class="section-save-btn">
+            <button onclick="saveFeatured()" id="saveFeatBtn" class="btn btn-primary">💾 Save Featured Event</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Upcoming Events Manager -->
+      <div class="card">
+        <div class="card-head">
+          <h3>📅 Upcoming Events Manager</h3>
+        </div>
+        <div class="card-body">
+
+          <!-- Current events list -->
+          <div style="margin-bottom:20px;">
+            <div style="font-size:13px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Current Events</div>
+            <div id="upcomingList">
+              <div style="color:var(--text-light);font-size:13px;">Loading...</div>
+            </div>
+          </div>
+
+          <hr style="border:none;border-top:1px solid var(--border);margin-bottom:20px;">
+
+          <!-- Add New Event form -->
+          <div style="font-size:13px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px;">Add New Event</div>
+
+          <div class="form-group">
+            <label class="form-label">Title</label>
+            <input type="text" id="new_title" class="form-control" placeholder="Event title">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea id="new_description" class="form-control" rows="2" placeholder="Brief event description..."></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tag / Category</label>
+              <input type="text" id="new_tag" class="form-control" placeholder="New Members, Referral, VIP, Contest...">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Date Range</label>
+              <input type="text" id="new_date" class="form-control" placeholder="Apr 1 – Apr 30">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Tag Color</label>
+            <div class="color-swatches" id="tagColorSwatches">
+              <div class="color-swatch selected" data-color="#7C3AED" data-bg="#EDE9FE" style="background:#7C3AED;" title="Purple"></div>
+              <div class="color-swatch" data-color="#D97706" data-bg="#FEF3C7" style="background:#D97706;" title="Amber"></div>
+              <div class="color-swatch" data-color="#065F46" data-bg="#D1FAE5" style="background:#065F46;" title="Green"></div>
+              <div class="color-swatch" data-color="#4338CA" data-bg="#E0E7FF" style="background:#4338CA;" title="Indigo"></div>
+              <div class="color-swatch" data-color="#BE185D" data-bg="#FCE7F3" style="background:#BE185D;" title="Pink"></div>
+              <div class="color-swatch" data-color="#1D4ED8" data-bg="#DBEAFE" style="background:#1D4ED8;" title="Blue"></div>
+              <div class="color-swatch" data-color="#B45309" data-bg="#FEF3C7" style="background:#B45309;" title="Orange"></div>
+              <div class="color-swatch" data-color="#374151" data-bg="#F3F4F6" style="background:#374151;" title="Gray"></div>
+            </div>
+            <input type="hidden" id="new_tagColor" value="#7C3AED">
+            <input type="hidden" id="new_tagBg" value="#EDE9FE">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Accent Color (Card Left Bar)</label>
+            <div class="accent-options" id="accentOptions">
+              <div class="accent-opt selected" data-gradient="linear-gradient(#8B5CF6,#EC4899)" style="background:linear-gradient(#8B5CF6,#EC4899);" title="Purple–Pink"></div>
+              <div class="accent-opt" data-gradient="linear-gradient(#F59E0B,#EF4444)" style="background:linear-gradient(#F59E0B,#EF4444);" title="Amber–Red"></div>
+              <div class="accent-opt" data-gradient="linear-gradient(#10B981,#3B82F6)" style="background:linear-gradient(#10B981,#3B82F6);" title="Green–Blue"></div>
+              <div class="accent-opt" data-gradient="linear-gradient(#6366F1,#8B5CF6)" style="background:linear-gradient(#6366F1,#8B5CF6);" title="Indigo–Purple"></div>
+              <div class="accent-opt" data-gradient="linear-gradient(#EC4899,#F59E0B)" style="background:linear-gradient(#EC4899,#F59E0B);" title="Pink–Amber"></div>
+              <div class="accent-opt" data-gradient="linear-gradient(#3B82F6,#10B981)" style="background:linear-gradient(#3B82F6,#10B981);" title="Blue–Green"></div>
+            </div>
+            <input type="hidden" id="new_accentColor" value="linear-gradient(#8B5CF6,#EC4899)">
+          </div>
+
+          <div class="section-save-btn">
+            <button onclick="addUpcomingEvent()" id="addEventBtn" class="btn btn-primary">➕ Add Event</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="js/admin-api.js"></script>
+<script>
+  requireAdminAuth();
+  initAdminTopbar();
+
+  let upcomingEvents = [];
+
+  // Tag color swatches
+  document.querySelectorAll('#tagColorSwatches .color-swatch').forEach(sw => {
+    sw.addEventListener('click', () => {
+      document.querySelectorAll('#tagColorSwatches .color-swatch').forEach(s => s.classList.remove('selected'));
+      sw.classList.add('selected');
+      document.getElementById('new_tagColor').value = sw.dataset.color;
+      document.getElementById('new_tagBg').value = sw.dataset.bg;
+    });
+  });
+
+  // Accent color options
+  document.querySelectorAll('#accentOptions .accent-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('#accentOptions .accent-opt').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      document.getElementById('new_accentColor').value = opt.dataset.gradient;
+    });
+  });
+
+  // Load all settings on page load
+  async function loadSettings() {
+    const res = await Admin.getSettings();
+    if (!res || !res.ok) return;
+
+    const map = {};
+    res.data.data.forEach(s => { map[s.setting_key] = s.setting_value; });
+
+    // Section 1: countdown
+    if (map['event_countdown_date']) {
+      // Convert ISO to datetime-local format
+      const iso = map['event_countdown_date'];
+      const local = iso.length >= 16 ? iso.substring(0, 16) : iso;
+      document.getElementById('countdown_date').value = local;
+    }
+
+    // Section 2: featured event
+    if (map['event_featured']) {
+      try {
+        const f = JSON.parse(map['event_featured']);
+        document.getElementById('feat_icon').value = f.icon || '';
+        document.getElementById('feat_badge').value = f.badge || '';
+        document.getElementById('feat_title').value = f.title || '';
+        document.getElementById('feat_description').value = f.description || '';
+        document.getElementById('feat_schedule').value = f.schedule || '';
+        document.getElementById('feat_audience').value = f.audience || '';
+        document.getElementById('feat_status').value = f.status || 'active';
+      } catch(e) {}
+    }
+
+    // Section 3: upcoming events
+    if (map['events_upcoming']) {
+      try {
+        upcomingEvents = JSON.parse(map['events_upcoming']);
+      } catch(e) { upcomingEvents = []; }
+    }
+    renderUpcomingList();
+  }
+
+  function renderUpcomingList() {
+    const list = document.getElementById('upcomingList');
+    if (!upcomingEvents.length) {
+      list.innerHTML = '<div style="color:var(--text-light);font-size:13px;padding:8px 0;">No upcoming events yet.</div>';
+      return;
+    }
+    list.innerHTML = upcomingEvents.map((ev, i) => `
+      <div class="upcoming-item">
+        <div>
+          <div class="upcoming-item-title">${escapeHtml(ev.title)}</div>
+          <div style="font-size:12px;color:var(--text-light);margin-top:2px;">${escapeHtml(ev.date || '')} &nbsp;|&nbsp; <span style="background:${ev.tagBg};color:${ev.tagColor};padding:1px 8px;border-radius:20px;font-size:11px;font-weight:700;">${escapeHtml(ev.tag || '')}</span></div>
+        </div>
+        <button class="btn-del" onclick="deleteUpcomingEvent(${i})">✕ Remove</button>
+      </div>
+    `).join('');
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  async function saveCountdown() {
+    const btn = document.getElementById('saveCdBtn');
+    btn.disabled = true; btn.textContent = 'Saving...';
+    const val = document.getElementById('countdown_date').value;
+    if (!val) { showMsg('alertBox', 'Please select a date and time.', 'danger'); btn.disabled = false; btn.textContent = '💾 Save Countdown'; return; }
+    const isoVal = new Date(val).toISOString();
+    const res = await Admin.updateSettings([{ key: 'event_countdown_date', value: isoVal }]);
+    btn.disabled = false; btn.textContent = '💾 Save Countdown';
+    if (!res || !res.ok) { showMsg('alertBox', res?.data?.message || 'Failed to save.', 'danger'); return; }
+    showMsg('alertBox', '✅ Countdown date saved!', 'success');
+  }
+
+  async function saveFeatured() {
+    const btn = document.getElementById('saveFeatBtn');
+    btn.disabled = true; btn.textContent = 'Saving...';
+    const featured = {
+      icon: document.getElementById('feat_icon').value.trim() || '🎁',
+      badge: document.getElementById('feat_badge').value.trim(),
+      title: document.getElementById('feat_title').value.trim(),
+      description: document.getElementById('feat_description').value.trim(),
+      schedule: document.getElementById('feat_schedule').value.trim(),
+      audience: document.getElementById('feat_audience').value.trim(),
+      status: document.getElementById('feat_status').value
+    };
+    const res = await Admin.updateSettings([{ key: 'event_featured', value: JSON.stringify(featured) }]);
+    btn.disabled = false; btn.textContent = '💾 Save Featured Event';
+    if (!res || !res.ok) { showMsg('alertBox', res?.data?.message || 'Failed to save.', 'danger'); return; }
+    showMsg('alertBox', '✅ Featured event saved!', 'success');
+  }
+
+  async function addUpcomingEvent() {
+    const title = document.getElementById('new_title').value.trim();
+    if (!title) { showMsg('alertBox', 'Please enter an event title.', 'danger'); return; }
+    const newEv = {
+      title,
+      description: document.getElementById('new_description').value.trim(),
+      tag: document.getElementById('new_tag').value.trim(),
+      tagColor: document.getElementById('new_tagColor').value,
+      tagBg: document.getElementById('new_tagBg').value,
+      date: document.getElementById('new_date').value.trim(),
+      accentColor: document.getElementById('new_accentColor').value
+    };
+    upcomingEvents.push(newEv);
+    await saveUpcomingEvents();
+    // Clear form
+    document.getElementById('new_title').value = '';
+    document.getElementById('new_description').value = '';
+    document.getElementById('new_tag').value = '';
+    document.getElementById('new_date').value = '';
+  }
+
+  async function deleteUpcomingEvent(index) {
+    if (!confirm('Remove this event?')) return;
+    upcomingEvents.splice(index, 1);
+    await saveUpcomingEvents();
+  }
+
+  async function saveUpcomingEvents() {
+    const btn = document.getElementById('addEventBtn');
+    btn.disabled = true;
+    const res = await Admin.updateSettings([{ key: 'events_upcoming', value: JSON.stringify(upcomingEvents) }]);
+    btn.disabled = false;
+    if (!res || !res.ok) { showMsg('alertBox', res?.data?.message || 'Failed to save.', 'danger'); return; }
+    showMsg('alertBox', '✅ Upcoming events saved!', 'success');
+    renderUpcomingList();
+  }
+
+  loadSettings();
+</script>
+</body>
+</html>

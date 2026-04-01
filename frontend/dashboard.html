@@ -197,6 +197,106 @@
   .vip-min-deposit .label { font-size:12px; color:var(--text-light); }
   .vip-min-deposit .amount { font-size:15px; font-weight:800; color:var(--dark); }
 
+  /* ── Daily Sign-in ── */
+  .signin-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 4px 6px;
+    border-radius: 12px;
+    border: 1.5px solid #E5E7EB;
+    background: #F9FAFB;
+    position: relative;
+    transition: all .2s;
+  }
+  .signin-day.claimed {
+    background: linear-gradient(135deg,#D1FAE5,#A7F3D0);
+    border-color: #10B981;
+  }
+  .signin-day.claimable {
+    background: linear-gradient(135deg,#FEF3C7,#FDE68A);
+    border-color: #F59E0B;
+    box-shadow: 0 0 0 2px rgba(245,158,11,0.25);
+    animation: signin-glow 1.6s ease-in-out infinite;
+  }
+  @keyframes signin-glow {
+    0%,100% { box-shadow: 0 0 0 2px rgba(245,158,11,0.25); }
+    50%      { box-shadow: 0 0 0 5px rgba(245,158,11,0.15); }
+  }
+  .signin-day .sd-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #E5E7EB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 800;
+    color: #9CA3AF;
+  }
+  .signin-day.claimed .sd-icon {
+    background: #10B981;
+    color: #fff;
+  }
+  .signin-day.claimable .sd-icon {
+    background: #F59E0B;
+    color: #fff;
+  }
+  .signin-day .sd-label {
+    font-size: 9px;
+    font-weight: 700;
+    color: #6B7280;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+  }
+  .signin-day.claimed .sd-label { color: #065F46; }
+  .signin-day.claimable .sd-label { color: #92400E; }
+
+  /* ── Quick Link Buttons ── */
+  .quick-links-row::-webkit-scrollbar { display:none; }
+  .quick-links-row { position: relative; z-index: 2; }
+  .ql-btn {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 64px;
+    padding: 10px 6px;
+    border-radius: 16px;
+    text-decoration: none;
+    color: #fff;
+    transition: transform .2s, opacity .2s;
+    position: relative;
+    z-index: 2;
+    background: rgba(255,255,255,0.15) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.25);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  }
+  .ql-btn:active { transform: scale(0.93); opacity: .85; }
+  .ql-icon {
+    width: 38px;
+    height: 38px;
+    background: rgba(255,255,255,0.22);
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .ql-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .2px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
   /* ── Withdrawal Ticker ── */
   .ticker-wrap {
     background: linear-gradient(135deg, #1a0a2e, #2d1060);
@@ -398,6 +498,14 @@
   <div class="desktop-content">
 <div class="page-container">
 
+  <!-- Withdrawal Ticker — TOP -->
+  <div class="ticker-wrap">
+    <div class="ticker-label">
+      <svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> LIVE
+    </div>
+    <div class="ticker-track" id="tickerTrack"></div>
+  </div>
+
   <div class="hero-dashboard">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
       <div>
@@ -409,19 +517,40 @@
       </a>
     </div>
 
-    <!-- Hero Product Carousel -->
-    <div id="heroCarousel" style="position:relative;overflow:hidden;border-radius:14px;min-height:96px;display:flex;align-items:center;justify-content:center;">
-      <div style="width:20px;height:20px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;"></div>
+    <!-- Quick Link Buttons -->
+    <div style="display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;-ms-overflow-style:none;margin-top:4px;" class="quick-links-row">
+      <a href="about.html" class="ql-btn">
+        <div class="ql-icon">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div class="ql-label">About Us</div>
+      </a>
+      <a href="event.html" class="ql-btn">
+        <div class="ql-icon">
+          <span style="width:6px;height:6px;background:#fff;border-radius:50%;display:inline-block;animation:blink-dot 1.2s infinite;position:absolute;top:5px;right:5px;"></span>
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div class="ql-label">Latest Event</div>
+      </a>
+      <a href="cert.html" class="ql-btn">
+        <div class="ql-icon">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><circle cx="12" cy="8" r="6"/><path d="M9 21v-3a3 3 0 0 1 6 0v3"/><polyline points="9 21 12 19 15 21"/></svg>
+        </div>
+        <div class="ql-label">Cert</div>
+      </a>
+      <div class="ql-btn" onclick="openTNC()" style="cursor:pointer;">
+        <div class="ql-icon">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <div class="ql-label">T&amp;C</div>
+      </div>
+      <div class="ql-btn" onclick="openFAQ()" style="cursor:pointer;">
+        <div class="ql-icon">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div class="ql-label">FAQ</div>
+      </div>
     </div>
-    <div style="display:flex;justify-content:center;gap:5px;margin-top:8px;" id="heroDots"></div>
-  </div>
-
-  <!-- Withdrawal Ticker -->
-  <div class="ticker-wrap">
-    <div class="ticker-label">
-      <svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> LIVE
-    </div>
-    <div class="ticker-track" id="tickerTrack"></div>
   </div>
 
   <div class="page-content" style="padding-top:0;">
@@ -460,7 +589,7 @@
       <a href="wallet.html" class="btn btn-primary" style="gap:6px;">
         <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg> Deposit
       </a>
-      <a href="wallet.html" class="btn btn-outline" style="gap:6px;">
+      <a href="wallet.html?tab=withdraw" class="btn btn-outline" style="gap:6px;">
         <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><circle cx="12" cy="12" r="10"/><polyline points="16 12 12 8 8 12"/><line x1="12" y1="16" x2="12" y2="8"/></svg> Withdraw
       </a>
     </div>
@@ -548,58 +677,6 @@
       </a>
     </div>
 
-    <!-- About Us / Latest Event Banners -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;">
-
-      <!-- About Us -->
-      <a href="about.html" style="text-decoration:none;border-radius:18px;overflow:hidden;display:block;
-        box-shadow:0 8px 24px rgba(109,40,217,0.35),0 2px 8px rgba(139,92,246,0.2);
-        transform:translateY(0);transition:transform .2s,box-shadow .2s;"
-        onmouseenter="this.style.transform='translateY(-3px)';this.style.boxShadow='0 14px 32px rgba(109,40,217,0.45),0 4px 12px rgba(139,92,246,0.3)';"
-        onmouseleave="this.style.transform='translateY(0)';this.style.boxShadow='0 8px 24px rgba(109,40,217,0.35),0 2px 8px rgba(139,92,246,0.2)';">
-        <div style="background:linear-gradient(145deg,#8B5CF6 0%,#6D28D9 60%,#4C1D95 100%);padding:16px 14px 14px;min-height:112px;position:relative;overflow:hidden;">
-          <!-- decorative circles -->
-          <div style="position:absolute;top:-18px;right:-18px;width:70px;height:70px;background:rgba(255,255,255,0.08);border-radius:50%;"></div>
-          <div style="position:absolute;bottom:-10px;right:10px;width:40px;height:40px;background:rgba(255,255,255,0.06);border-radius:50%;"></div>
-          <!-- icon -->
-          <div style="width:36px;height:36px;background:rgba(255,255,255,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:28px;">
-            <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          </div>
-          <div style="color:#fff;font-size:14px;font-weight:800;letter-spacing:-0.2px;">About Us</div>
-          <div style="color:rgba(255,255,255,0.65);font-size:11px;margin-top:3px;display:flex;align-items:center;gap:3px;">
-            Learn more
-            <svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:rgba(255,255,255,0.65);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><polyline points="9 18 15 12 9 6"/></svg>
-          </div>
-        </div>
-      </a>
-
-      <!-- Latest Event -->
-      <a href="event.html" style="text-decoration:none;border-radius:18px;overflow:hidden;display:block;
-        box-shadow:0 8px 24px rgba(190,24,93,0.35),0 2px 8px rgba(236,72,153,0.2);
-        transform:translateY(0);transition:transform .2s,box-shadow .2s;"
-        onmouseenter="this.style.transform='translateY(-3px)';this.style.boxShadow='0 14px 32px rgba(190,24,93,0.45),0 4px 12px rgba(236,72,153,0.3)';"
-        onmouseleave="this.style.transform='translateY(0)';this.style.boxShadow='0 8px 24px rgba(190,24,93,0.35),0 2px 8px rgba(236,72,153,0.2)';">
-        <div style="background:linear-gradient(145deg,#F472B6 0%,#EC4899 40%,#BE185D 100%);padding:16px 14px 14px;min-height:112px;position:relative;overflow:hidden;">
-          <!-- decorative circles -->
-          <div style="position:absolute;top:-18px;right:-18px;width:70px;height:70px;background:rgba(255,255,255,0.08);border-radius:50%;"></div>
-          <div style="position:absolute;bottom:-10px;right:10px;width:40px;height:40px;background:rgba(255,255,255,0.06);border-radius:50%;"></div>
-          <!-- live dot -->
-          <div style="position:absolute;top:12px;right:12px;display:flex;align-items:center;gap:4px;background:rgba(255,255,255,0.18);border-radius:50px;padding:2px 8px 2px 5px;">
-            <span style="width:6px;height:6px;background:#fff;border-radius:50%;display:inline-block;animation:blink-dot 1.2s infinite;"></span>
-            <span style="font-size:9px;color:#fff;font-weight:800;letter-spacing:.5px;">LIVE</span>
-          </div>
-          <!-- icon -->
-          <div style="width:36px;height:36px;background:rgba(255,255,255,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:28px;">
-            <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          </div>
-          <div style="color:#fff;font-size:14px;font-weight:800;letter-spacing:-0.2px;">Latest Event</div>
-          <div style="color:rgba(255,255,255,0.65);font-size:11px;margin-top:3px;display:flex;align-items:center;gap:3px;">
-            View events
-            <svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:rgba(255,255,255,0.65);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><polyline points="9 18 15 12 9 6"/></svg>
-          </div>
-        </div>
-      </a>
-    </div>
     <style>@keyframes blink-dot{0%,100%{opacity:1}50%{opacity:.2}}</style>
 
     <!-- VIP Levels Widget -->
@@ -644,6 +721,28 @@
 
       <!-- Detail Panel -->
       <div class="vip-detail" id="vipDetail"></div>
+    </div>
+
+    <!-- Daily Sign-in -->
+    <div class="card mt-16" id="signinCard">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:800;color:var(--dark);">
+          <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#F59E0B;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          Sign-in
+        </div>
+        <div id="signinStreakBadge" style="display:none;background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;font-size:11px;font-weight:800;padding:3px 10px;border-radius:50px;">
+          🔥 <span id="signinStreakNum">0</span> day streak
+        </div>
+      </div>
+      <div id="signinDays" style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;"></div>
+      <div id="signinClaimWrap" style="margin-top:12px;display:none;">
+        <button onclick="claimSignin()" class="btn btn-primary btn-block" style="font-size:14px;font-weight:800;">
+          🎁 Claim Today's Reward
+        </button>
+      </div>
+      <div id="signinDoneMsg" style="display:none;text-align:center;font-size:12px;color:var(--text-light);margin-top:10px;padding:8px;background:rgba(16,185,129,0.08);border-radius:10px;font-weight:600;">
+        ✅ You've claimed today's reward! Come back tomorrow.
+      </div>
     </div>
 
     <!-- Spin Wheel Card -->
@@ -840,166 +939,85 @@
     }).join('');
   }
 
-  // ── Hero Carousel ──
-  let heroProducts = [];
-  let heroSlide = 0;
-  let heroTimer = null;
-  const CARDS_PER_SLIDE = 3;
 
-  async function loadHeroCarousel() {
-    const res = await fetch('/api/tasks/products');
-    const json = await res.json();
-    heroProducts = Array.isArray(json.data) ? json.data : (json.data?.products || []);
+  // ── Daily Sign-in ─────────────────────────────────
+  const SIGNIN_REWARDS = [1, 2, 3, 4, 5, 10]; // $ per day 1-6
 
-    const carousel = document.getElementById('heroCarousel');
-    const dotsEl   = document.getElementById('heroDots');
-    if (!heroProducts.length) {
-      carousel.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.5);font-size:12px;padding:20px;">No products yet</div>';
+  function initSignin() {
+    const today = new Date().toISOString().slice(0, 10);
+    const raw   = JSON.parse(localStorage.getItem('signin_data') || '{}');
+    // Reset streak if gap > 1 day
+    if (raw.last_date) {
+      const last  = new Date(raw.last_date);
+      const now   = new Date(today);
+      const diff  = Math.round((now - last) / 86400000);
+      if (diff > 1) { raw.streak = 0; raw.last_date = null; }
+    }
+    const streak   = raw.streak || 0;
+    const claimedToday = raw.last_date === today;
+    // Render — only show unclaimed days
+    const container = document.getElementById('signinDays');
+    container.innerHTML = '';
+    const remaining = 6 - streak;
+    container.style.gridTemplateColumns = `repeat(${Math.min(remaining, 6)}, 1fr)`;
+    for (let i = streak; i < 6; i++) {
+      const day      = i + 1;
+      const canClaim = i === streak && !claimedToday;
+      const div      = document.createElement('div');
+      div.className  = 'signin-day' + (canClaim ? ' claimable' : '');
+      div.innerHTML  = `
+        <div class="sd-icon">$${SIGNIN_REWARDS[i]}</div>
+        <div class="sd-label">Day ${day}</div>`;
+      container.appendChild(div);
+    }
+    // Streak badge
+    if (streak > 0) {
+      document.getElementById('signinStreakNum').textContent = streak;
+      document.getElementById('signinStreakBadge').style.display = '';
+    }
+    // Hide card if all 6 days done
+    if (streak >= 6) {
+      document.getElementById('signinCard').style.display = 'none';
       return;
     }
-
-    // Group products into slides of CARDS_PER_SLIDE
-    const slides = [];
-    for (let i = 0; i < heroProducts.length; i += CARDS_PER_SLIDE) {
-      slides.push(heroProducts.slice(i, i + CARDS_PER_SLIDE));
+    // Buttons
+    if (!claimedToday) {
+      document.getElementById('signinClaimWrap').style.display = '';
+      document.getElementById('signinDoneMsg').style.display   = 'none';
+    } else {
+      document.getElementById('signinClaimWrap').style.display = 'none';
+      document.getElementById('signinDoneMsg').style.display   = '';
     }
-
-    // Build track
-    carousel.innerHTML = `<div class="hc-track" id="hcTrack">${
-      slides.map((group, si) => `
-        <div class="hc-slide">${
-          group.map((p, gi) => {
-            const idx = si * CARDS_PER_SLIDE + gi;
-            return `
-              <div class="hc-card" onclick="openHeroInvest(${idx})">
-                <img src="${p.image_url || ''}" alt="${p.name}"
-                     onerror="this.style.background='rgba(255,255,255,0.1)';this.removeAttribute('src');">
-                <div class="hc-info">
-                  <div class="hc-name">${p.name}</div>
-                  <div class="hc-return">+0.5% / day</div>
-                </div>
-              </div>`;
-          }).join('')
-        }</div>`
-      ).join('')
-    }</div>`;
-
-    // Dots
-    dotsEl.innerHTML = slides.map((_, i) =>
-      `<div class="hc-dot${i===0?' active':''}" onclick="goHeroSlide(${i})"></div>`
-    ).join('');
-
-    // Auto-advance
-    if (slides.length > 1) {
-      heroTimer = setInterval(() => goHeroSlide((heroSlide + 1) % slides.length), 3000);
-    }
-
-    // Swipe support
-    let tx = 0;
-    carousel.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive:true});
-    carousel.addEventListener('touchend', e => {
-      const dx = e.changedTouches[0].clientX - tx;
-      if (Math.abs(dx) > 40) goHeroSlide(dx < 0
-        ? Math.min(heroSlide + 1, slides.length - 1)
-        : Math.max(heroSlide - 1, 0));
-    }, {passive:true});
-
-    window._heroSlides = slides;
   }
 
-  function goHeroSlide(idx) {
-    heroSlide = idx;
-    const track = document.getElementById('hcTrack');
-    if (track) track.style.transform = `translateX(-${idx * 100}%)`;
-    document.querySelectorAll('.hc-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+  function claimSignin() {
+    const today  = new Date().toISOString().slice(0, 10);
+    const raw    = JSON.parse(localStorage.getItem('signin_data') || '{}');
+    if (raw.last_date === today) return;
+    const streak = (raw.streak || 0);
+    if (streak >= 6) return;
+    const reward = SIGNIN_REWARDS[streak];
+    // Save
+    raw.streak    = streak + 1;
+    raw.last_date = today;
+    localStorage.setItem('signin_data', JSON.stringify(raw));
+    // Try credit bonus via API (non-blocking)
+    fetch('/api/user/signin-bonus', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
+      body: JSON.stringify({ day: streak + 1, amount: reward })
+    }).catch(() => {});
+    // Show reward popup
+    showToast(`🎁 Day ${streak + 1} reward: +$${reward} claimed!`);
+    initSignin();
   }
 
-  // ── Invest Modal (dashboard version) ──
-  function openHeroInvest(idx) {
-    const p = heroProducts[idx];
-    if (!p) return;
-    const commission = (parseFloat(p.price) * 0.005).toFixed(2);
-    const modal = document.createElement('div');
-    modal.className = 'invest-modal-bg';
-    modal.id = 'heroInvestBg';
-    modal.innerHTML = `
-      <div class="invest-modal">
-        <img class="invest-modal-img" src="${p.image_url||''}" alt="${p.name}"
-             onerror="this.style.background='var(--gradient-soft)';this.removeAttribute('src');">
-        <div class="invest-modal-body">
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
-            <div>
-              <div style="font-size:11px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;">${p.category||'Product'}</div>
-              <h3>${p.name}</h3>
-            </div>
-            <button onclick="closeHeroInvest()" style="width:32px;height:32px;border:none;background:var(--bg);border-radius:50%;cursor:pointer;font-size:18px;color:var(--text-light);flex-shrink:0;display:flex;align-items:center;justify-content:center;">×</button>
-          </div>
-          <div class="im-price">$${parseFloat(p.price).toFixed(2)}</div>
-          <div class="im-desc">${p.description||'A top-rated product available for investment. Earn daily commission returns when you invest.'}</div>
-          <div class="invest-stats">
-            <div class="invest-stat"><div class="is-label">Daily Return</div><div class="is-value" style="color:var(--success);">0.5%</div></div>
-            <div class="invest-stat"><div class="is-label">Est. Commission</div><div class="is-value">$${commission}</div></div>
-            <div class="invest-stat"><div class="is-label">Min. Invest</div><div class="is-value">$10.00</div></div>
-            <div class="invest-stat"><div class="is-label">Category</div><div class="is-value" style="font-size:13px;">${p.category||'General'}</div></div>
-          </div>
-          <div style="margin-bottom:16px;">
-            <label style="font-size:13px;font-weight:700;color:var(--dark);display:block;margin-bottom:8px;">Investment Amount (USD)</label>
-            <div class="input-group">
-              <span class="input-icon">$</span>
-              <input type="number" id="heroInvestAmt" class="form-control" placeholder="Enter amount" min="10" step="1">
-            </div>
-            <div class="invest-quick-btns">
-              <button class="invest-quick-btn" onclick="document.getElementById('heroInvestAmt').value=50">$50</button>
-              <button class="invest-quick-btn" onclick="document.getElementById('heroInvestAmt').value=100">$100</button>
-              <button class="invest-quick-btn" onclick="document.getElementById('heroInvestAmt').value=500">$500</button>
-              <button class="invest-quick-btn" onclick="document.getElementById('heroInvestAmt').value=1000">$1K</button>
-            </div>
-          </div>
-          <div id="heroInvestAlert" class="hidden"></div>
-          <button onclick="calcHeroInvest()" class="btn btn-primary btn-block" style="font-size:16px;font-weight:800;">
-            <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-            Calculate Return
-          </button>
-          <div id="heroDemo" class="hidden" style="background:linear-gradient(135deg,#D1FAE5,#A7F3D0);border-radius:14px;padding:16px;margin-top:12px;text-align:center;">
-            <div style="font-size:12px;color:#065F46;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">📊 Estimated Daily Earning</div>
-            <div id="heroDailyNum" style="font-size:32px;font-weight:900;color:#047857;margin:6px 0;"></div>
-            <div id="heroMonthlyNum" style="font-size:13px;color:#065F46;font-weight:600;"></div>
-            <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(6,95,70,0.15);font-size:12px;color:#065F46;margin-bottom:10px;">
-              📲 To invest, contact admin directly:
-            </div>
-            <div style="display:flex;gap:10px;justify-content:center;">
-              <a href="https://t.me/YOURUSERNAME" target="_blank" data-no-transition style="flex:1;display:flex;align-items:center;justify-content:center;gap:7px;background:#229ED9;color:#fff;border-radius:12px;padding:10px 8px;font-size:13px;font-weight:700;text-decoration:none;">
-                <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#fff;flex-shrink:0;"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.737l-2.965-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.963.822z"/></svg>
-                Telegram
-              </a>
-              <a href="https://wa.me/YOURNUMBER" target="_blank" data-no-transition style="flex:1;display:flex;align-items:center;justify-content:center;gap:7px;background:#25D366;color:#fff;border-radius:12px;padding:10px 8px;font-size:13px;font-weight:700;text-decoration:none;">
-                <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#fff;flex-shrink:0;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zm-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884zm8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                WhatsApp
-              </a>
-            </div>
-          </div>
-          <button onclick="closeHeroInvest()" class="btn btn-outline btn-block mt-12">Close</button>
-        </div>
-      </div>`;
-    document.body.appendChild(modal);
-    modal.addEventListener('click', e => { if (e.target === modal) closeHeroInvest(); });
-  }
-
-  function closeHeroInvest() {
-    const m = document.getElementById('heroInvestBg');
-    if (m) m.remove();
-  }
-
-  function calcHeroInvest() {
-    const amount = parseFloat(document.getElementById('heroInvestAmt')?.value || 0);
-    if (!amount || amount < 10) {
-      showAlert('heroInvestAlert', 'Please enter at least $10 to see the calculation.', 'warning');
-      return;
-    }
-    document.getElementById('heroDailyNum').textContent  = '+$' + (amount * 0.005).toFixed(2) + ' / day';
-    document.getElementById('heroMonthlyNum').textContent = 'Estimated monthly return: $' + (amount * 0.005 * 30).toFixed(2);
-    document.getElementById('heroDemo').classList.remove('hidden');
-    document.getElementById('heroInvestAlert').classList.add('hidden');
+  function showToast(msg) {
+    const t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;padding:12px 20px;border-radius:14px;font-size:13px;font-weight:700;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.3);white-space:nowrap;';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
   }
 
   // ── Spin Wheel Card on Dashboard ─────────────────
@@ -1053,8 +1071,8 @@
   }
 
   loadDashboard();
-  loadHeroCarousel();
   loadSpinCard();
+  initSignin();
 
   const MIN_BALANCE = 50;
 
@@ -1091,6 +1109,366 @@
   </div><!-- end desktop-content -->
 </div><!-- end desktop-main -->
 </div><!-- end desktop-layout -->
+
+<!-- T&C Modal -->
+<div id="tncModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;" onclick="if(event.target===this)closeTNC()">
+  <div style="background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:540px;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 -8px 40px rgba(0,0,0,0.18);animation:slideUpTNC .3s ease;">
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid #F3F4F6;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:36px;height:36px;background:linear-gradient(135deg,#8B5CF6,#EC4899);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+        <div>
+          <div style="font-size:16px;font-weight:800;color:#1F2937;">Terms &amp; Conditions</div>
+          <div style="font-size:11px;color:#9CA3AF;font-weight:500;">Please read carefully</div>
+        </div>
+      </div>
+      <button onclick="closeTNC()" style="width:32px;height:32px;border-radius:50%;border:none;background:#F3F4F6;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#6B7280;font-size:18px;line-height:1;">&times;</button>
+    </div>
+    <!-- Scrollable Content -->
+    <div style="overflow-y:auto;padding:20px;flex:1;-webkit-overflow-scrolling:touch;">
+      <div style="font-size:13px;color:#374151;line-height:1.75;">
+
+        <p style="margin:0 0 16px;">Welcome to <strong>SINGULAR WORK BENCH INC</strong> and its range of services!</p>
+        <p style="margin:0 0 16px;">To protect the security of personal information between the website and merchants, you must carefully read the <strong>"Terms and Conditions"</strong> of the platform. It is very important to fully understand the Terms and Conditions, especially the Terms of Service and any related restrictions, as well as any separate agreements related to each term and condition. You must accept or reject the responsibility accordingly.</p>
+        <p style="margin:0 0 24px;">By using this website, you confirm that you are over <strong>18 years old</strong> and have read and agreed to the Terms and Conditions. Otherwise, you will not be authorized to download, install the software or use the services.</p>
+
+        <!-- Section 1 -->
+        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #8B5CF6;">
+          <div style="font-size:14px;font-weight:800;color:#7C3AED;margin-bottom:10px;">1. Start Maintenance Products</div>
+          <p style="margin:0 0 8px;">1.1) Before starting a new round of maintenance, the account balance must be at least <strong>100 USDT</strong>.</p>
+          <p style="margin:0 0 8px;">1.2) A new maintenance product requires a balance of at least <strong>100 USDT</strong> to reset the counter.</p>
+          <p style="margin:0;">1.3) After the agent/user completes the full set of maintenance tasks, he/she can choose to withdraw the balance and recharge the account to reset the account, or complete 3~6 sets of maintenance tasks for easy withdrawal. Balance withdrawal can be carried out at any time.</p>
+        </div>
+
+        <!-- Section 2 -->
+        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #8B5CF6;">
+          <div style="font-size:14px;font-weight:800;color:#7C3AED;margin-bottom:10px;">2. Staff</div>
+          <p style="margin:0 0 8px;">2.1) If the account balance exceeds <strong>500 USDT</strong>, you will be automatically promoted to a mid-level staff. When the account balance exceeds <strong>1500 USDT</strong>, you need to apply for promotion to Senior Staff and realize full withdrawal. The funds required for the upgrade will be deposited into the working account.</p>
+          <p style="margin:0 0 8px;">2.2) After the account is reset, the agent/user must complete the full set of product maintenance tasks before initiating a withdrawal request.</p>
+          <p style="margin:0 0 8px;">2.3) Choosing to abandon or exit the maintenance process will result in ineligibility to apply for exit or refund.</p>
+          <p style="margin:0 0 8px;">2.4) If the user does not make a withdrawal request, the withdrawal cannot be processed.</p>
+          <p style="margin:0 0 8px;">2.5) When the user's credit score is less than 100%, it is impossible to initiate a withdrawal. The account credit score must be restored before a withdrawal request can be initiated.</p>
+          <p style="margin:0;">2.6) When withdrawing funds, please ensure that all funds are withdrawn at one time.</p>
+        </div>
+
+        <!-- Section 3 -->
+        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #8B5CF6;">
+          <div style="font-size:14px;font-weight:800;color:#7C3AED;margin-bottom:10px;">3. Financial Security</div>
+          <p style="margin:0 0 8px;">3.1) All funds will be safely stored in the agent/user's account. After the maintenance of all items is completed, the agent/user can choose to withdraw the full amount.</p>
+          <p style="margin:0 0 8px;">3.2) To prevent financial losses, all data will be automatically processed by the system without manual intervention.</p>
+          <p style="margin:0;">3.3) The platform bears full responsibility for any unexpected financial losses.</p>
+        </div>
+
+        <!-- Section 4 -->
+        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #8B5CF6;">
+          <div style="font-size:14px;font-weight:800;color:#7C3AED;margin-bottom:10px;">4. Account Security</div>
+          <p style="margin:0 0 8px;">4.1) Please do not disclose your login password and security code to others. The platform is not responsible for any losses caused by this.</p>
+          <p style="margin:0 0 8px;">4.2) It is not recommended that users use birthdays, ID numbers, and phone numbers as security codes or login passwords.</p>
+          <p style="margin:0;">4.3) If you forget your login password or security code, please contact our online customer service to help reset it.</p>
+        </div>
+
+        <!-- Section 5 -->
+        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #8B5CF6;">
+          <div style="font-size:14px;font-weight:800;color:#7C3AED;margin-bottom:10px;">5. Standard Products</div>
+          <p style="margin:0 0 8px;">5.1) Platform revenue is divided into ordinary product revenue and super order multiples (6 times and above). Each ordinary/senior agent/user can usually get up to 1-2 super order packages, which is normal. Up to 3 super orders can be encountered, which is not common. It includes all products in the package (super orders are a combination of 1-3 products).</p>
+          <p style="margin:0 0 8px;">5.2) The main user can get a <strong>0.4% rebate</strong> for each ordinary maintenance plan purchased.</p>
+          <p style="margin:0 0 8px;">5.3) The main user can get more than <strong>2.4% rebate</strong> for each super order product purchased.</p>
+          <p style="margin:0 0 8px;">5.4) After each maintenance plan is completed, the funds and revenue will be returned to the user account.</p>
+          <p style="margin:0 0 8px;">5.5) Super order products will be randomly allocated to user accounts based on the total amount of funds in the user account.</p>
+          <p style="margin:0;">5.6) Once a super order product is allocated to a user account, it cannot be canceled or skipped.</p>
+        </div>
+
+        <!-- Section 6 -->
+        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #8B5CF6;">
+          <div style="font-size:14px;font-weight:800;color:#7C3AED;margin-bottom:10px;">6. Gifts</div>
+          <p style="margin:0 0 8px;">6.1) The gift package contains 1-3 items, and users may not get all 3 items; ordinary items are randomly distributed by the system, and gift package users have a higher probability of getting 1-2 items.</p>
+          <p style="margin:0 0 8px;">6.2) For each product in the gift package, agents/users will receive <strong>6 times</strong> the rebate of ordinary products.</p>
+          <p style="margin:0 0 8px;">6.3) After receiving the items in the gift package, all funds will stop rolling and will be returned to your account after the maintenance of each item in the gift package is completed.</p>
+          <p style="margin:0 0 8px;">6.4) The gift package will be randomly distributed to user accounts based on the total balance of the agent/user account.</p>
+          <p style="margin:0 0 8px;">6.5) All gift package props will be randomly distributed by the system. Once the gift package props are distributed to the user account, they cannot be canceled or skipped.</p>
+          <p style="margin:0;">6.6) There is an upper limit on the number of gifts that agents/users can receive in a batch of tasks. Receiving 1-2 times can get more than 6 times the rebate, and there is a certain probability of receiving 3-4 gifts. All agents/users (regardless of user level) have equal opportunities to receive gift package products.</p>
+        </div>
+
+        <!-- Section 7 -->
+        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #8B5CF6;">
+          <div style="font-size:14px;font-weight:800;color:#7C3AED;margin-bottom:10px;">7. Deposit</div>
+          <p style="margin:0 0 8px;">7.1) The deposit amount is determined by the user. It is recommended that each agent/user determine the deposit amount based on their own financial ability.</p>
+          <p style="margin:0 0 8px;">7.2) If the agent/user needs to pay a deposit when receiving the gift package, it is recommended to prepay the deposit according to the difference displayed in the account.</p>
+          <p style="margin:0 0 8px;">7.3) Before making a prepayment, the user needs to apply for the prepayment deposit details from the online customer service and confirm the deposit information.</p>
+          <p style="margin:0;">7.4) If the agent/user deposits funds into the wrong USDT deposit address, the platform does not bear any responsibility.</p>
+        </div>
+
+        <!-- Section 8 -->
+        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #8B5CF6;">
+          <div style="font-size:14px;font-weight:800;color:#7C3AED;margin-bottom:10px;">8. Merchant Collaboration</div>
+          <p style="margin:0 0 8px;">8.1) The platform's online and offline products are different in each time period. If the products are not maintained for a long time, the merchant may downgrade the products and affect the merchant's reputation. It is recommended that the agent/user complete the maintenance of all products in time so that they can pick up the goods in time to avoid affecting the merchant's progress.</p>
+          <p style="margin:0 0 8px;">8.2) The merchant will provide the user with deposit details so that the user can make a deposit.</p>
+          <p style="margin:0 0 8px;">8.3) Any delay in completing product maintenance will have an adverse impact on the merchant and the process.</p>
+          <p style="margin:0;">8.4) The merchant's advance payment must be refunded after the order is submitted.</p>
+        </div>
+
+        <!-- Section 9 -->
+        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #8B5CF6;">
+          <div style="font-size:14px;font-weight:800;color:#7C3AED;margin-bottom:10px;">9. Agent/User Responsibilities</div>
+          <p style="margin:0 0 8px;">9.1) Agents/Users must complete the maintenance of the full set of goods within <strong>24 hours</strong> to ensure effective completion. Failure to complete will result in account freezing. Once the account is frozen, all funds in the account will stop accumulating. A <strong>30% unfreezing fee</strong> is required. If the agent/user requests an extension, a <strong>50% late payment fee</strong> will be charged (withdrawal can only be initiated after full payment).</p>
+          <p style="margin:0 0 8px;">9.2) Agents/Users must complete three sets of maintenance tasks every day before signing in to meet the requirement of receiving the corresponding basic salary every two days.</p>
+          <p style="margin:0 0 8px;">9.3) The system randomly assigns gift packages to agents/users. Agents/Users must clearly understand the platform rules and choose the recharge amount according to their own financial situation. After the gift package props are assigned, users can get an additional 6 times rebate, but they must complete 24 hours of maintenance and clear the gift package props/recharge gap, otherwise it may have a negative impact on the merchant's product reputation. Agents/Users must bear full responsibility for the deduction of account reputation points.</p>
+          <p style="margin:0;">9.4) If the user stops working or does not perform any operation for a long time, the account balance will be retained for one week. After one week, if the system detects long-term inactivity, the credit score will be automatically deducted. If the credit score is less than 90 points and the freezing time exceeds 72 hours, the system will donate all the funds in the account to the World Food Program (WFP).</p>
+        </div>
+
+        <!-- Section 10 -->
+        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #8B5CF6;">
+          <div style="font-size:14px;font-weight:800;color:#7C3AED;margin-bottom:10px;">10. Invitation</div>
+          <p style="margin:0 0 8px;">10.1) You can use your invitation code to invite other users.</p>
+          <p style="margin:0 0 8px;">10.2) If your account has not been registered and has not reached the advanced user or mentor level, you cannot invite others.</p>
+          <p style="margin:0;">10.3) The referrer will receive <strong>20%</strong> of the product rebate of the recommended user, excluding the recharge amount, only including the referrer's commission.</p>
+        </div>
+
+        <!-- Section 11 -->
+        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #8B5CF6;">
+          <div style="font-size:14px;font-weight:800;color:#7C3AED;margin-bottom:10px;">11. Taxation</div>
+          <p style="margin:0 0 8px;">11.1) When your account balance reaches the tax threshold (over <strong>10,000,000</strong>), you must comply with US tax regulations, monitor your account balance and income, and fulfill your tax obligations.</p>
+          <p style="margin:0 0 8px;">11.2) The Company will refund any taxes paid. Please provide your address details within <strong>48 hours</strong> of the refund so that you can receive a tax certificate for registration with the local tax authorities.</p>
+          <p style="margin:0;">11.3) Cryptocurrency taxation differs from fiat currency. Failure to comply with the platform's tax requirements may result in your funds being deemed illegal and non-circulating. The Company ensures compliance to avoid such issues.</p>
+        </div>
+
+        <p style="margin:24px 0 0;padding:16px;background:#F0FDF4;border-radius:12px;border:1px solid #BBF7D0;color:#166534;font-size:12px;text-align:center;font-weight:600;">Thank you for using SINGULAR WORK BENCH INC. Complying with the above terms ensures that you have a safe and efficient experience on our platform. If you have any questions or need help, please contact our customer service team.</p>
+
+      </div>
+    </div>
+    <!-- Footer Button -->
+    <div style="padding:16px 20px;border-top:1px solid #F3F4F6;flex-shrink:0;">
+      <button onclick="closeTNC()" style="width:100%;padding:14px;background:linear-gradient(135deg,#8B5CF6,#EC4899);border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(139,92,246,0.35);">I Understand</button>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes slideUpTNC {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+</style>
+
+<script>
+  function openTNC() {
+    const m = document.getElementById('tncModal');
+    m.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+  function closeTNC() {
+    const m = document.getElementById('tncModal');
+    m.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+</script>
+
+<!-- FAQ Modal -->
+<div id="faqModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;" onclick="if(event.target===this)closeFAQ()">
+  <div style="background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:540px;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 -8px 40px rgba(0,0,0,0.18);animation:slideUpTNC .3s ease;">
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid #F3F4F6;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:36px;height:36px;background:linear-gradient(135deg,#8B5CF6,#EC4899);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div>
+          <div style="font-size:16px;font-weight:800;color:#1F2937;">FAQ</div>
+          <div style="font-size:11px;color:#9CA3AF;font-weight:500;">Frequently Asked Questions</div>
+        </div>
+      </div>
+      <button onclick="closeFAQ()" style="width:32px;height:32px;border-radius:50%;border:none;background:#F3F4F6;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#6B7280;font-size:18px;line-height:1;">&times;</button>
+    </div>
+    <!-- Scrollable Content -->
+    <div style="overflow-y:auto;padding:20px;flex:1;-webkit-overflow-scrolling:touch;">
+      <div style="font-size:13px;color:#374151;line-height:1.75;">
+
+        <!-- Notice -->
+        <div style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);border-radius:14px;padding:16px;margin-bottom:20px;border-left:4px solid #F59E0B;">
+          <div style="font-size:13px;font-weight:800;color:#92400E;margin-bottom:8px;">Important Notice from SINGULAR WORK BENCH INC</div>
+          <p style="margin:0 0 8px;">Thank you for your support and trust in SINGULAR WORK BENCH INC. The company currently offers two payment methods — the first is cryptocurrency, and the second is check and bank transfer.</p>
+          <p style="margin:0 0 8px;">SINGULAR WORK BENCH INC accepts cryptocurrency and check or bank transfer below <strong>10K USDT</strong>. Remittances from any bank in the United States and Europe are accepted. For single amounts exceeding <strong>10K USDT</strong>, the transaction fee is borne by the user.</p>
+          <p style="margin:0 0 8px;font-weight:700;">SINGULAR WORK BENCH INC bank check issuance standards:</p>
+          <ul style="margin:0 0 8px;padding-left:18px;">
+            <li>🇺🇸 USA: Chase Bank or Citibank</li>
+            <li>🇪🇺 Europe: Barclays Bank or BNP Paribas</li>
+          </ul>
+          <p style="margin:0 0 6px;">• Amounts <strong>&gt;50K USDT</strong>: FedEx overnight delivery (before noon next day)</p>
+          <p style="margin:0 0 6px;">• Amounts <strong>&lt;30K USDT</strong>: USPS priority, 4–6 working days (min. check: 10K)</p>
+          <p style="margin:0 0 8px;font-style:italic;color:#78350F;">Note: Please provide a detailed address when remitting. Contact customer service to confirm your information before sending funds.</p>
+          <p style="margin:0;">For funds less than <strong>10K USDT</strong>, the company handles all cryptocurrency transactions. Please prepare the corresponding cryptocurrency wallet. Users can sell cryptocurrency on exchanges. USD and USDT/USDC prices are the same; transaction fees are borne by the user.</p>
+        </div>
+
+        <div style="font-size:14px;font-weight:800;color:#1F2937;margin-bottom:14px;">FAQs for Targeted Media Transfers</div>
+
+        <!-- Q1 -->
+        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid #8B5CF6;">
+          <div style="font-size:13px;font-weight:800;color:#7C3AED;margin-bottom:8px;">1. How long does it take to transfer from Chase/Citibank (or Barclays/BNP Paribas in Europe)?</div>
+          <p style="margin:0;">If you transfer funds to a designated account, your account will be debited the same day and the bank will pay immediately. The receiving bank usually receives funds after <strong>4 to 6 days</strong>. Funds are usually deposited into the recipient's account within 4 days. Delays may occur due to local bank holidays, intermediary banks, or other local circumstances. Note: some countries have been designated as slow payment countries.</p>
+        </div>
+
+        <!-- Q2 -->
+        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid #8B5CF6;">
+          <div style="font-size:13px;font-weight:800;color:#7C3AED;margin-bottom:8px;">2. Can the transfer be reversed?</div>
+          <p style="margin:0;">International wire transfers primarily for personal, family, or household purposes can be canceled and fully refunded (including any fees) within <strong>30 minutes</strong> of confirmation. We will refund the funds within <strong>6 business days</strong> of your request to cancel the transfer, as long as the funds have not been withdrawn or deposited into the recipient's account.</p>
+        </div>
+
+        <!-- Q3 -->
+        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid #8B5CF6;">
+          <div style="font-size:13px;font-weight:800;color:#7C3AED;margin-bottom:8px;">3. What should I pay attention to when receiving large remittances in the United States?</div>
+          <p style="margin:0 0 8px;">The IRS has clear requirements for small businesses and self-employed individuals receiving large international remittances:</p>
+          <p style="margin:0 0 6px;">• Cash payment transactions exceeding <strong>$10,000</strong> require filing of <strong>Form 8300</strong>.</p>
+          <p style="margin:0;">• If your business receives cash from a buyer in excess of $10,000 in a single transaction or two or more related transactions, you need to submit Form 8300 through the online electronic system.</p>
+        </div>
+
+        <!-- Q4 -->
+        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid #8B5CF6;">
+          <div style="font-size:13px;font-weight:800;color:#7C3AED;margin-bottom:8px;">4. Are wire transfers safe?</div>
+          <p style="margin:0 0 8px;">Wire transfers are generally safe and secure as long as you know the recipient. Legitimate services review the identity of each entity involved in the transaction.</p>
+          <p style="margin:0 0 8px;">International wire transfers from the United States are monitored by the <strong>Office of Foreign Assets Control (OFAC)</strong>, an agency of the US Treasury Department, to ensure funds are not used to finance terrorist activities or money laundering.</p>
+          <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(139,92,246,0.15);">
+            <div style="font-size:12px;font-weight:700;color:#7C3AED;margin-bottom:6px;">Notes on bank wire transfers:</div>
+            <p style="margin:0 0 5px;">• Wire transfers are sent electronically through a global network of banks or money transfer agencies.</p>
+            <p style="margin:0 0 5px;">• You must pay the wire at the time the remitting bank sends it and provide the recipient's name, bank account number, and transfer amount.</p>
+            <p style="margin:0 0 5px;">• Most wire transfers can take up to <strong>two business days</strong> to be processed.</p>
+            <p style="margin:0;">• International wire payments are monitored by OFAC to ensure funds are not sent to terrorist organizations or used for money laundering.</p>
+          </div>
+        </div>
+
+        <!-- Q5 -->
+        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid #8B5CF6;">
+          <div style="font-size:13px;font-weight:800;color:#7C3AED;margin-bottom:8px;">5. Platform Operation Time</div>
+          <p style="margin:0 0 5px;">• Product Maintenance Time: <strong>9:00 AM – 9:00 PM</strong></p>
+          <p style="margin:0 0 5px;">• Agent/User Withdrawal Time: <strong>9:00 AM – 9:00 PM</strong></p>
+          <p style="margin:0;">• Customer Service Online Time: <strong>9:00 AM – 9:00 PM</strong></p>
+        </div>
+
+        <!-- Q6 -->
+        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid #8B5CF6;">
+          <div style="font-size:13px;font-weight:800;color:#7C3AED;margin-bottom:8px;">6. Gifts</div>
+          <p style="margin:0 0 6px;">• <strong>Negative Balance Clearance:</strong> Agents/Users must clear negative balances before submitting gift package orders and continue to retain all products.</p>
+          <p style="margin:0;">• <strong>Random Allocation:</strong> All products are randomly allocated by the system. Agents/users cannot request or refuse specific gift package products. All agents/users have the same chance to obtain gift packages during maintenance tasks.</p>
+        </div>
+
+        <!-- Q7 -->
+        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid #8B5CF6;">
+          <div style="font-size:13px;font-weight:800;color:#7C3AED;margin-bottom:8px;">7. Password</div>
+          <p style="margin:0 0 6px;">• <strong>Different passwords:</strong> Agent/user accounts must set different login and withdrawal passwords.</p>
+          <p style="margin:0 0 6px;">• <strong>Password Reset:</strong> If you forget your password, contact customer service. You need to provide your username and registered mobile phone number (must match your WhatsApp number).</p>
+          <p style="margin:0;">• <strong>Account Freeze:</strong> Entering the wrong login or withdrawal password <strong>3 times</strong> will temporarily freeze your account.</p>
+        </div>
+
+        <!-- Q8 -->
+        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid #8B5CF6;">
+          <div style="font-size:13px;font-weight:800;color:#7C3AED;margin-bottom:8px;">8. Deposit / Withdrawal</div>
+          <p style="margin:0 0 6px;">• <strong>Update USDT address:</strong> The merchant's USDT address may change — contact customer service for the latest address before depositing.</p>
+          <p style="margin:0 0 6px;">• <strong>Merchant wallet:</strong> Merchants receive large amounts daily; it is normal for the USDT address to change. Apply for a new address from customer service.</p>
+          <p style="margin:0 0 6px;">• <strong>Transaction proof:</strong> After completing a transaction, provide a screenshot with TXID. Without it, the merchant cannot review your transaction.</p>
+          <p style="margin:0 0 6px;">• <strong>Withdrawal requirements:</strong> Complete a full set of maintenance tasks before applying for withdrawal. Complete <strong>55 tasks</strong> to withdraw all funds.</p>
+          <p style="margin:0;">• <strong>Withdrawal processing:</strong> After submitting your withdrawal application, customer service will notify the merchant to process a full refund within <strong>1 hour</strong>. If not received, contact customer service immediately.</p>
+        </div>
+
+        <!-- Q9 -->
+        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid #8B5CF6;">
+          <div style="font-size:13px;font-weight:800;color:#7C3AED;margin-bottom:10px;">9. Agent/User Levels</div>
+          <p style="margin:0 0 8px;font-size:12px;color:#6B7280;">Your employee level is based on the amount deposited before starting each maintenance job.</p>
+          <div style="overflow-x:auto;">
+            <table style="width:100%;border-collapse:collapse;font-size:12px;">
+              <thead>
+                <tr style="background:rgba(139,92,246,0.1);">
+                  <th style="padding:8px;text-align:left;color:#7C3AED;font-weight:700;border-radius:8px 0 0 0;">Level</th>
+                  <th style="padding:8px;text-align:center;color:#7C3AED;font-weight:700;">Items</th>
+                  <th style="padding:8px;text-align:center;color:#7C3AED;font-weight:700;">Return</th>
+                  <th style="padding:8px;text-align:center;color:#7C3AED;font-weight:700;border-radius:0 8px 0 0;">Base Salary</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-top:1px solid rgba(139,92,246,0.1);">
+                  <td style="padding:8px;font-weight:700;color:#374151;">Junior</td>
+                  <td style="padding:8px;text-align:center;color:#374151;">40</td>
+                  <td style="padding:8px;text-align:center;color:#374151;">0.4%</td>
+                  <td style="padding:8px;text-align:center;color:#374151;">100 USDT</td>
+                </tr>
+                <tr style="border-top:1px solid rgba(139,92,246,0.1);background:rgba(139,92,246,0.04);">
+                  <td style="padding:8px;font-weight:700;color:#374151;">Mid-Level</td>
+                  <td style="padding:8px;text-align:center;color:#374151;">45</td>
+                  <td style="padding:8px;text-align:center;color:#374151;">0.6%</td>
+                  <td style="padding:8px;text-align:center;color:#374151;">200 USDT</td>
+                </tr>
+                <tr style="border-top:1px solid rgba(139,92,246,0.1);">
+                  <td style="padding:8px;font-weight:700;color:#374151;">Senior</td>
+                  <td style="padding:8px;text-align:center;color:#374151;">50</td>
+                  <td style="padding:8px;text-align:center;color:#374151;">0.8%</td>
+                  <td style="padding:8px;text-align:center;color:#374151;">300 USDT</td>
+                </tr>
+                <tr style="border-top:1px solid rgba(139,92,246,0.1);background:rgba(139,92,246,0.04);">
+                  <td style="padding:8px;font-weight:700;color:#7C3AED;">Mentor</td>
+                  <td style="padding:8px;text-align:center;color:#7C3AED;">55</td>
+                  <td style="padding:8px;text-align:center;color:#7C3AED;">1%</td>
+                  <td style="padding:8px;text-align:center;color:#7C3AED;">400 USDT</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Q10 -->
+        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid #8B5CF6;">
+          <div style="font-size:13px;font-weight:800;color:#7C3AED;margin-bottom:8px;">10. Withdrawal Limits</div>
+          <p style="margin:0 0 8px;">For withdrawals of <strong>10,000 USDT or more</strong>, contact our online customer service for assistance.</p>
+          <div style="overflow-x:auto;">
+            <table style="width:100%;border-collapse:collapse;font-size:12px;">
+              <thead>
+                <tr style="background:rgba(139,92,246,0.1);">
+                  <th style="padding:8px;text-align:left;color:#7C3AED;font-weight:700;">Level</th>
+                  <th style="padding:8px;text-align:center;color:#7C3AED;font-weight:700;">Max Withdrawal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-top:1px solid rgba(139,92,246,0.1);">
+                  <td style="padding:8px;font-weight:700;color:#374151;">Junior</td>
+                  <td style="padding:8px;text-align:center;color:#374151;">1,000 USDT</td>
+                </tr>
+                <tr style="border-top:1px solid rgba(139,92,246,0.1);background:rgba(139,92,246,0.04);">
+                  <td style="padding:8px;font-weight:700;color:#374151;">Mid-Level</td>
+                  <td style="padding:8px;text-align:center;color:#374151;">5,000 USDT</td>
+                </tr>
+                <tr style="border-top:1px solid rgba(139,92,246,0.1);">
+                  <td style="padding:8px;font-weight:700;color:#374151;">Senior</td>
+                  <td style="padding:8px;text-align:center;color:#374151;">8,000 USDT</td>
+                </tr>
+                <tr style="border-top:1px solid rgba(139,92,246,0.1);background:rgba(139,92,246,0.04);">
+                  <td style="padding:8px;font-weight:700;color:#7C3AED;">Mentor</td>
+                  <td style="padding:8px;text-align:center;color:#7C3AED;">Unlimited</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- Footer Button -->
+    <div style="padding:16px 20px;border-top:1px solid #F3F4F6;flex-shrink:0;">
+      <button onclick="closeFAQ()" style="width:100%;padding:14px;background:linear-gradient(135deg,#8B5CF6,#EC4899);border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(139,92,246,0.35);">Got It</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openFAQ() {
+    const m = document.getElementById('faqModal');
+    m.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+  function closeFAQ() {
+    const m = document.getElementById('faqModal');
+    m.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+</script>
 
 <script>
   // Populate desktop sidebar

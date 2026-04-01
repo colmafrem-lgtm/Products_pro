@@ -166,24 +166,24 @@
       Featured Event
     </div>
 
-    <div class="event-featured">
+    <div class="event-featured" id="featuredEventContainer">
       <div class="event-featured-img">
-        <div class="big-icon">🎁</div>
-        <div class="event-featured-badge">LIVE NOW</div>
+        <div class="big-icon" id="featIcon">🎁</div>
+        <div class="event-featured-badge" id="featBadge">LIVE NOW</div>
       </div>
       <div class="event-featured-body">
-        <h3>Double Commission Weekend</h3>
-        <p>Complete any task this weekend and earn 2× your normal commission rate. All VIP levels qualify — don't miss out on this limited-time boost to your earnings!</p>
+        <h3 id="featTitle">Double Commission Weekend</h3>
+        <p id="featDescription">Complete any task this weekend and earn 2× your normal commission rate. All VIP levels qualify — don't miss out on this limited-time boost to your earnings!</p>
         <div class="event-meta">
           <div class="event-meta-item">
             <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>
-            Sat–Sun only
+            <span id="featSchedule">Sat–Sun only</span>
           </div>
           <div class="event-meta-item">
             <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            All members
+            <span id="featAudience">All members</span>
           </div>
-          <div class="event-meta-item">
+          <div class="event-meta-item" id="featStatusItem">
             <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:#10B981;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><polyline points="20 6 9 17 4 12"/></svg>
             <span style="color:#10B981;font-weight:700;">Active</span>
           </div>
@@ -197,62 +197,62 @@
       Upcoming Events
     </div>
 
-    <div class="event-card">
-      <div class="event-card-accent" style="background:linear-gradient(#8B5CF6,#EC4899);"></div>
-      <div class="event-card-body">
-        <h4>New Member Bonus — $10 Free</h4>
-        <p>Register and complete your first 5 tasks to receive a $10 bonus credited directly to your wallet.</p>
-        <div class="event-card-footer">
-          <span class="event-tag" style="background:#EDE9FE;color:#7C3AED;">New Members</span>
-          <span class="event-date">
-            <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            Ongoing
-          </span>
+    <div id="upcomingEventsContainer">
+      <!-- Fallback events shown until data loads -->
+      <div class="event-card">
+        <div class="event-card-accent" style="background:linear-gradient(#8B5CF6,#EC4899);"></div>
+        <div class="event-card-body">
+          <h4>New Member Bonus — $10 Free</h4>
+          <p>Register and complete your first 5 tasks to receive a $10 bonus credited directly to your wallet.</p>
+          <div class="event-card-footer">
+            <span class="event-tag" style="background:#EDE9FE;color:#7C3AED;">New Members</span>
+            <span class="event-date">
+              <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Ongoing
+            </span>
+          </div>
         </div>
       </div>
-    </div>
-
-    <div class="event-card">
-      <div class="event-card-accent" style="background:linear-gradient(#F59E0B,#EF4444);"></div>
-      <div class="event-card-body">
-        <h4>Referral Bonus Boost +50%</h4>
-        <p>Refer a friend this month and earn 50% extra on top of your normal referral bonus when they make their first deposit.</p>
-        <div class="event-card-footer">
-          <span class="event-tag" style="background:#FEF3C7;color:#D97706;">Referral</span>
-          <span class="event-date">
-            <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            Apr 1 – Apr 30
-          </span>
+      <div class="event-card">
+        <div class="event-card-accent" style="background:linear-gradient(#F59E0B,#EF4444);"></div>
+        <div class="event-card-body">
+          <h4>Referral Bonus Boost +50%</h4>
+          <p>Refer a friend this month and earn 50% extra on top of your normal referral bonus when they make their first deposit.</p>
+          <div class="event-card-footer">
+            <span class="event-tag" style="background:#FEF3C7;color:#D97706;">Referral</span>
+            <span class="event-date">
+              <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Apr 1 – Apr 30
+            </span>
+          </div>
         </div>
       </div>
-    </div>
-
-    <div class="event-card">
-      <div class="event-card-accent" style="background:linear-gradient(#10B981,#3B82F6);"></div>
-      <div class="event-card-body">
-        <h4>VIP Upgrade Discount</h4>
-        <p>Upgrade to Gold or Platinum VIP this week and get 15% off the minimum deposit requirement. Limited time only!</p>
-        <div class="event-card-footer">
-          <span class="event-tag" style="background:#D1FAE5;color:#065F46;">VIP</span>
-          <span class="event-date">
-            <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            Apr 5 – Apr 12
-          </span>
+      <div class="event-card">
+        <div class="event-card-accent" style="background:linear-gradient(#10B981,#3B82F6);"></div>
+        <div class="event-card-body">
+          <h4>VIP Upgrade Discount</h4>
+          <p>Upgrade to Gold or Platinum VIP this week and get 15% off the minimum deposit requirement. Limited time only!</p>
+          <div class="event-card-footer">
+            <span class="event-tag" style="background:#D1FAE5;color:#065F46;">VIP</span>
+            <span class="event-date">
+              <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Apr 5 – Apr 12
+            </span>
+          </div>
         </div>
       </div>
-    </div>
-
-    <div class="event-card">
-      <div class="event-card-accent" style="background:linear-gradient(#6366F1,#8B5CF6);"></div>
-      <div class="event-card-body">
-        <h4>Top Earner Leaderboard</h4>
-        <p>The top 10 earners this month will split a $500 bonus prize pool. Check your rank on the leaderboard now!</p>
-        <div class="event-card-footer">
-          <span class="event-tag" style="background:#E0E7FF;color:#4338CA;">Contest</span>
-          <span class="event-date">
-            <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            Apr 1 – Apr 30
-          </span>
+      <div class="event-card">
+        <div class="event-card-accent" style="background:linear-gradient(#6366F1,#8B5CF6);"></div>
+        <div class="event-card-body">
+          <h4>Top Earner Leaderboard</h4>
+          <p>The top 10 earners this month will split a $500 bonus prize pool. Check your rank on the leaderboard now!</p>
+          <div class="event-card-footer">
+            <span class="event-tag" style="background:#E0E7FF;color:#4338CA;">Contest</span>
+            <span class="event-date">
+              <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Apr 1 – Apr 30
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -284,21 +284,27 @@
 <script>
   requireAuth();
 
-  // Countdown to next Sunday midnight
-  function updateCountdown() {
+  // Default countdown target (fallback: next Sunday midnight)
+  let countdownTarget = null;
+
+  function getDefaultTarget() {
     const now = new Date();
     const target = new Date(now);
     const day = target.getDay();
     const daysUntilSunday = (7 - day) % 7 || 7;
     target.setDate(target.getDate() + daysUntilSunday);
     target.setHours(0, 0, 0, 0);
+    return target;
+  }
 
-    const diff = target - now;
+  function updateCountdown() {
+    const now = new Date();
+    const target = countdownTarget || getDefaultTarget();
+    const diff = Math.max(0, target - now);
     const d = Math.floor(diff / 86400000);
     const h = Math.floor((diff % 86400000) / 3600000);
     const m = Math.floor((diff % 3600000) / 60000);
     const s = Math.floor((diff % 60000) / 1000);
-
     document.getElementById('cdDays').textContent  = String(d).padStart(2,'0');
     document.getElementById('cdHours').textContent = String(h).padStart(2,'0');
     document.getElementById('cdMins').textContent  = String(m).padStart(2,'0');
@@ -306,6 +312,75 @@
   }
   updateCountdown();
   setInterval(updateCountdown, 1000);
+
+  function escHtml(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function renderFeatured(f) {
+    document.getElementById('featIcon').textContent = f.icon || '🎁';
+    document.getElementById('featBadge').textContent = f.badge || 'LIVE NOW';
+    document.getElementById('featTitle').textContent = f.title || '';
+    document.getElementById('featDescription').textContent = f.description || '';
+    document.getElementById('featSchedule').textContent = f.schedule || '';
+    document.getElementById('featAudience').textContent = f.audience || '';
+    const statusItem = document.getElementById('featStatusItem');
+    if (f.status === 'inactive') {
+      statusItem.innerHTML = '<svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:#EF4444;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span style="color:#EF4444;font-weight:700;">Inactive</span>';
+    } else {
+      statusItem.innerHTML = '<svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:#10B981;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><polyline points="20 6 9 17 4 12"/></svg><span style="color:#10B981;font-weight:700;">Active</span>';
+    }
+  }
+
+  function renderUpcoming(events) {
+    if (!events || !events.length) return;
+    const calSvg = '<svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
+    const container = document.getElementById('upcomingEventsContainer');
+    container.innerHTML = events.map(ev => `
+      <div class="event-card">
+        <div class="event-card-accent" style="background:${escHtml(ev.accentColor || 'linear-gradient(#8B5CF6,#EC4899)')};"></div>
+        <div class="event-card-body">
+          <h4>${escHtml(ev.title)}</h4>
+          <p>${escHtml(ev.description)}</p>
+          <div class="event-card-footer">
+            <span class="event-tag" style="background:${escHtml(ev.tagBg || '#EDE9FE')};color:${escHtml(ev.tagColor || '#7C3AED')};">${escHtml(ev.tag)}</span>
+            <span class="event-date">${calSvg} ${escHtml(ev.date)}</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Load dynamic event data from API
+  async function loadEventData() {
+    try {
+      const res = await fetch('/api/public/settings');
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data.success) return;
+      const map = data.data || {};
+
+      // Countdown
+      if (map['event_countdown_date']) {
+        const parsed = new Date(map['event_countdown_date']);
+        if (!isNaN(parsed)) countdownTarget = parsed;
+      }
+
+      // Featured event
+      if (map['event_featured']) {
+        try { renderFeatured(JSON.parse(map['event_featured'])); } catch(e) {}
+      }
+
+      // Upcoming events
+      if (map['events_upcoming']) {
+        try { renderUpcoming(JSON.parse(map['events_upcoming'])); } catch(e) {}
+      }
+    } catch(e) {
+      // Fetch failed — fallback content already shown in HTML
+    }
+  }
+
+  loadEventData();
 </script>
 </body>
 </html>
