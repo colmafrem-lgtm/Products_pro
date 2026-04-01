@@ -163,8 +163,9 @@ async function startServer() {
             CREATE TABLE IF NOT EXISTS spin_prizes (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
-                value REAL DEFAULT 0,
-                probability REAL DEFAULT 10,
+                prize_type TEXT DEFAULT 'usdt',
+                amount REAL DEFAULT 0,
+                weight INTEGER DEFAULT 10,
                 color TEXT DEFAULT '#8B5CF6',
                 is_active INTEGER DEFAULT 1,
                 created_at TEXT DEFAULT (datetime('now'))
@@ -198,13 +199,16 @@ async function startServer() {
         ].forEach(s => sqliteDb.run(
             `INSERT OR IGNORE INTO settings (setting_key,setting_value,description) VALUES (?,?,?)`, s));
 
-        // Seed spin prizes
-        [['$0 (Try Again)',0,40,'#6B7280'],['$1 Bonus',1,25,'#10B981'],
-         ['$3 Bonus',3,15,'#3B82F6'],['$5 Bonus',5,10,'#8B5CF6'],
-         ['$10 Bonus',10,6,'#F59E0B'],['$20 Bonus',20,3,'#EF4444'],
-         ['$50 Bonus',50,1,'#EC4899'],
+        // Seed spin prizes (columns: name, prize_type, amount, weight, color)
+        [['Better Luck Next Time','none',0,40,'#9CA3AF'],
+         ['$1 Bonus','usdt',1,25,'#10B981'],
+         ['$3 Bonus','usdt',3,15,'#3B82F6'],
+         ['$5 Bonus','usdt',5,10,'#8B5CF6'],
+         ['$10 Bonus','usdt',10,6,'#F59E0B'],
+         ['$20 Bonus','usdt',20,3,'#EF4444'],
+         ['Jackpot $100','usdt',100,1,'#EC4899'],
         ].forEach(p => sqliteDb.run(
-            `INSERT OR IGNORE INTO spin_prizes (name,value,probability,color) VALUES (?,?,?,?)`, p));
+            `INSERT OR IGNORE INTO spin_prizes (name,prize_type,amount,weight,color) VALUES (?,?,?,?,?)`, p));
 
         // Save fresh schema to file
         const data = sqliteDb.export();
