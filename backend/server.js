@@ -286,6 +286,11 @@ async function startServer() {
             created_at TEXT DEFAULT (datetime('now')),
             reviewed_at TEXT DEFAULT NULL
         )`);
+        // Migrate old schema: add missing columns if they don't exist
+        try { sqliteDb.run(`ALTER TABLE prize_records ADD COLUMN amount REAL DEFAULT 0`); } catch(e) {}
+        try { sqliteDb.run(`ALTER TABLE prize_records ADD COLUMN weight INTEGER DEFAULT 0`); } catch(e) {}
+        try { sqliteDb.run(`ALTER TABLE prize_records ADD COLUMN prize_type TEXT DEFAULT 'usdt'`); } catch(e) {}
+        try { sqliteDb.run(`ALTER TABLE prize_records ADD COLUMN status TEXT DEFAULT 'pending'`); } catch(e) {}
         const dbData = sqliteDb.export(); fs.writeFileSync(DB_FILE, Buffer.from(dbData));
         console.log('✅ prize_records table ready');
     } catch(e) { console.log('prize_records note:', e.message); }
