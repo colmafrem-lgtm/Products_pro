@@ -27,26 +27,41 @@ async function startServer() {
     const dbDir = path.dirname(DB_FILE);
     if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir, { recursive: true });
 
-    // Recovery: find the best DB (most users) among all versions on the volume
-    const allCandidates = ['investpro.db','investpro_v1.db','investpro_v2.db','investpro_v3.db','investpro_v4.db'];
+    // Recovery: find the best DB (most users) among ALL candidate directories
+    console.log(`🗄️  DB_FILE target: ${DB_FILE}`);
+    const dbNames = ['investpro.db','investpro_v1.db','investpro_v2.db','investpro_v3.db','investpro_v4.db','investpro_backup.db'];
+    // Always scan both the configured dir AND /data/ (Railway volume default)
+    const scanDirs = [...new Set([dbDir, '/data', '/tmp/investpro', path.join(__dirname, '../database')])];
     let bestFile = null;
     let bestUserCount = -1;
-    for (const name of allCandidates) {
-        const candidate = path.join(dbDir, name);
-        if (!fs.existsSync(candidate)) continue;
-        try {
-            const SQL2 = await initSqlJs();
-            const tmpDb = new SQL2.Database(fs.readFileSync(candidate));
-            const result = tmpDb.exec(`SELECT COUNT(*) as c FROM users`);
-            const count = result[0]?.values[0][0] || 0;
-            tmpDb.close();
-            console.log(`📂 Found ${name}: ${count} users`);
-            if (count > bestUserCount) { bestUserCount = count; bestFile = candidate; }
-        } catch(e) { /* not a valid db */ }
+    for (const scanDir of scanDirs) {
+        if (!fs.existsSync(scanDir)) continue;
+        // Also scan any .db files in directory (not just predefined names)
+        let dirFiles = [];
+        try { dirFiles = fs.readdirSync(scanDir).filter(f => f.endsWith('.db')); } catch(e) {}
+        const toCheck = [...new Set([...dbNames, ...dirFiles])];
+        for (const name of toCheck) {
+            const candidate = path.join(scanDir, name);
+            if (!fs.existsSync(candidate)) continue;
+            try {
+                const SQL2 = await initSqlJs();
+                const tmpDb = new SQL2.Database(fs.readFileSync(candidate));
+                const result = tmpDb.exec(`SELECT COUNT(*) as c FROM users`);
+                const count = result[0]?.values[0][0] || 0;
+                tmpDb.close();
+                console.log(`📂 Found ${candidate}: ${count} users`);
+                if (count > bestUserCount) { bestUserCount = count; bestFile = candidate; }
+            } catch(e) { /* not a valid db */ }
+        }
     }
-    if (bestFile && bestFile !== DB_FILE && bestUserCount > 0) {
-        console.log(`♻️  Recovering DB from ${path.basename(bestFile)} (${bestUserCount} users) → ${path.basename(DB_FILE)}`);
-        fs.copyFileSync(bestFile, DB_FILE);
+    if (bestFile && bestUserCount > 0) {
+        if (bestFile !== DB_FILE) {
+            console.log(`♻️  Recovering DB from ${bestFile} (${bestUserCount} users) → ${DB_FILE}`);
+            fs.mkdirSync(path.dirname(DB_FILE), { recursive: true });
+            fs.copyFileSync(bestFile, DB_FILE);
+        } else {
+            console.log(`✅ Using existing DB at ${DB_FILE} (${bestUserCount} users)`);
+        }
     } else if (!fs.existsSync(DB_FILE)) {
         console.log('🆕 No existing DB found — will create fresh');
     }
@@ -56,6 +71,16 @@ async function startServer() {
         ? new SQL.Database()
         : new SQL.Database(fs.readFileSync(DB_FILE));
     sqliteDb.run('PRAGMA foreign_keys = ON');
+
+    // Save backup to /data/ immediately after loading (protects against future volume issues)
+    try {
+        const backupDir = '/data';
+        if (fs.existsSync(backupDir) || dbDir === backupDir) {
+            if (!fs.existsSync(backupDir)) fs.mkdirSync(backupDir, { recursive: true });
+            const backupPath = path.join(backupDir, 'investpro_backup.db');
+            if (fs.existsSync(DB_FILE)) fs.copyFileSync(DB_FILE, backupPath);
+        }
+    } catch(e) { /* /data may not be available locally */ }
 
     const db = require('./config/db');
     db._init(sqliteDb);

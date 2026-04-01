@@ -120,7 +120,17 @@
                       <option value="false" ${settingsMap[key] === 'false' ? 'selected' : ''}>Disabled</option>
                       <option value="true"  ${settingsMap[key] === 'true'  ? 'selected' : ''}>Enabled</option>
                      </select>`
-                  : `<input type="${key.includes('email') ? 'email' : key.includes('wallet') ? 'text' : 'text'}"
+                  : key === 'site_logo'
+                  ? `<input type="hidden" id="setting_site_logo" value="${settingsMap[key] || ''}">
+                     ${settingsMap[key] ? `<div style="margin-bottom:10px;"><img id="logoPreview" src="${settingsMap[key]}" alt="Logo" style="max-height:80px;max-width:200px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);padding:4px;background:#fff;"></div>` : `<div style="margin-bottom:10px;"><img id="logoPreview" src="" alt="" style="max-height:80px;max-width:200px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);padding:4px;background:#fff;display:none;"></div>`}
+                     <div style="display:flex;gap:10px;align-items:center;">
+                       <label style="flex:1;cursor:pointer;background:rgba(255,255,255,0.07);border:1px dashed rgba(255,255,255,0.25);border-radius:10px;padding:10px 14px;text-align:center;color:rgba(255,255,255,0.6);font-size:13px;" id="logoUploadLabel">
+                         📁 Click to choose logo image...
+                         <input type="file" accept="image/*" style="display:none;" onchange="uploadLogo(this)">
+                       </label>
+                       <span id="logoUploadStatus" style="font-size:12px;color:rgba(255,255,255,0.4);"></span>
+                     </div>`
+                  : `<input type="${key.includes('email') ? 'email' : 'text'}"
                             id="setting_${key}"
                             class="form-control"
                             value="${settingsMap[key] || ''}"
@@ -155,6 +165,46 @@
     }
 
     showMsg('alertBox', '✅ Settings saved successfully!', 'success');
+  }
+
+  async function uploadLogo(input) {
+    if (!input.files || !input.files[0]) return;
+    const file = input.files[0];
+    const status = document.getElementById('logoUploadStatus');
+    const label = document.getElementById('logoUploadLabel');
+    status.textContent = 'Uploading...';
+    label.style.opacity = '0.5';
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const token = getAdminToken();
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData
+      });
+      const data = await res.json();
+      if (res.ok && data.url) {
+        document.getElementById('setting_site_logo').value = data.url;
+        const preview = document.getElementById('logoPreview');
+        preview.src = data.url;
+        preview.style.display = '';
+        label.querySelector('input').value = '';
+        const name = file.name.length > 24 ? file.name.substring(0, 21) + '...' : file.name;
+        label.childNodes[0].textContent = `✅ ${name} `;
+        status.textContent = 'Uploaded!';
+        status.style.color = '#4ade80';
+      } else {
+        status.textContent = 'Upload failed.';
+        status.style.color = '#f87171';
+      }
+    } catch(e) {
+      status.textContent = 'Network error.';
+      status.style.color = '#f87171';
+    }
+    label.style.opacity = '1';
   }
 
   loadSettings();
