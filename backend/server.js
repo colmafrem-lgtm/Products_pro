@@ -846,6 +846,19 @@ async function startServer() {
     app.use('/api/tasks', require('./routes/tasks'));
     app.use('/api/admin', require('./routes/admin'));
 
+    // Public settings (no auth required — for frontend logo/name display)
+    app.get('/api/public/settings', (req, res) => {
+        try {
+            const db = require('./config/db');
+            const rows = db.query(`SELECT setting_key, setting_value FROM settings WHERE setting_key IN ('site_name','site_logo','support_email','support_telegram')`);
+            const map = {};
+            rows.forEach(r => { map[r.setting_key] = r.setting_value; });
+            res.json({ success: true, data: map });
+        } catch(e) {
+            res.json({ success: true, data: {} });
+        }
+    });
+
     app.get('/api/health', (req, res) => {
         res.json({ success: true, message: 'InvestPro API running!', timestamp: new Date() });
     });

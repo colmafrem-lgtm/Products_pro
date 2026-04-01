@@ -24,6 +24,10 @@
   .about-hero .hero-icon {
     width: 72px; height: 72px; background: rgba(255,255,255,0.18); border-radius: 20px;
     display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;
+    overflow: hidden;
+  }
+  .about-hero .hero-icon img {
+    width: 100%; height: 100%; object-fit: contain; padding: 6px;
   }
   .about-hero h1 { color: #fff; font-size: 26px; font-weight: 900; margin: 0; }
   .about-hero p { color: rgba(255,255,255,0.75); font-size: 14px; margin-top: 8px; line-height: 1.6; }
@@ -90,10 +94,10 @@
 
   <!-- Hero -->
   <div class="about-hero">
-    <div class="hero-icon">
+    <div class="hero-icon" id="heroLogoWrap">
       <svg viewBox="0 0 24 24" style="width:34px;height:34px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
     </div>
-    <h1>About InvestPro</h1>
+    <h1 id="heroSiteName">About InvestPro</h1>
     <p>Your trusted platform for smart earning<br>through product review tasks</p>
   </div>
 
@@ -242,6 +246,20 @@
 </div>
 <script src="js/api.js"></script>
 <script src="js/transitions.js"></script>
-<script>requireAuth();</script>
+<script>
+  requireAuth();
+  // Load company logo from settings
+  fetch('/api/public/settings').then(r => r.json()).then(res => {
+    if (!res.success) return;
+    const s = res.data;
+    if (s.site_logo) {
+      const wrap = document.getElementById('heroLogoWrap');
+      wrap.innerHTML = `<img src="${s.site_logo}" alt="Logo">`;
+    }
+    if (s.site_name) {
+      document.getElementById('heroSiteName').textContent = 'About ' + s.site_name;
+    }
+  }).catch(() => {});
+</script>
 </body>
 </html>
