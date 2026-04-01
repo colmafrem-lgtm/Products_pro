@@ -26,6 +26,20 @@ async function startServer() {
     // Auto-create DB directory if needed (Railway volume mount)
     const dbDir = path.dirname(DB_FILE);
     if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir, { recursive: true });
+
+    // If target DB missing, try to recover from a previous version (investpro_v*.db)
+    if (!fs.existsSync(DB_FILE)) {
+        const candidates = ['investpro_v3.db','investpro_v2.db','investpro_v1.db','investpro.db'];
+        for (const name of candidates) {
+            const alt = path.join(dbDir, name);
+            if (alt !== DB_FILE && fs.existsSync(alt)) {
+                console.log(`♻️  Recovering DB from ${name} → ${path.basename(DB_FILE)}`);
+                fs.copyFileSync(alt, DB_FILE);
+                break;
+            }
+        }
+    }
+
     const isNewDb = !fs.existsSync(DB_FILE);
     const sqliteDb = isNewDb
         ? new SQL.Database()
