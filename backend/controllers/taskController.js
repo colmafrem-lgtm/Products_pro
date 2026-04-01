@@ -14,6 +14,7 @@ const getAvailableTask = async (req, res) => {
         );
 
         const user = users[0];
+        if (!user) return res.status(404).json({ success: false, message: 'User not found.' });
         // Default daily limit to 10 if VIP level not found or limit is null/0
         const dailyLimit = parseInt(user.daily_task_limit) || 10;
 

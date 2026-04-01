@@ -51,6 +51,7 @@ const getDashboard = async (req, res) => {
         );
 
         const user = users[0];
+        if (!user) return res.status(404).json({ success: false, message: 'User not found.' });
 
         // Count today's completed tasks
         const [todayTasks] = await db.query(

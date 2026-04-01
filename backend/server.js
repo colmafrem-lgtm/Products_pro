@@ -311,6 +311,8 @@ async function startServer() {
         try { sqliteDb.run(`ALTER TABLE spin_prizes ADD COLUMN weight INTEGER DEFAULT 10`); } catch(e) {}
         try { sqliteDb.run(`ALTER TABLE spin_prizes ADD COLUMN prize_type TEXT DEFAULT 'usdt'`); } catch(e) {}
         try { sqliteDb.run(`ALTER TABLE spin_prizes ADD COLUMN amount REAL DEFAULT 0`); } catch(e) {}
+        // Fix: prizes with amount=0 must be type 'none' (no reward)
+        try { sqliteDb.run(`UPDATE spin_prizes SET prize_type='none' WHERE amount=0 OR amount IS NULL`); } catch(e) {}
         const existingPrizes = sqliteDb.exec(`SELECT COUNT(*) as c FROM spin_prizes`);
         const prizeCount = existingPrizes[0]?.values[0][0] || 0;
         if (prizeCount === 0) {
