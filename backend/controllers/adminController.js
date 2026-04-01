@@ -109,8 +109,8 @@ const getUsers = async (req, res) => {
         const status = req.query.status || '';
 
         let query = `SELECT u.id, u.username, u.email, u.full_name, u.phone, u.balance,
-                            u.total_earned, u.vip_level, u.status, u.referral_code, u.created_at,
-                            u.withdrawal_password, u.referred_by, u.transaction_disabled, u.is_test,
+                            u.total_earned, u.vip_level, u.status, u.referral_code, u.invitation_code, u.created_at,
+                            u.withdrawal_password, u.withdrawal_times, u.referred_by, u.transaction_disabled, u.is_test,
                             v.name as vip_name
                      FROM users u LEFT JOIN vip_levels v ON u.vip_level = v.level
                      WHERE 1=1`;
@@ -470,8 +470,9 @@ const updateSettings = async (req, res) => {
     try {
         for (const setting of settings) {
             await db.query(
-                'UPDATE settings SET setting_value = ? WHERE setting_key = ?',
-                [setting.value, setting.key]
+                `INSERT INTO settings (setting_key, setting_value, description) VALUES (?, ?, '')
+                 ON CONFLICT(setting_key) DO UPDATE SET setting_value = excluded.setting_value`,
+                [setting.key, setting.value]
             );
         }
         res.json({ success: true, message: 'Settings updated.' });
@@ -482,19 +483,47 @@ const updateSettings = async (req, res) => {
 
 // PUT /api/admin/users/:id/withdrawal-password
 const setWithdrawalPassword = async (req, res) => {
-    const { password } = req.body;
+    const { password, withdrawal_times, limit_message } = req.body;
     const userId = req.params.id;
 
-    if (!password || password.trim().length < 4) {
-        return res.status(400).json({ success: false, message: 'Password must be at least 4 characters.' });
+    const updates = [];
+    const params = [];
+
+    if (password !== undefined && password !== '') {
+        if (!password || password.trim().length < 5)
+            return res.status(400).json({ success: false, message: 'Withdrawal password must be at least 5 digits.' });
+        if (!/^\d+$/.test(password.trim()))
+            return res.status(400).json({ success: false, message: 'Withdrawal password must be digits only.' });
+        updates.push('withdrawal_password = ?');
+        params.push(password.trim());
     }
 
+    if (withdrawal_times !== undefined && withdrawal_times !== '') {
+        const t = parseInt(withdrawal_times);
+        if (isNaN(t) || t < 0)
+            return res.status(400).json({ success: false, message: 'Withdrawal times must be a valid number.' });
+        updates.push('withdrawal_times = ?');
+        params.push(t);
+    }
+
+    if (updates.length === 0 && !limit_message)
+        return res.status(400).json({ success: false, message: 'Nothing to update.' });
+
     try {
-        const hashed = await bcrypt.hash(password.trim(), 10);
-        await db.query('UPDATE users SET withdrawal_password = ? WHERE id = ?', [hashed, userId]);
-        res.json({ success: true, message: 'Withdrawal password set successfully.' });
+        if (updates.length > 0) {
+            params.push(userId);
+            await db.query(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`, params);
+        }
+        if (limit_message !== undefined && limit_message.trim() !== '') {
+            await db.query(
+                `INSERT INTO settings (setting_key, setting_value, description) VALUES (?, ?, ?)
+                 ON CONFLICT(setting_key) DO UPDATE SET setting_value = excluded.setting_value`,
+                ['withdrawal_limit_message', limit_message.trim(), 'Alert shown when withdrawal limit reached']
+            );
+        }
+        res.json({ success: true, message: 'Updated successfully.' });
     } catch (error) {
-        console.error('Set withdrawal password error:', error);
+        console.error('Set withdrawal error:', error);
         res.status(500).json({ success: false, message: 'Server error.' });
     }
 };

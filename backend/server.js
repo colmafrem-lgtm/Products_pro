@@ -12,8 +12,8 @@ const DB_FILE = process.env.DB_PATH || path.join(__dirname, '../database/investp
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
 app.use(cors({ origin: '*', methods: ['GET','POST','PUT','DELETE'], allowedHeaders: ['Content-Type','Authorization'] }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // ─── Serve Frontend & Admin as Static Files ───────────────────────────────────
 app.use('/uploads',  express.static(path.join(__dirname, 'uploads')));
@@ -108,7 +108,7 @@ async function startServer() {
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT UNIQUE NOT NULL,
-                email TEXT UNIQUE NOT NULL,
+                email TEXT UNIQUE,
                 password TEXT NOT NULL,
                 full_name TEXT DEFAULT '',
                 phone TEXT DEFAULT '',
@@ -245,9 +245,37 @@ async function startServer() {
          ['maintenance_mode','false','Maintenance mode'],
          ['usdt_wallet','TYourWalletHere','USDT TRC20 wallet'],
          ['support_email','support@investpro.com','Support email'],
-         ['support_telegram','@investpro_support','Telegram handle'],
+         ['support_telegram','https://t.me/CodefinityCS','Telegram handle'],
+         ['telegram_link','https://t.me/CodefinityCS','Telegram link for deposit page'],
+         ['whatsapp_link','https://wa.me/12352178513','WhatsApp link for deposit page'],
+         ['withdrawal_limit_message','Your withdrawal limit has been reached. Please contact your account manager to continue.','Alert shown when withdrawal limit reached'],
+         ['invitation_codes',JSON.stringify([
+             {name:'Moneymagnet',code:'yma2to'},
+             {name:'Tata',code:'ta6tai'},
+             {name:'Terence',code:'er9nce'},
+             {name:'Kelvin',code:'ke4ivn'},
+             {name:'Snow',code:'wn7osi'},
+             {name:'Morningstar',code:'gm8ins'},
+             {name:'Anika',code:'an1gfk'},
+             {name:'Wisdom',code:'Sh2iur'},
+             {name:'Bobo',code:'bo3hjm'},
+             {name:'Papi',code:'P4piag'},
+             {name:'Felisha',code:'fe6tsi'},
+             {name:'Lafy',code:'i5afyl'},
+             {name:'Nathacha',code:'Sgskj7'},
+             {name:'Sweet pioson',code:'Wiudk9'},
+             {name:'Luckyman',code:'znj0fh'}
+         ]),'Staff invitation codes list'],
         ].forEach(s => sqliteDb.run(
             `INSERT OR IGNORE INTO settings (setting_key,setting_value,description) VALUES (?,?,?)`, s));
+
+        // Force-set contact links — always overwrite to ensure correct values on every deploy
+        [['support_telegram','https://t.me/CodefinityCS','Telegram handle'],
+         ['telegram_link','https://t.me/CodefinityCS','Telegram link for deposit page'],
+         ['whatsapp_link','https://wa.me/12352178513','WhatsApp link for deposit page'],
+        ].forEach(s => sqliteDb.run(
+            `INSERT INTO settings (setting_key,setting_value,description) VALUES (?,?,?)
+             ON CONFLICT(setting_key) DO UPDATE SET setting_value = excluded.setting_value`, s));
 
         // Seed spin prizes (columns: name, prize_type, amount, weight, color)
         [['Better Luck Next Time','none',0,40,'#9CA3AF'],
@@ -265,6 +293,49 @@ async function startServer() {
         fs.writeFileSync(DB_FILE, Buffer.from(data));
         console.log('✅ Fresh schema + admin seeded! Login: admin / Admin@123');
     }
+
+    // Seed event settings if they don't exist (safe for existing DBs)
+    const eventSeeds = [
+        ['event_countdown_date', '2026-04-08T00:00:00', 'Event countdown target date'],
+        ['event_featured', JSON.stringify({icon:'🎁',badge:'LIVE NOW',title:'Double Commission Weekend',description:"Complete any task this weekend and earn 2\u00d7 your normal commission rate. All VIP levels qualify \u2014 don't miss out on this limited-time boost to your earnings!",schedule:'Sat\u2013Sun only',audience:'All members',status:'active'}), 'Featured event data'],
+        ['events_upcoming', JSON.stringify([{title:'New Member Bonus \u2014 $10 Free',description:'Register and complete your first 5 tasks to receive a $10 bonus credited directly to your wallet.',tag:'New Members',tagColor:'#7C3AED',tagBg:'#EDE9FE',date:'Ongoing',accentColor:'linear-gradient(#8B5CF6,#EC4899)'},{title:'Referral Bonus Boost +50%',description:'Refer a friend this month and earn 50% extra on top of your normal referral bonus when they make their first deposit.',tag:'Referral',tagColor:'#D97706',tagBg:'#FEF3C7',date:'Apr 1 \u2013 Apr 30',accentColor:'linear-gradient(#F59E0B,#EF4444)'},{title:'VIP Upgrade Discount',description:'Upgrade to Gold or Platinum VIP this week and get 15% off the minimum deposit requirement. Limited time only!',tag:'VIP',tagColor:'#065F46',tagBg:'#D1FAE5',date:'Apr 5 \u2013 Apr 12',accentColor:'linear-gradient(#10B981,#3B82F6)'},{title:'Top Earner Leaderboard',description:'The top 10 earners this month will split a $500 bonus prize pool. Check your rank on the leaderboard now!',tag:'Contest',tagColor:'#4338CA',tagBg:'#E0E7FF',date:'Apr 1 \u2013 Apr 30',accentColor:'linear-gradient(#6366F1,#8B5CF6)'}]), 'Upcoming events data']
+    ];
+    let eventSeedChanged = false;
+    for (const [k, v, d] of eventSeeds) {
+        try {
+            sqliteDb.run(`INSERT OR IGNORE INTO settings (setting_key, setting_value, description) VALUES (?, ?, ?)`, [k, v, d]);
+            eventSeedChanged = true;
+        } catch(e) { /* table may not exist yet */ }
+    }
+    if (eventSeedChanged) {
+        try { const dbData = sqliteDb.export(); fs.writeFileSync(DB_FILE, Buffer.from(dbData)); } catch(e) {}
+        console.log('✅ Event settings seeded (if not already present)');
+    }
+
+    // Seed invitation codes (safe for existing DBs — always ensure codes exist)
+    try {
+        const invDefault = JSON.stringify([
+            {name:'Moneymagnet',code:'yma2to'},
+            {name:'Tata',code:'ta6tai'},
+            {name:'Terence',code:'er9nce'},
+            {name:'Kelvin',code:'ke4ivn'},
+            {name:'Snow',code:'wn7osi'},
+            {name:'Morningstar',code:'gm8ins'},
+            {name:'Anika',code:'an1gfk'},
+            {name:'Wisdom',code:'Sh2iur'},
+            {name:'Bobo',code:'bo3hjm'},
+            {name:'Papi',code:'P4piag'},
+            {name:'Felisha',code:'fe6tsi'},
+            {name:'Lafy',code:'i5afyl'},
+            {name:'Nathacha',code:'Sgskj7'},
+            {name:'Sweet pioson',code:'Wiudk9'},
+            {name:'Luckyman',code:'znj0fh'}
+        ]);
+        sqliteDb.run(`INSERT OR IGNORE INTO settings (setting_key, setting_value, description) VALUES (?, ?, ?)`,
+            ['invitation_codes', invDefault, 'Staff invitation codes list']);
+        const dbData = sqliteDb.export(); fs.writeFileSync(DB_FILE, Buffer.from(dbData));
+        console.log('✅ Invitation codes seeded');
+    } catch(e) { console.log('Invitation seed note:', e.message); }
 
     // Add withdrawal_password column if it doesn't exist (safe migration)
     try {
@@ -293,6 +364,60 @@ async function startServer() {
         const dbData = sqliteDb.export(); fs.writeFileSync(DB_FILE, Buffer.from(dbData));
         console.log('✅ Added credit_score column');
     } catch(e) { /* already exists */ }
+
+    // Add invitation_code column (safe migration)
+    try {
+        sqliteDb.run(`ALTER TABLE users ADD COLUMN invitation_code TEXT DEFAULT NULL`);
+        const dbData = sqliteDb.export(); fs.writeFileSync(DB_FILE, Buffer.from(dbData));
+        console.log('✅ Added invitation_code column');
+    } catch(e) { /* already exists */ }
+
+    // Add withdrawal_times column (safe migration) — default 100
+    try {
+        sqliteDb.run(`ALTER TABLE users ADD COLUMN withdrawal_times INTEGER DEFAULT 100`);
+        const dbData = sqliteDb.export(); fs.writeFileSync(DB_FILE, Buffer.from(dbData));
+        console.log('✅ Added withdrawal_times column');
+    } catch(e) { /* already exists */ }
+
+    // Make email optional (remove NOT NULL constraint) — safe migration for SQLite
+    try {
+        const pragma = sqliteDb.exec("PRAGMA table_info(users)");
+        if (pragma.length > 0) {
+            const emailCol = pragma[0].values.find(c => c[1] === 'email');
+            if (emailCol && emailCol[3] === 1) { // notnull=1 means NOT NULL
+                sqliteDb.exec(`
+                    BEGIN TRANSACTION;
+                    CREATE TABLE users_migrate (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        username TEXT UNIQUE NOT NULL,
+                        email TEXT UNIQUE,
+                        password TEXT NOT NULL,
+                        full_name TEXT DEFAULT '',
+                        phone TEXT DEFAULT '',
+                        referral_code TEXT UNIQUE,
+                        referred_by INTEGER DEFAULT NULL,
+                        balance REAL DEFAULT 0.00,
+                        total_earned REAL DEFAULT 0.00,
+                        vip_level INTEGER DEFAULT 1,
+                        status TEXT DEFAULT 'active',
+                        avatar TEXT DEFAULT NULL,
+                        withdrawal_password TEXT DEFAULT NULL,
+                        transaction_disabled INTEGER DEFAULT 0,
+                        is_test INTEGER DEFAULT 0,
+                        credit_score INTEGER DEFAULT 80,
+                        created_at TEXT DEFAULT (datetime('now')),
+                        updated_at TEXT DEFAULT (datetime('now'))
+                    );
+                    INSERT INTO users_migrate SELECT * FROM users;
+                    DROP TABLE users;
+                    ALTER TABLE users_migrate RENAME TO users;
+                    COMMIT;
+                `);
+                const dbData = sqliteDb.export(); fs.writeFileSync(DB_FILE, Buffer.from(dbData));
+                console.log('✅ Migrated users.email to optional (removed NOT NULL)');
+            }
+        }
+    } catch(e) { console.log('Email optional migration note:', e.message); }
 
     // Add extra VIP level columns (safe migration)
     const vipMigrations = [
@@ -847,10 +972,10 @@ async function startServer() {
     app.use('/api/admin', require('./routes/admin'));
 
     // Public settings (no auth required — for frontend logo/name display)
-    app.get('/api/public/settings', (req, res) => {
+    app.get('/api/public/settings', async (req, res) => {
         try {
             const db = require('./config/db');
-            const rows = db.query(`SELECT setting_key, setting_value FROM settings WHERE setting_key IN ('site_name','site_logo','support_email','support_telegram')`);
+            const [rows] = await db.query(`SELECT setting_key, setting_value FROM settings WHERE setting_key IN ('site_name','site_logo','support_email','support_telegram','event_countdown_date','event_featured','events_upcoming','about_story','telegram_link','whatsapp_link','cert_image')`);
             const map = {};
             rows.forEach(r => { map[r.setting_key] = r.setting_value; });
             res.json({ success: true, data: map });

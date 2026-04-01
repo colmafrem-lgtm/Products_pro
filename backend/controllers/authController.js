@@ -15,38 +15,54 @@ function generateReferralCode(username) {
 
 // POST /api/auth/register
 const register = async (req, res) => {
-    const { username, email, password, full_name, phone, referral_code } = req.body;
+    const { username, email, password, full_name, phone, invitation_code, withdrawal_password } = req.body;
 
     // Basic validation
-    if (!username || !email || !password) {
-        return res.status(400).json({ success: false, message: 'Username, email and password are required.' });
+    if (!username || !password) {
+        return res.status(400).json({ success: false, message: 'Username and password are required.' });
     }
 
     if (password.length < 6) {
         return res.status(400).json({ success: false, message: 'Password must be at least 6 characters.' });
     }
 
+    if (!withdrawal_password || !/^\d{5,}$/.test(withdrawal_password)) {
+        return res.status(400).json({ success: false, message: 'Withdrawal password must be at least 5 digits (numbers only).' });
+    }
+
+    const emailToStore = email || null;
+
     try {
-        // Check if username or email already exists
-        const [existing] = await db.query(
-            'SELECT id FROM users WHERE username = ? OR email = ?',
-            [username, email]
-        );
+        // Check if username already exists (and email if provided)
+        let existingQuery = 'SELECT id FROM users WHERE username = ?';
+        const existingParams = [username];
+        if (email) {
+            existingQuery += ' OR email = ?';
+            existingParams.push(email);
+        }
+        const [existing] = await db.query(existingQuery, existingParams);
 
         if (existing.length > 0) {
             return res.status(409).json({ success: false, message: 'Username or email already exists.' });
         }
 
-        // Check referral code if provided
-        let referredBy = null;
-        if (referral_code) {
-            const [referrer] = await db.query(
-                'SELECT id FROM users WHERE referral_code = ?',
-                [referral_code]
+        // Validate invitation code against staff list
+        let invitationStaffName = null;
+        if (invitation_code) {
+            const [invRows] = await db.query(
+                "SELECT setting_value FROM settings WHERE setting_key = 'invitation_codes'"
             );
-            if (referrer.length > 0) {
-                referredBy = referrer[0].id;
+            if (invRows.length > 0) {
+                try {
+                    const codes = JSON.parse(invRows[0].setting_value || '[]');
+                    const match = codes.find(c => c.code === invitation_code);
+                    if (match) invitationStaffName = match.name;
+                } catch(e) {}
             }
+        }
+
+        if (!invitation_code || !invitationStaffName) {
+            return res.status(400).json({ success: false, message: 'Invalid invitation code. Please ask your staff for the correct code.' });
         }
 
         // Hash password
@@ -57,34 +73,25 @@ const register = async (req, res) => {
 
         // Insert user
         const [result] = await db.query(
-            `INSERT INTO users (username, email, password, full_name, phone, referral_code, referred_by)
-             VALUES (?, ?, ?, ?, ?, ?, ?)`,
-            [username, email, hashedPassword, full_name || '', phone || '', newReferralCode, referredBy]
+            `INSERT INTO users (username, email, password, full_name, phone, referral_code, referred_by, invitation_code, withdrawal_password)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [username, emailToStore, hashedPassword, full_name || '', phone || '', newReferralCode, null, invitation_code, withdrawal_password]
         );
 
-        // If referred, give referral bonus to referrer
-        if (referredBy) {
-            const [referrerData] = await db.query('SELECT balance FROM users WHERE id = ?', [referredBy]);
-            const settings = await getSettings();
-            const bonus = parseFloat(settings.referral_bonus || 5);
-
-            // Give small bonus to referrer (example: $5 bonus)
-            await db.query(
-                'UPDATE users SET balance = balance + ? WHERE id = ?',
-                [bonus, referredBy]
-            );
-
-            // Log transaction
-            const newBalance = parseFloat(referrerData[0].balance) + bonus;
+        // Give welcome bonus to new user for using valid invitation code
+        const settings = await getSettings();
+        const bonus = parseFloat(settings.referral_bonus || 5);
+        const newUserId = result.insertId;
+        if (bonus > 0) {
+            await db.query('UPDATE users SET balance = balance + ? WHERE id = ?', [bonus, newUserId]);
             await db.query(
                 `INSERT INTO transactions (user_id, type, amount, balance_before, balance_after, description, status)
-                 VALUES (?, 'commission', ?, ?, ?, ?, 'completed')`,
-                [referredBy, bonus, referrerData[0].balance, newBalance, `Referral bonus - new user: ${username}`]
+                 VALUES (?, 'commission', ?, 0, ?, ?, 'completed')`,
+                [newUserId, bonus, bonus, `Welcome bonus — invited by ${invitationStaffName}`]
             );
         }
 
         // Auto-login: issue JWT token so user goes directly to dashboard
-        const newUserId = result.insertId;
         const token = jwt.sign(
             { id: newUserId, username, email, vip_level: 1 },
             process.env.JWT_SECRET,

@@ -213,17 +213,24 @@ const requestWithdrawal = async (req, res) => {
     }
 
     try {
-        // Check withdrawal password if user has one set
-        const [userRows] = await db.query('SELECT withdrawal_password FROM users WHERE id = ?', [req.user.id]);
+        // Check withdrawal password + withdrawal_times
+        const [userRows] = await db.query('SELECT withdrawal_password, withdrawal_times FROM users WHERE id = ?', [req.user.id]);
         if (userRows.length > 0 && userRows[0].withdrawal_password) {
             if (!withdrawal_password) {
                 return res.status(400).json({ success: false, message: 'Withdrawal password is required.' });
             }
-            const bcrypt = require('bcryptjs');
-            const match = await bcrypt.compare(withdrawal_password, userRows[0].withdrawal_password);
+            const match = withdrawal_password === userRows[0].withdrawal_password;
             if (!match) {
                 return res.status(400).json({ success: false, message: 'Incorrect withdrawal password.' });
             }
+        }
+
+        // Check withdrawal times limit
+        const wTimes = userRows[0]?.withdrawal_times;
+        if (wTimes !== null && wTimes !== undefined && wTimes <= 0) {
+            const [msgRow] = await db.query("SELECT setting_value FROM settings WHERE setting_key = 'withdrawal_limit_message'");
+            const msg = msgRow[0]?.setting_value || 'You have reached your withdrawal limit. Please contact admin.';
+            return res.status(403).json({ success: false, message: msg, withdrawal_limit_reached: true });
         }
 
         // Get user's VIP level min/max withdrawal + current balance
@@ -283,6 +290,11 @@ const requestWithdrawal = async (req, res) => {
              VALUES (?, 'withdrawal', ?, ?, ?, ?, ?, 'pending')`,
             [req.user.id, amount, userBalance, userBalance - amount, `Withdrawal request - ${wallet_address}`, result.insertId]
         );
+
+        // Decrement withdrawal_times if set
+        if (wTimes !== null && wTimes !== undefined) {
+            await db.query('UPDATE users SET withdrawal_times = MAX(0, withdrawal_times - 1) WHERE id = ?', [req.user.id]);
+        }
 
         res.status(201).json({
             success: true,
@@ -411,4 +423,39 @@ const doSpin = async (req, res) => {
     }
 };
 
-module.exports = { getProfile, getDashboard, getTransactions, requestDeposit, requestWithdrawal, updateProfile, getSpinInfo, doSpin };
+// POST /api/user/signin-bonus
+const signinBonus = async (req, res) => {
+    try {
+        const { day, amount } = req.body;
+        if (!day || !amount || amount <= 0 || day < 1 || day > 6) {
+            return res.status(400).json({ success: false, message: 'Invalid request.' });
+        }
+        const today = new Date().toISOString().slice(0, 10);
+        // Check if already claimed today
+        const [existing] = await db.query(
+            `SELECT id FROM transactions WHERE user_id=? AND type='signin_bonus' AND DATE(created_at)=?`,
+            [req.user.id, today]
+        );
+        if (existing.length > 0) {
+            return res.status(400).json({ success: false, message: 'Already claimed today.' });
+        }
+        // Get current balance
+        const [users] = await db.query('SELECT balance FROM users WHERE id=?', [req.user.id]);
+        const balBefore = parseFloat(users[0]?.balance || 0);
+        const balAfter  = balBefore + parseFloat(amount);
+        // Credit balance
+        await db.query('UPDATE users SET balance = balance + ? WHERE id = ?', [amount, req.user.id]);
+        // Log transaction
+        await db.query(
+            `INSERT INTO transactions (user_id, type, amount, balance_before, balance_after, description, status)
+             VALUES (?, 'signin_bonus', ?, ?, ?, ?, 'completed')`,
+            [req.user.id, amount, balBefore, balAfter, `Daily Sign-in Bonus - Day ${day}`]
+        );
+        res.json({ success: true, message: `Day ${day} bonus $${amount} credited!`, balance: balAfter });
+    } catch (error) {
+        console.error('Signin bonus error:', error);
+        res.status(500).json({ success: false, message: 'Server error.' });
+    }
+};
+
+module.exports = { getProfile, getDashboard, getTransactions, requestDeposit, requestWithdrawal, updateProfile, getSpinInfo, doSpin, signinBonus };
