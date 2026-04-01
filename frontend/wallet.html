@@ -667,16 +667,41 @@
     preview.style.display = 'block';
 
     const msg = encodeURIComponent(`Hello, I want to deposit ${amount.toLocaleString()} USDT. Please assist me.`);
-    // Use telegram_link from admin if set, fallback to support_telegram
-    const tgLink = window._telegramLink || '';
-    const tgFallback = (window._siteTelegram || '').replace('@','');
-    document.getElementById('depositTelegramBtn').href = tgLink
-      ? (tgLink.includes('?') ? `${tgLink}&text=${msg}` : `${tgLink}?text=${msg}`)
-      : (tgFallback ? `https://t.me/${tgFallback}?text=${msg}` : `https://t.me/?text=${msg}`);
-    const waLink = window._whatsappLink || '';
-    document.getElementById('depositWhatsappBtn').href = waLink
-      ? (waLink.includes('?') ? `${waLink}&text=${msg}` : `${waLink}?text=${msg}`)
-      : `https://wa.me/?text=${msg}`;
+
+    // ── Telegram button ──
+    let tgHref = '';
+    const tgLink = (window._telegramLink || '').trim();
+    const tgSupport = (window._siteTelegram || '').trim();
+    const tgSource = tgLink || tgSupport; // prefer telegram_link
+    if (tgSource) {
+      if (tgSource.startsWith('http')) {
+        // already a full URL e.g. https://t.me/CodefinityCS
+        tgHref = tgSource + '?text=' + msg;
+      } else {
+        // username e.g. @CodefinityCS or CodefinityCS
+        tgHref = 'https://t.me/' + tgSource.replace('@','') + '?text=' + msg;
+      }
+    } else {
+      tgHref = 'https://t.me/?text=' + msg;
+    }
+    document.getElementById('depositTelegramBtn').href = tgHref;
+
+    // ── WhatsApp button ── admin can put number or full URL
+    let waHref = '';
+    const waRaw = (window._whatsappLink || '').trim();
+    if (waRaw) {
+      if (waRaw.startsWith('http')) {
+        // already a full URL e.g. https://wa.me/12352178513
+        waHref = waRaw + '?text=' + msg;
+      } else {
+        // phone number e.g. +1235 217 8513 or 12352178513
+        const waNum = waRaw.replace(/[^0-9]/g, ''); // strip non-digits
+        waHref = 'https://wa.me/' + waNum + '?text=' + msg;
+      }
+    } else {
+      waHref = 'https://wa.me/?text=' + msg;
+    }
+    document.getElementById('depositWhatsappBtn').href = waHref;
 
     const modal = document.getElementById('depositContactModal');
     modal.style.display = 'flex';
