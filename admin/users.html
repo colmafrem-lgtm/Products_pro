@@ -610,7 +610,7 @@
   async function searchReferrer() {
     const q = document.getElementById('biReferredBy').value.trim();
     if (!q) { document.getElementById('biReferrerResult').innerHTML = '<span style="color:#dc2626;">Enter username or ID first.</span>'; return; }
-    const token = localStorage.getItem('admin_token');
+    const token = sessionStorage.getItem('admin_token');
     const res = await fetch(`/api/admin/users/search?q=${encodeURIComponent(q)}`, { headers: { 'Authorization': `Bearer ${token}` } });
     const json = await res.json();
     if (!json.success || !json.data.length) {
@@ -632,7 +632,7 @@
     const referred_by  = document.getElementById('biReferredBy').value.trim();
     const credit_score = document.getElementById('biCreditScoreNum').value;
     if (!email) { showMsg('biModalAlert', 'Email is required.', 'danger'); return; }
-    const token = localStorage.getItem('admin_token');
+    const token = sessionStorage.getItem('admin_token');
     const body = { full_name, phone, email, vip_level, credit_score };
     if (referred_by) body.referred_by = referred_by;
     const res = await fetch(`/api/admin/users/${id}/profile`, {
@@ -697,7 +697,7 @@
     const pw2 = document.getElementById('wpConfirmPassword').value;
     if (!pw || pw.length < 4) { showMsg('wpModalAlert', 'Password must be at least 4 characters.', 'danger'); return; }
     if (pw !== pw2)            { showMsg('wpModalAlert', 'Passwords do not match.', 'danger'); return; }
-    const token = localStorage.getItem('admin_token');
+    const token = sessionStorage.getItem('admin_token');
     const res = await fetch(`/api/admin/users/${selectedUserId}/withdrawal-password`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
@@ -716,7 +716,7 @@
     document.getElementById('teamTotalCount').textContent = 'Loading...';
     document.getElementById('teamContent').innerHTML = '<div class="spinner" style="margin:30px auto;"></div>';
     document.getElementById('teamModal').classList.remove('hidden');
-    const token = localStorage.getItem('admin_token');
+    const token = sessionStorage.getItem('admin_token');
     const res = await fetch(`/api/admin/users/${userId}/team`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
@@ -799,7 +799,7 @@
   async function loadUserTasks() {
     document.getElementById('osTasksBody').innerHTML =
       '<tr><td colspan="8" style="text-align:center;padding:30px;"><div class="spinner"></div></td></tr>';
-    const token = localStorage.getItem('admin_token');
+    const token = sessionStorage.getItem('admin_token');
     let json;
     try {
       const res = await fetch(`/api/admin/users/${osUserId}/tasks`, {
@@ -843,7 +843,7 @@
 
   async function deleteTask(taskId) {
     if (!confirm('Delete this task?')) return;
-    const token = localStorage.getItem('admin_token');
+    const token = sessionStorage.getItem('admin_token');
     const res = await fetch(`/api/admin/users/${osUserId}/tasks/${taskId}`, {
       method: 'DELETE',
       headers: { 'Authorization': `Bearer ${token}` }
@@ -871,7 +871,7 @@
       `Are you sure you want to reset all pending tasks for user "${osUsername}" today? This cannot be undone.`,
       '✔ Confirm Reset',
       async () => {
-        const token = localStorage.getItem('admin_token');
+        const token = sessionStorage.getItem('admin_token');
         const res = await fetch(`/api/admin/users/${osUserId}/reset-tasks`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
@@ -892,7 +892,7 @@
       willSetTest ? `Should it be set to: test user?` : `Remove "${username}" from test user status?`,
       'Sure',
       async () => {
-        const token = localStorage.getItem('admin_token');
+        const token = sessionStorage.getItem('admin_token');
         const res = await fetch(`/api/admin/users/${userId}/test-status`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
@@ -915,7 +915,7 @@
         : `Re-enable transactions for user "${username}"?`,
       willDisable ? 'Sure — Disable' : 'Sure — Enable',
       async () => {
-        const token = localStorage.getItem('admin_token');
+        const token = sessionStorage.getItem('admin_token');
         const res = await fetch(`/api/admin/users/${userId}/transaction-status`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
@@ -935,7 +935,7 @@
       `Are you sure you want to reset all today's tasks for user "${username}"? This will delete all tasks created today and cannot be undone.`,
       '✔ Confirm Reset',
       async () => {
-        const token = localStorage.getItem('admin_token');
+        const token = sessionStorage.getItem('admin_token');
         const res = await fetch(`/api/admin/users/${userId}/reset-tasks`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
@@ -1099,7 +1099,7 @@
     const startNode     = parseInt(document.getElementById('atStartNode').value) || 1;
     const commMult      = parseFloat(document.getElementById('atCommissionMult').value) || 1;
     const overridePrice = parseFloat(document.getElementById('atOrderPrice').value) || 0;
-    const token         = localStorage.getItem('admin_token');
+    const token         = sessionStorage.getItem('admin_token');
     let failed = 0;
 
     if (batchTaskMode) {

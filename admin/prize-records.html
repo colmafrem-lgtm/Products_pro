@@ -131,7 +131,7 @@
     document.getElementById('recordsTable').innerHTML =
       '<tr><td colspan="10" style="text-align:center;padding:40px;"><div class="spinner"></div></td></tr>';
 
-    const token = localStorage.getItem('admin_token');
+    const token = sessionStorage.getItem('admin_token');
     const params = new URLSearchParams({ page: currentPage, limit: 20 });
     if (status) params.append('status', status);
 
@@ -223,7 +223,7 @@
       `Approve prize "${name}" and credit $${parseFloat(amount).toFixed(2)} to user balance?`,
       '✔ Approve',
       async () => {
-        const token = localStorage.getItem('admin_token');
+        const token = sessionStorage.getItem('admin_token');
         const res = await fetch(`/api/admin/prize-records/${id}/review`, {
           method: 'PUT',
           headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
@@ -242,7 +242,7 @@
       'Are you sure you want to delete this prize record? This cannot be undone.',
       'Delete',
       async () => {
-        const token = localStorage.getItem('admin_token');
+        const token = sessionStorage.getItem('admin_token');
         const res = await fetch(`/api/admin/prize-records/${id}`, {
           method: 'DELETE',
           headers: { 'Authorization': `Bearer ${token}` }
