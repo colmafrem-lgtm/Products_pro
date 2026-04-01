@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - InvestPro</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .hero-dashboard {
+    background: var(--gradient);
+    padding: 28px 20px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-dashboard::before {
+    content:''; position:absolute; top:-60px; right:-60px;
+    width:200px; height:200px; background:rgba(255,255,255,0.08); border-radius:50%;
+  }
+  .hero-dashboard::after {
+    content:''; position:absolute; bottom:-40px; left:-40px;
+    width:150px; height:150px; background:rgba(255,255,255,0.05); border-radius:50%;
+  }
+  .greeting { color:rgba(255,255,255,0.8); font-size:13px; font-weight:500; }
+  .username { color:#fff; font-size:22px; font-weight:800; margin-top:3px; }
+  /* ── Credit Card ── */
+  .credit-card {
+    margin: 16px 0 0;
+    border-radius: 20px;
+    padding: 22px 22px 20px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f093fb 0%, #c471ed 40%, #8B5CF6 100%);
+    box-shadow: 0 12px 36px rgba(139,92,246,0.38), 0 4px 12px rgba(196,113,237,0.25);
+    min-height: 175px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  /* big decorative circles */
+  .credit-card::before {
+    content:''; position:absolute; top:-50px; right:-50px;
+    width:180px; height:180px;
+    background: rgba(255,255,255,0.12); border-radius:50%;
+  }
+  .credit-card::after {
+    content:''; position:absolute; bottom:-70px; right:30px;
+    width:200px; height:200px;
+    background: rgba(255,255,255,0.08); border-radius:50%;
+  }
+  .cc-top { display:flex; justify-content:space-between; align-items:flex-start; position:relative; z-index:2; }
+  .cc-brand { font-size:20px; font-weight:900; color:#fff; letter-spacing:1px; font-style:italic; }
+  .cc-chip {
+    width:34px; height:26px; border-radius:5px;
+    background: linear-gradient(135deg,rgba(255,255,255,0.5),rgba(255,255,255,0.2));
+    border:1px solid rgba(255,255,255,0.4);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .cc-chip-inner {
+    width:22px; height:16px; border-radius:3px;
+    border: 1px solid rgba(255,255,255,0.5);
+    background: linear-gradient(135deg,rgba(255,255,255,0.3),rgba(255,255,255,0.1));
+  }
+  .cc-balance-section { position:relative; z-index:2; }
+  .cc-balance-label { font-size:11px; color:rgba(255,255,255,0.7); font-weight:600; letter-spacing:.8px; text-transform:uppercase; margin-bottom:4px; }
+  .cc-balance-amount { font-size:34px; font-weight:900; color:#fff; letter-spacing:-1px; line-height:1; }
+  .cc-bottom { display:flex; justify-content:space-between; align-items:flex-end; position:relative; z-index:2; }
+  .cc-number { font-size:13px; color:rgba(255,255,255,0.8); letter-spacing:2px; font-weight:600; }
+  .cc-right { text-align:right; }
+  .cc-expiry-label { font-size:9px; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:.5px; }
+  .cc-expiry { font-size:13px; color:#fff; font-weight:700; }
+  /* card actions row */
+  .cc-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+  /* keep old names used in JS */
+  .balance-label, .balance-amount, .balance-sub, .balance-actions { display:none; }
+  /* ── Daily Progress Card ── */
+  .daily-progress {
+    background: linear-gradient(135deg, #1E1B4B 0%, #2D2B55 60%, #3D1F6B 100%);
+    border-radius: 22px;
+    padding: 22px 20px 20px;
+    margin-top: 16px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(30,27,75,0.35), 0 4px 12px rgba(139,92,246,0.25);
+  }
+  .daily-progress::before {
+    content:''; position:absolute; top:-50px; right:-40px;
+    width:160px; height:160px; border-radius:50%;
+    background: rgba(139,92,246,0.15);
+  }
+  .daily-progress::after {
+    content:''; position:absolute; bottom:-60px; left:-30px;
+    width:140px; height:140px; border-radius:50%;
+    background: rgba(236,72,153,0.1);
+  }
+  .dp-header { display:flex; align-items:center; justify-content:space-between; position:relative; z-index:2; margin-bottom:18px; }
+  .dp-title { font-size:15px; font-weight:800; color:#fff; display:flex; align-items:center; gap:8px; }
+  .dp-vip-badge {
+    font-size:11px; font-weight:700; color:#fff;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius:50px; padding:4px 12px;
+    display:flex; align-items:center; gap:4px;
+  }
+  /* SVG arc gauge */
+  .dp-gauge-wrap { display:flex; align-items:center; gap:20px; position:relative; z-index:2; margin-bottom:18px; }
+  .dp-arc-wrap { position:relative; flex-shrink:0; }
+  .dp-arc-wrap svg { display:block; }
+  .dp-arc-center {
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  .dp-arc-num { font-size:26px; font-weight:900; color:#fff; line-height:1; }
+  .dp-arc-lbl { font-size:10px; color:rgba(255,255,255,0.55); margin-top:2px; font-weight:600; text-transform:uppercase; letter-spacing:.5px; }
+  .dp-stats { flex:1; display:flex; flex-direction:column; gap:12px; }
+  .dp-stat-row { display:flex; flex-direction:column; gap:4px; }
+  .dp-stat-label { font-size:11px; color:rgba(255,255,255,0.5); font-weight:600; text-transform:uppercase; letter-spacing:.4px; }
+  .dp-stat-value { font-size:18px; font-weight:800; color:#fff; }
+  .dp-stat-sub { font-size:11px; color:rgba(255,255,255,0.45); margin-top:1px; }
+  /* mini progress bar inside card */
+  .dp-bar-track { height:5px; background:rgba(255,255,255,0.12); border-radius:50px; overflow:hidden; margin-top:14px; position:relative; z-index:2; }
+  .dp-bar-fill {
+    height:100%; border-radius:50px;
+    background: linear-gradient(90deg, #8B5CF6, #EC4899);
+    transition: width 1s ease;
+    position:relative; overflow:hidden;
+  }
+  .dp-bar-fill::after {
+    content:''; position:absolute; inset:0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.35) 50%, transparent 100%);
+    background-size:200% 100%;
+    animation: dp-shine 2s ease-in-out infinite;
+  }
+  @keyframes dp-shine { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+  .dp-bar-labels { display:flex; justify-content:space-between; font-size:10px; color:rgba(255,255,255,0.4); margin-top:4px; position:relative; z-index:2; }
+  /* start button */
+  .dp-btn {
+    margin-top:16px; width:100%; padding:13px;
+    border:none; border-radius:14px; cursor:pointer; position:relative; z-index:2;
+    font-size:15px; font-weight:800; color:#fff;
+    background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+    box-shadow: 0 4px 16px rgba(139,92,246,0.4);
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .dp-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(139,92,246,0.5); }
+  .gauge-num { font-size:22px; font-weight:800; color:var(--dark); }
+  .gauge-lbl { font-size:11px; color:var(--text-light); }
+  .quick-actions { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:16px; }
+  .quick-action {
+    background:var(--white); border-radius:var(--radius-sm); padding:16px 8px;
+    text-align:center; box-shadow:var(--card-shadow); cursor:pointer;
+    text-decoration:none; display:block; transition:transform .2s, box-shadow .2s;
+    border:1px solid var(--border);
+  }
+  .quick-action:hover { box-shadow:0 6px 20px rgba(139,92,246,0.15); transform:translateY(-2px); }
+  .quick-action:active { transform:scale(0.95); }
+  .qa-icon { display:flex; justify-content:center; margin-bottom:6px; color:var(--primary); }
+  .qa-label { font-size:11px; color:var(--text-light); font-weight:600; }
+
+  /* ── VIP Widget ── */
+  .vip-widget { background:var(--white); border-radius:var(--radius); box-shadow:var(--card-shadow); margin-top:16px; overflow:hidden; }
+  .vip-widget-head {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 20px 12px;
+  }
+  .vip-widget-head .title { font-size:16px; font-weight:700; color:var(--dark); display:flex; align-items:center; gap:8px; }
+  .vip-view-more { font-size:12px; color:var(--primary); font-weight:600; text-decoration:none; display:flex; align-items:center; gap:3px; }
+
+  /* Icon row */
+  .vip-icons-row { display:flex; gap:10px; padding:0 20px 16px; }
+  .vip-icon-btn {
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;
+    cursor:pointer; padding:10px 6px; border-radius:12px; border:2px solid transparent;
+    transition:all .2s; background:transparent;
+  }
+  .vip-icon-btn.active { border-color:var(--primary); background:var(--gradient-soft); }
+  .vip-icon-btn .vip-badge-img {
+    width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:22px; font-weight:800;
+  }
+  .vip-icon-btn .vip-badge-name { font-size:10px; font-weight:700; color:var(--text-light); }
+  .vip-icon-btn.active .vip-badge-name { color:var(--primary); }
+
+  /* Detail panel */
+  .vip-detail {
+    margin:0 16px 16px; padding:16px; border-radius:12px;
+    background:var(--gradient-soft); border:1px solid rgba(139,92,246,0.15);
+  }
+  .vip-detail-name { font-size:15px; font-weight:800; color:var(--dark); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .vip-detail-name .current-tag { font-size:10px; background:var(--gradient); color:#fff; padding:2px 8px; border-radius:50px; font-weight:700; }
+  .vip-detail-rows { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
+  .vip-stat { background:#fff; border-radius:10px; padding:10px 12px; }
+  .vip-stat .vs-label { font-size:10px; color:var(--text-light); font-weight:600; text-transform:uppercase; letter-spacing:.5px; margin-bottom:3px; }
+  .vip-stat .vs-value { font-size:16px; font-weight:800; color:var(--primary); }
+  .vip-desc { font-size:12px; color:var(--text-light); line-height:1.6; margin-bottom:12px; }
+  .vip-min-deposit { display:flex; align-items:center; justify-content:space-between; }
+  .vip-min-deposit .label { font-size:12px; color:var(--text-light); }
+  .vip-min-deposit .amount { font-size:15px; font-weight:800; color:var(--dark); }
+
+  /* ── Withdrawal Ticker ── */
+  .ticker-wrap {
+    background: linear-gradient(135deg, #1a0a2e, #2d1060);
+    overflow: hidden;
+    padding: 9px 0;
+    display: flex;
+    align-items: center;
+    position: relative;
+    z-index: 5;
+  }
+  .ticker-label {
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #8B5CF6, #EC4899);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 12px;
+    margin-left: 12px;
+    border-radius: 50px;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    z-index: 2;
+  }
+  .ticker-track {
+    display: flex;
+    gap: 0;
+    animation: ticker-scroll 28s linear infinite;
+    white-space: nowrap;
+    padding-left: 24px;
+  }
+  .ticker-track:hover { animation-play-state: paused; }
+  .ticker-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.85);
+    padding: 0 28px 0 0;
+    font-weight: 500;
+  }
+  .ticker-item .t-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #10B981; flex-shrink: 0;
+    box-shadow: 0 0 6px rgba(16,185,129,0.8);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  .ticker-item .t-amount { color: #4ade80; font-weight: 800; }
+  .ticker-item .t-sep { color: rgba(255,255,255,0.2); margin: 0 4px; }
+  @keyframes ticker-scroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+  @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(0.7)} }
+  @keyframes spin { to{transform:rotate(360deg)} }
+
+  /* ── Hero Carousel ── */
+  .hc-track {
+    display: flex;
+    transition: transform 0.45s cubic-bezier(0.22,0.61,0.36,1);
+    width: 100%;
+  }
+  .hc-slide {
+    flex-shrink: 0;
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    padding: 2px;
+  }
+  .hc-card {
+    flex: 1;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform .15s, background .15s;
+    display: flex;
+    flex-direction: column;
+  }
+  .hc-card:active { transform: scale(0.96); }
+  .hc-card img {
+    width: 100%; height: 70px; object-fit: cover;
+    background: rgba(255,255,255,0.1);
+  }
+  .hc-card .hc-info { padding: 7px 8px 9px; }
+  .hc-card .hc-name {
+    font-size: 11px; font-weight: 700; color: #fff;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .hc-card .hc-price {
+    font-size: 13px; font-weight: 900; color: rgba(255,255,255,0.9);
+    margin-top: 2px;
+  }
+  .hc-card .hc-return {
+    font-size: 9px; font-weight: 700; color: #86efac;
+    margin-top: 2px; letter-spacing: .3px;
+  }
+  /* dots */
+  .hc-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(255,255,255,0.35); transition: all .25s; cursor: pointer;
+  }
+  .hc-dot.active { background: #fff; width: 18px; border-radius: 3px; }
+
+  /* ── Invest Modal (reused in dashboard) ── */
+  .invest-modal-bg {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+    z-index: 9999; display: flex; align-items: flex-end; justify-content: center;
+  }
+  .invest-modal {
+    background: var(--white); border-radius: 28px 28px 0 0;
+    width: 100%; max-width: 480px;
+    max-height: 88vh; overflow-y: auto;
+    animation: slideUp .28s cubic-bezier(0.22,0.61,0.36,1);
+  }
+  @keyframes slideUp { from{transform:translateY(100%);opacity:0} to{transform:translateY(0);opacity:1} }
+  .invest-modal-img { width:100%;height:200px;object-fit:cover;background:var(--gradient-soft); }
+  .invest-modal-body { padding:20px 20px 36px; }
+  .invest-modal-body h3 { font-size:20px;font-weight:800;color:var(--dark); }
+  .invest-modal-body .im-price { font-size:28px;font-weight:900;color:var(--primary);margin:6px 0 4px; }
+  .invest-modal-body .im-desc { font-size:13px;color:var(--text-light);line-height:1.65;margin-bottom:16px; }
+  .invest-stats { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px; }
+  .invest-stat { background:var(--bg);border-radius:12px;padding:12px 14px; }
+  .invest-stat .is-label { font-size:10px;color:var(--text-light);font-weight:700;text-transform:uppercase;letter-spacing:.4px; }
+  .invest-stat .is-value { font-size:18px;font-weight:800;color:var(--dark);margin-top:4px; }
+  .invest-quick-btns { display:flex;gap:8px;margin-top:8px; }
+  .invest-quick-btn { flex:1;padding:6px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);font-size:12px;font-weight:700;color:var(--primary);cursor:pointer;transition:all .15s; }
+  .invest-quick-btn:hover { background:var(--gradient-soft);border-color:var(--primary); }
+</style>
+</head>
+<body><div class="desktop-layout">
+<!-- Desktop Sidebar -->
+<aside class="desktop-sidebar" id="dsSidebar">
+  <div class="ds-logo">
+    <div class="ds-logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
+    <div class="ds-logo-text">
+      <div class="name">InvestPro</div>
+      <div class="sub">Commission Platform</div>
+    </div>
+  </div>
+  <nav class="ds-nav">
+    <div class="ds-section-label">Main</div>
+    <a href="dashboard.html" class="ds-link active">
+      <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Dashboard
+    </a>
+    <div class="ds-section-label">Earn</div>
+    <a href="tasks.html" class="ds-link">
+      <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Tasks
+    </a>
+    <div class="ds-section-label">Account</div>
+    <a href="wallet.html" class="ds-link">
+      <svg viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+      Wallet
+    </a>
+    <a href="profile.html" class="ds-link">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Profile
+    </a>
+    <a href="event.html" class="ds-link">
+      <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Events
+    </a>
+    <div class="ds-section-label">More</div>
+    <a href="about.html" class="ds-link">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      About
+    </a>
+    <a href="#" onclick="logout()" class="ds-link" style="color:rgba(239,68,68,0.7);">
+      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Logout
+    </a>
+  </nav>
+  <div class="ds-footer">
+    <div class="ds-user-info">
+      <div class="ds-avatar" id="dsAvatar">U</div>
+      <div>
+        <div class="ds-user-name" id="dsUsername">Loading...</div>
+        <div class="ds-user-vip" id="dsVip">VIP 1</div>
+      </div>
+    </div>
+  </div>
+</aside>
+<!-- Desktop Main -->
+<div class="desktop-main">
+  <!-- Desktop Topbar -->
+  <div class="desktop-topbar desktop-only">
+    <div class="dt-title">Dashboard</div>
+    <div class="dt-right">
+      <div class="dt-balance-pill" id="dtBalance">Balance: $0.00</div>
+      <div class="dt-avatar" id="dtAvatar" onclick="window.location='profile.html'">U</div>
+    </div>
+  </div>
+  <div class="desktop-content">
+<div class="page-container">
+
+  <div class="hero-dashboard">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div>
+        <div class="greeting">Good day,</div>
+        <div class="username" id="username">Loading...</div>
+      </div>
+      <a href="profile.html" style="width:46px;height:46px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;">
+        <svg viewBox="0 0 24 24" style="width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </a>
+    </div>
+
+    <!-- Hero Product Carousel -->
+    <div id="heroCarousel" style="position:relative;overflow:hidden;border-radius:14px;min-height:96px;display:flex;align-items:center;justify-content:center;">
+      <div style="width:20px;height:20px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;"></div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:5px;margin-top:8px;" id="heroDots"></div>
+  </div>
+
+  <!-- Withdrawal Ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker-label">
+      <svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> LIVE
+    </div>
+    <div class="ticker-track" id="tickerTrack"></div>
+  </div>
+
+  <div class="page-content" style="padding-top:0;">
+
+    <!-- Credit Card -->
+    <div class="credit-card">
+      <div class="cc-top">
+        <div>
+          <div class="cc-brand">InvestPro</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.6);margin-top:2px;letter-spacing:.5px;">MEMBER CARD</div>
+        </div>
+        <div class="cc-chip"><div class="cc-chip-inner"></div></div>
+      </div>
+
+      <div class="cc-balance-section">
+        <div class="cc-balance-label">Balance</div>
+        <div class="cc-balance-amount" id="balance">$0.00</div>
+      </div>
+
+      <div class="cc-bottom">
+        <div>
+          <div class="cc-number" id="ccNumber">**** **** **** ----</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:3px;">
+            Earned: <span id="totalEarned" style="color:rgba(255,255,255,0.9);font-weight:700;">$0.00</span>
+          </div>
+        </div>
+        <div class="cc-right">
+          <div class="cc-expiry-label">Valid</div>
+          <div class="cc-expiry" id="ccExpiry">--/--</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card Actions -->
+    <div class="cc-actions">
+      <a href="wallet.html" class="btn btn-primary" style="gap:6px;">
+        <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg> Deposit
+      </a>
+      <a href="wallet.html" class="btn btn-outline" style="gap:6px;">
+        <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><circle cx="12" cy="12" r="10"/><polyline points="16 12 12 8 8 12"/><line x1="12" y1="16" x2="12" y2="8"/></svg> Withdraw
+      </a>
+    </div>
+
+    <!-- hidden stubs so old JS selectors don't break -->
+    <div style="display:none;">
+      <div class="balance-label"></div>
+      <div class="balance-sub"></div>
+      <div class="balance-actions"></div>
+    </div>
+
+    <div class="daily-progress">
+      <!-- header -->
+      <div class="dp-header">
+        <div class="dp-title">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#a78bfa;fill:none;stroke-width:2;stroke-linecap:round;"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Daily Progress
+        </div>
+        <div id="vipBadge" class="dp-vip-badge">
+          <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><polyline points="6 3 18 3 22 9 12 22 2 9 6 3"/><line x1="2" y1="9" x2="22" y2="9"/><line x1="12" y1="3" x2="6" y2="9"/><line x1="12" y1="3" x2="18" y2="9"/></svg>
+          VIP 1
+        </div>
+      </div>
+
+      <!-- SVG arc gauge + side stats -->
+      <div class="dp-gauge-wrap">
+        <div class="dp-arc-wrap">
+          <svg viewBox="0 0 120 80" width="140" height="80" style="overflow:visible;">
+            <path d="M10,70 A55,55 0 0,1 110,70" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="10" stroke-linecap="round"/>
+            <path id="gaugeCircle" d="M10,70 A55,55 0 0,1 110,70" fill="none" stroke="url(#dpGrad)" stroke-width="10" stroke-linecap="round"
+                  style="stroke-dasharray:173; stroke-dashoffset:173; transition:stroke-dashoffset 1s ease;"/>
+            <defs>
+              <linearGradient id="dpGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#8b5cf6"/>
+                <stop offset="100%" stop-color="#ec4899"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="dp-arc-center">
+            <div class="dp-arc-num" id="tasksDone">0</div>
+            <div class="dp-arc-lbl">Tasks Done</div>
+          </div>
+        </div>
+
+        <div class="dp-stats">
+          <div id="tasksSummary" style="font-size:11px;color:rgba(255,255,255,0.5);font-weight:600;text-transform:uppercase;letter-spacing:.4px;line-height:1.4;">0 of 0 tasks<br>completed today</div>
+          <div style="margin-top:10px;">
+            <div style="font-size:11px;color:rgba(255,255,255,0.45);font-weight:600;text-transform:uppercase;letter-spacing:.4px;display:flex;align-items:center;gap:4px;">
+              <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:#a78bfa;fill:none;stroke-width:2;stroke-linecap:round;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Today's Earnings
+            </div>
+            <strong id="todayEarned" style="font-size:20px;font-weight:900;color:#fff;display:block;margin-top:2px;">$0.00</strong>
+          </div>
+          <div class="dp-bar-track" style="margin-top:10px;">
+            <div class="dp-bar-fill" id="progressBar" style="width:0%"></div>
+          </div>
+          <div class="dp-bar-labels">
+            <span>0%</span><span>50%</span><span>100%</span>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="checkBalanceAndStart()" class="dp-btn">
+        <svg viewBox="0 0 24 24" style="width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg>
+        Start Tasks
+      </button>
+    </div>
+
+    <div class="quick-actions">
+      <a href="tasks.html" class="quick-action">
+        <div class="qa-icon"><svg viewBox="0 0 24 24" style="width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <div class="qa-label">Tasks</div>
+      </a>
+      <a href="wallet.html" class="quick-action">
+        <div class="qa-icon"><svg viewBox="0 0 24 24" style="width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg></div>
+        <div class="qa-label">Wallet</div>
+      </a>
+      <a href="profile.html" class="quick-action">
+        <div class="qa-icon"><svg viewBox="0 0 24 24" style="width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/><circle cx="12" cy="12" r="10"/></svg></div>
+        <div class="qa-label">Profile</div>
+      </a>
+      <a href="#" class="quick-action" onclick="Auth.logout()" data-no-transition>
+        <div class="qa-icon" style="color:#EF4444;"><svg viewBox="0 0 24 24" style="width:26px;height:26px;stroke:#EF4444;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
+        <div class="qa-label" style="color:#EF4444;">Logout</div>
+      </a>
+    </div>
+
+    <!-- About Us / Latest Event Banners -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;">
+
+      <!-- About Us -->
+      <a href="about.html" style="text-decoration:none;border-radius:18px;overflow:hidden;display:block;
+        box-shadow:0 8px 24px rgba(109,40,217,0.35),0 2px 8px rgba(139,92,246,0.2);
+        transform:translateY(0);transition:transform .2s,box-shadow .2s;"
+        onmouseenter="this.style.transform='translateY(-3px)';this.style.boxShadow='0 14px 32px rgba(109,40,217,0.45),0 4px 12px rgba(139,92,246,0.3)';"
+        onmouseleave="this.style.transform='translateY(0)';this.style.boxShadow='0 8px 24px rgba(109,40,217,0.35),0 2px 8px rgba(139,92,246,0.2)';">
+        <div style="background:linear-gradient(145deg,#8B5CF6 0%,#6D28D9 60%,#4C1D95 100%);padding:16px 14px 14px;min-height:112px;position:relative;overflow:hidden;">
+          <!-- decorative circles -->
+          <div style="position:absolute;top:-18px;right:-18px;width:70px;height:70px;background:rgba(255,255,255,0.08);border-radius:50%;"></div>
+          <div style="position:absolute;bottom:-10px;right:10px;width:40px;height:40px;background:rgba(255,255,255,0.06);border-radius:50%;"></div>
+          <!-- icon -->
+          <div style="width:36px;height:36px;background:rgba(255,255,255,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:28px;">
+            <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div style="color:#fff;font-size:14px;font-weight:800;letter-spacing:-0.2px;">About Us</div>
+          <div style="color:rgba(255,255,255,0.65);font-size:11px;margin-top:3px;display:flex;align-items:center;gap:3px;">
+            Learn more
+            <svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:rgba(255,255,255,0.65);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- Latest Event -->
+      <a href="event.html" style="text-decoration:none;border-radius:18px;overflow:hidden;display:block;
+        box-shadow:0 8px 24px rgba(190,24,93,0.35),0 2px 8px rgba(236,72,153,0.2);
+        transform:translateY(0);transition:transform .2s,box-shadow .2s;"
+        onmouseenter="this.style.transform='translateY(-3px)';this.style.boxShadow='0 14px 32px rgba(190,24,93,0.45),0 4px 12px rgba(236,72,153,0.3)';"
+        onmouseleave="this.style.transform='translateY(0)';this.style.boxShadow='0 8px 24px rgba(190,24,93,0.35),0 2px 8px rgba(236,72,153,0.2)';">
+        <div style="background:linear-gradient(145deg,#F472B6 0%,#EC4899 40%,#BE185D 100%);padding:16px 14px 14px;min-height:112px;position:relative;overflow:hidden;">
+          <!-- decorative circles -->
+          <div style="position:absolute;top:-18px;right:-18px;width:70px;height:70px;background:rgba(255,255,255,0.08);border-radius:50%;"></div>
+          <div style="position:absolute;bottom:-10px;right:10px;width:40px;height:40px;background:rgba(255,255,255,0.06);border-radius:50%;"></div>
+          <!-- live dot -->
+          <div style="position:absolute;top:12px;right:12px;display:flex;align-items:center;gap:4px;background:rgba(255,255,255,0.18);border-radius:50px;padding:2px 8px 2px 5px;">
+            <span style="width:6px;height:6px;background:#fff;border-radius:50%;display:inline-block;animation:blink-dot 1.2s infinite;"></span>
+            <span style="font-size:9px;color:#fff;font-weight:800;letter-spacing:.5px;">LIVE</span>
+          </div>
+          <!-- icon -->
+          <div style="width:36px;height:36px;background:rgba(255,255,255,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:28px;">
+            <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div style="color:#fff;font-size:14px;font-weight:800;letter-spacing:-0.2px;">Latest Event</div>
+          <div style="color:rgba(255,255,255,0.65);font-size:11px;margin-top:3px;display:flex;align-items:center;gap:3px;">
+            View events
+            <svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:rgba(255,255,255,0.65);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+      </a>
+    </div>
+    <style>@keyframes blink-dot{0%,100%{opacity:1}50%{opacity:.2}}</style>
+
+    <!-- VIP Levels Widget -->
+    <div class="vip-widget">
+      <div class="vip-widget-head">
+        <div class="title">
+          <svg viewBox="0 0 24 24" style="color:var(--primary);width:20px;height:20px;stroke:var(--primary);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><polyline points="6 3 18 3 22 9 12 22 2 9 6 3"/><line x1="2" y1="9" x2="22" y2="9"/><line x1="12" y1="3" x2="6" y2="9"/><line x1="12" y1="3" x2="18" y2="9"/></svg>
+          VIP Levels
+        </div>
+        <a href="#" class="vip-view-more" onclick="showVipPage()" data-no-transition>
+          View More <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+      </div>
+
+      <!-- 4 VIP icon buttons -->
+      <div class="vip-icons-row">
+        <button class="vip-icon-btn active" onclick="selectVip(0)" id="vipBtn0">
+          <div class="vip-badge-img" style="background:linear-gradient(135deg,#b45309,#92400e);">
+            <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg>
+          </div>
+          <div class="vip-badge-name">Bronze</div>
+        </button>
+        <button class="vip-icon-btn" onclick="selectVip(1)" id="vipBtn1">
+          <div class="vip-badge-img" style="background:linear-gradient(135deg,#64748b,#475569);">
+            <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg>
+          </div>
+          <div class="vip-badge-name">Silver</div>
+        </button>
+        <button class="vip-icon-btn" onclick="selectVip(2)" id="vipBtn2">
+          <div class="vip-badge-img" style="background:linear-gradient(135deg,#d97706,#b45309);">
+            <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z"/></svg>
+          </div>
+          <div class="vip-badge-name">Gold</div>
+        </button>
+        <button class="vip-icon-btn" onclick="selectVip(3)" id="vipBtn3">
+          <div class="vip-badge-img" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);">
+            <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/><circle cx="12" cy="12" r="3" fill="#fff" stroke="none"/></svg>
+          </div>
+          <div class="vip-badge-name">Platinum</div>
+        </button>
+      </div>
+
+      <!-- Detail Panel -->
+      <div class="vip-detail" id="vipDetail"></div>
+    </div>
+
+    <!-- Spin Wheel Card -->
+    <div id="spinWheelCard" class="hidden mt-16"></div>
+
+    <!-- Recent Activity -->
+    <div class="card mt-16">
+      <div class="card-header" style="display:flex;align-items:center;gap:8px;">
+        <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--primary);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Recent Activity
+      </div>
+      <div id="recentTxns"><div class="spinner"></div></div>
+    </div>
+
+  </div>
+
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="nav-item active">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span><span>Home</span>
+    </a>
+    <a href="tasks.html" class="nav-item">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><span>Tasks</span>
+    </a>
+    <a href="#" onclick="checkBalanceAndStart();return false;" class="nav-item-center" data-no-transition>
+      <div class="nav-fab"><svg viewBox="0 0 24 24" style="width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+    </a>
+    <a href="wallet.html" class="nav-item">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg></span><span>Wallet</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><span>Profile</span>
+    </a>
+  </nav>
+
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/transitions.js"></script>
+<script>
+  // ── Withdrawal Ticker ──
+  const TICKER_MSGS = [
+    { user: '********6784', amount: '$93.50',  time: '2 mins ago' },
+    { user: '****2291',     amount: '$145.00', time: '5 mins ago' },
+    { user: '*****8830',    amount: '$67.20',  time: '8 mins ago' },
+    { user: '***5519',      amount: '$210.75', time: '11 mins ago' },
+    { user: '******3341',   amount: '$38.90',  time: '14 mins ago' },
+    { user: '****7762',     amount: '$182.00', time: '17 mins ago' },
+    { user: '*****9003',    amount: '$55.50',  time: '20 mins ago' },
+  ];
+  (function buildTicker() {
+    const track = document.getElementById('tickerTrack');
+    // Duplicate for seamless loop
+    const items = [...TICKER_MSGS, ...TICKER_MSGS];
+    track.innerHTML = items.map(m => `
+      <span class="ticker-item">
+        <span class="t-dot"></span>
+        🎉 Congrats <strong style="color:#e9d5ff;">${m.user}</strong>
+        <span class="t-sep">—</span>
+        Successful withdraw <span class="t-amount">${m.amount}</span>
+        <span class="t-sep">·</span>
+        <span style="color:rgba(255,255,255,0.4);font-size:11px;">${m.time}</span>
+      </span>
+    `).join('');
+  })();
+
+  requireAuth();
+
+  // ── VIP Levels Data ──
+  const VIP_LEVELS = [
+    {
+      id: 0, name: 'Bronze Membership',
+      icon: '🥉', color: 'linear-gradient(135deg,#cd7f32,#a0522d)',
+      commission: '0.5%', tasks: '35', minDeposit: '$99.00',
+      desc: 'Earn 0.5% commission on each submitted task with 35 products per set. Perfect for beginners.'
+    },
+    {
+      id: 1, name: 'Silver Membership',
+      icon: '🥈', color: 'linear-gradient(135deg,#9ca3af,#6b7280)',
+      commission: '0.7%', tasks: '40', minDeposit: '$399.00',
+      desc: 'Earn 0.7% commission on each submitted task with 40 products per set. Great for growing earners.'
+    },
+    {
+      id: 2, name: 'Gold Membership',
+      icon: '🥇', color: 'linear-gradient(135deg,#f59e0b,#d97706)',
+      commission: '0.8%', tasks: '45', minDeposit: '$999.00',
+      desc: 'Earn 0.8% commission on each submitted task with 45 products per set. For serious earners.'
+    },
+    {
+      id: 3, name: 'Platinum Membership',
+      icon: '💎', color: 'linear-gradient(135deg,#3b82f6,#6366f1)',
+      commission: '1.0%', tasks: '50', minDeposit: '$3,999.00',
+      desc: 'Earn 1.0% commission on each submitted task with 50 products per set. Maximum earning potential.'
+    }
+  ];
+
+  let currentVipLevel = 0; // will update from dashboard data
+
+  function selectVip(idx) {
+    document.querySelectorAll('.vip-icon-btn').forEach((b,i) => b.classList.toggle('active', i === idx));
+    const v = VIP_LEVELS[idx];
+    const isCurrent = idx === currentVipLevel;
+    document.getElementById('vipDetail').innerHTML = `
+      <div class="vip-detail-name">
+        ${v.icon} ${v.name}
+        ${isCurrent ? '<span class="current-tag">Current</span>' : ''}
+      </div>
+      <div class="vip-detail-rows">
+        <div class="vip-stat">
+          <div class="vs-label">Commission</div>
+          <div class="vs-value">${v.commission}</div>
+        </div>
+        <div class="vip-stat">
+          <div class="vs-label">Tasks / Set</div>
+          <div class="vs-value">${v.tasks}</div>
+        </div>
+      </div>
+      <div class="vip-desc">${v.desc}</div>
+      <div class="vip-min-deposit">
+        <span class="label">Minimum Deposit</span>
+        <span class="amount">${v.minDeposit}</span>
+      </div>
+    `;
+  }
+
+  function showVipPage() {
+    // Show all 4 levels in an overlay or navigate
+    selectVip((currentVipLevel + 1) % 4);
+  }
+
+  selectVip(0); // init
+
+  const user = getCurrentUser();
+  if (user) document.getElementById('username').textContent = user.full_name || user.username;
+
+  let currentBalance = 0;
+
+  async function loadDashboard() {
+    const res = await User.getDashboard();
+    if (!res || !res.ok) return;
+    const d = res.data.data;
+
+    currentBalance = parseFloat(d.balance) || 0;
+    document.getElementById('balance').textContent     = formatMoney(d.balance);
+    document.getElementById('totalEarned').textContent = formatMoney(d.total_earned);
+
+    // Credit card cosmetics — derive a fake card number from user id + vip level
+    const uid = String(d.user_id || 1).padStart(4, '0');
+    const vip = String(d.vip_level || 1).padStart(4, '0');
+    document.getElementById('ccNumber').textContent = `**** **** **** ${uid}`;
+    // Expiry: joined year + 5 years, or just a static nice date
+    const expYear = new Date().getFullYear() + 3;
+    document.getElementById('ccExpiry').textContent = `12/${String(expYear).slice(2)}`;
+    document.getElementById('tasksDone').textContent   = d.today_tasks_done;
+    document.getElementById('todayEarned').textContent = formatMoney(d.today_earned);
+    document.getElementById('tasksSummary').innerHTML = `${d.today_tasks_done} of ${d.daily_task_limit} tasks<br>completed today`;
+    // Update VIP badge text without overwriting the SVG icon
+    const vipBadge = document.getElementById('vipBadge');
+    if (vipBadge) {
+      const vipText = d.vip_name || 'VIP ' + d.vip_level;
+      // Set only the last text node
+      const nodes = vipBadge.childNodes;
+      for (let i = nodes.length - 1; i >= 0; i--) {
+        if (nodes[i].nodeType === 3) { nodes[i].textContent = '\n          ' + vipText; break; }
+      }
+    }
+    currentVipLevel = (d.vip_level || 1) - 1;
+    selectVip(currentVipLevel);
+
+    const pct = d.daily_task_limit > 0 ? Math.round((d.today_tasks_done / d.daily_task_limit) * 100) : 0;
+    // SVG arc gauge: total arc length ≈ 173, offset 173=empty → 0=full
+    const arcEl = document.getElementById('gaugeCircle');
+    if (arcEl) arcEl.style.strokeDashoffset = 173 - (173 * pct / 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+
+    const txnContainer = document.getElementById('recentTxns');
+    if (!d.recent_transactions || d.recent_transactions.length === 0) {
+      txnContainer.innerHTML = `<div class="empty-state"><div class="icon" style="font-size:48px;opacity:.3;margin-bottom:12px;">📭</div><h3>No activity yet</h3><p>Complete tasks to see earnings here</p></div>`;
+      return;
+    }
+    const iconMap = { commission:'target', deposit:'arrow-down-circle', withdrawal:'arrow-up-circle', refund:'rotate-ccw' };
+    txnContainer.innerHTML = d.recent_transactions.map(t => {
+      const isIncome = ['commission','deposit','refund'].includes(t.type);
+      return `
+        <div class="txn-item">
+          <div class="txn-icon ${isIncome?'income':'expense'}" style="display:flex;align-items:center;justify-content:center;">
+            <i data-lucide="${iconMap[t.type]||'circle-dollar-sign'}" style="width:20px;height:20px;color:${isIncome?'#10B981':'#EF4444'};"></i>
+          </div>
+          <div class="txn-desc">
+            <div class="name">${t.description||t.type}</div>
+            <div class="date">${formatDate(t.created_at)}</div>
+          </div>
+          <div class="txn-amount ${isIncome?'positive':'negative'}">${isIncome?'+':'-'}${formatMoney(t.amount)}</div>
+        </div>`;
+    }).join('');
+  }
+
+  // ── Hero Carousel ──
+  let heroProducts = [];
+  let heroSlide = 0;
+  let heroTimer = null;
+  const CARDS_PER_SLIDE = 3;
+
+  async function loadHeroCarousel() {
+    const res = await fetch('/api/tasks/products');
+    const json = await res.json();
+    heroProducts = Array.isArray(json.data) ? json.data : (json.data?.products || []);
+
+    const carousel = document.getElementById('heroCarousel');
+    const dotsEl   = document.getElementById('heroDots');
+    if (!heroProducts.length) {
+      carousel.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.5);font-size:12px;padding:20px;">No products yet</div>';
+      return;
+    }
+
+    // Group products into slides of CARDS_PER_SLIDE
+    const slides = [];
+    for (let i = 0; i < heroProducts.length; i += CARDS_PER_SLIDE) {
+      slides.push(heroProducts.slice(i, i + CARDS_PER_SLIDE));
+    }
+
+    // Build track
+    carousel.innerHTML = `<div class="hc-track" id="hcTrack">${
+      slides.map((group, si) => `
+        <div class="hc-slide">${
+          group.map((p, gi) => {
+            const idx = si * CARDS_PER_SLIDE + gi;
+            return `
+              <div class="hc-card" onclick="openHeroInvest(${idx})">
+                <img src="${p.image_url || ''}" alt="${p.name}"
+                     onerror="this.style.background='rgba(255,255,255,0.1)';this.removeAttribute('src');">
+                <div class="hc-info">
+                  <div class="hc-name">${p.name}</div>
+                  <div class="hc-return">+0.5% / day</div>
+                </div>
+              </div>`;
+          }).join('')
+        }</div>`
+      ).join('')
+    }</div>`;
+
+    // Dots
+    dotsEl.innerHTML = slides.map((_, i) =>
+      `<div class="hc-dot${i===0?' active':''}" onclick="goHeroSlide(${i})"></div>`
+    ).join('');
+
+    // Auto-advance
+    if (slides.length > 1) {
+      heroTimer = setInterval(() => goHeroSlide((heroSlide + 1) % slides.length), 3000);
+    }
+
+    // Swipe support
+    let tx = 0;
+    carousel.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive:true});
+    carousel.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - tx;
+      if (Math.abs(dx) > 40) goHeroSlide(dx < 0
+        ? Math.min(heroSlide + 1, slides.length - 1)
+        : Math.max(heroSlide - 1, 0));
+    }, {passive:true});
+
+    window._heroSlides = slides;
+  }
+
+  function goHeroSlide(idx) {
+    heroSlide = idx;
+    const track = document.getElementById('hcTrack');
+    if (track) track.style.transform = `translateX(-${idx * 100}%)`;
+    document.querySelectorAll('.hc-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+  }
+
+  // ── Invest Modal (dashboard version) ──
+  function openHeroInvest(idx) {
+    const p = heroProducts[idx];
+    if (!p) return;
+    const commission = (parseFloat(p.price) * 0.005).toFixed(2);
+    const modal = document.createElement('div');
+    modal.className = 'invest-modal-bg';
+    modal.id = 'heroInvestBg';
+    modal.innerHTML = `
+      <div class="invest-modal">
+        <img class="invest-modal-img" src="${p.image_url||''}" alt="${p.name}"
+             onerror="this.style.background='var(--gradient-soft)';this.removeAttribute('src');">
+        <div class="invest-modal-body">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+            <div>
+              <div style="font-size:11px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;">${p.category||'Product'}</div>
+              <h3>${p.name}</h3>
+            </div>
+            <button onclick="closeHeroInvest()" style="width:32px;height:32px;border:none;background:var(--bg);border-radius:50%;cursor:pointer;font-size:18px;color:var(--text-light);flex-shrink:0;display:flex;align-items:center;justify-content:center;">×</button>
+          </div>
+          <div class="im-price">$${parseFloat(p.price).toFixed(2)}</div>
+          <div class="im-desc">${p.description||'A top-rated product available for investment. Earn daily commission returns when you invest.'}</div>
+          <div class="invest-stats">
+            <div class="invest-stat"><div class="is-label">Daily Return</div><div class="is-value" style="color:var(--success);">0.5%</div></div>
+            <div class="invest-stat"><div class="is-label">Est. Commission</div><div class="is-value">$${commission}</div></div>
+            <div class="invest-stat"><div class="is-label">Min. Invest</div><div class="is-value">$10.00</div></div>
+            <div class="invest-stat"><div class="is-label">Category</div><div class="is-value" style="font-size:13px;">${p.category||'General'}</div></div>
+          </div>
+          <div style="margin-bottom:16px;">
+            <label style="font-size:13px;font-weight:700;color:var(--dark);display:block;margin-bottom:8px;">Investment Amount (USD)</label>
+            <div class="input-group">
+              <span class="input-icon">$</span>
+              <input type="number" id="heroInvestAmt" class="form-control" placeholder="Enter amount" min="10" step="1">
+            </div>
+            <div class="invest-quick-btns">
+              <button class="invest-quick-btn" onclick="document.getElementById('heroInvestAmt').value=50">$50</button>
+              <button class="invest-quick-btn" onclick="document.getElementById('heroInvestAmt').value=100">$100</button>
+              <button class="invest-quick-btn" onclick="document.getElementById('heroInvestAmt').value=500">$500</button>
+              <button class="invest-quick-btn" onclick="document.getElementById('heroInvestAmt').value=1000">$1K</button>
+            </div>
+          </div>
+          <div id="heroInvestAlert" class="hidden"></div>
+          <button onclick="calcHeroInvest()" class="btn btn-primary btn-block" style="font-size:16px;font-weight:800;">
+            <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            Calculate Return
+          </button>
+          <div id="heroDemo" class="hidden" style="background:linear-gradient(135deg,#D1FAE5,#A7F3D0);border-radius:14px;padding:16px;margin-top:12px;text-align:center;">
+            <div style="font-size:12px;color:#065F46;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">📊 Estimated Daily Earning</div>
+            <div id="heroDailyNum" style="font-size:32px;font-weight:900;color:#047857;margin:6px 0;"></div>
+            <div id="heroMonthlyNum" style="font-size:13px;color:#065F46;font-weight:600;"></div>
+            <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(6,95,70,0.15);font-size:12px;color:#065F46;margin-bottom:10px;">
+              📲 To invest, contact admin directly:
+            </div>
+            <div style="display:flex;gap:10px;justify-content:center;">
+              <a href="https://t.me/YOURUSERNAME" target="_blank" data-no-transition style="flex:1;display:flex;align-items:center;justify-content:center;gap:7px;background:#229ED9;color:#fff;border-radius:12px;padding:10px 8px;font-size:13px;font-weight:700;text-decoration:none;">
+                <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#fff;flex-shrink:0;"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.737l-2.965-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.963.822z"/></svg>
+                Telegram
+              </a>
+              <a href="https://wa.me/YOURNUMBER" target="_blank" data-no-transition style="flex:1;display:flex;align-items:center;justify-content:center;gap:7px;background:#25D366;color:#fff;border-radius:12px;padding:10px 8px;font-size:13px;font-weight:700;text-decoration:none;">
+                <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#fff;flex-shrink:0;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zm-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884zm8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                WhatsApp
+              </a>
+            </div>
+          </div>
+          <button onclick="closeHeroInvest()" class="btn btn-outline btn-block mt-12">Close</button>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e => { if (e.target === modal) closeHeroInvest(); });
+  }
+
+  function closeHeroInvest() {
+    const m = document.getElementById('heroInvestBg');
+    if (m) m.remove();
+  }
+
+  function calcHeroInvest() {
+    const amount = parseFloat(document.getElementById('heroInvestAmt')?.value || 0);
+    if (!amount || amount < 10) {
+      showAlert('heroInvestAlert', 'Please enter at least $10 to see the calculation.', 'warning');
+      return;
+    }
+    document.getElementById('heroDailyNum').textContent  = '+$' + (amount * 0.005).toFixed(2) + ' / day';
+    document.getElementById('heroMonthlyNum').textContent = 'Estimated monthly return: $' + (amount * 0.005 * 30).toFixed(2);
+    document.getElementById('heroDemo').classList.remove('hidden');
+    document.getElementById('heroInvestAlert').classList.add('hidden');
+  }
+
+  // ── Spin Wheel Card on Dashboard ─────────────────
+  async function loadSpinCard() {
+    try {
+      const res = await fetch('/api/user/spin-info', {
+        headers: { 'Authorization': `Bearer ${getToken()}` }
+      });
+      const json = await res.json();
+      if (!json.success) return;
+      const d = json.data;
+      if (!d.max_spins || d.max_spins === 0) return; // VIP has no spin — hide card
+
+      const card = document.getElementById('spinWheelCard');
+      const hasSpins = d.spins_left > 0;
+      card.innerHTML = `
+        <div style="
+          background: linear-gradient(135deg, #7C3AED 0%, #EC4899 100%);
+          border-radius: var(--radius);
+          padding: 18px 20px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+          cursor: ${hasSpins ? 'pointer' : 'default'};
+        " onclick="${hasSpins ? "window.location.href='tasks.html'" : ''}">
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div style="width:52px;height:52px;background:rgba(255,255,255,0.2);border-radius:14px;
+              display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;">🎡</div>
+            <div>
+              <div style="font-size:16px;font-weight:800;color:#fff;">Spin Wheel</div>
+              <div style="font-size:13px;color:rgba(255,255,255,0.8);margin-top:3px;">
+                ${hasSpins
+                  ? `<strong style="color:#fff;">${d.spins_left}</strong> spin${d.spins_left > 1 ? 's' : ''} available today`
+                  : 'No spins left today · Resets at midnight'}
+              </div>
+            </div>
+          </div>
+          ${hasSpins ? `
+            <div style="background:rgba(255,255,255,0.25);color:#fff;font-size:13px;font-weight:700;
+              padding:10px 18px;border-radius:10px;white-space:nowrap;flex-shrink:0;">
+              SPIN NOW →
+            </div>` : `
+            <div style="background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);font-size:12px;font-weight:600;
+              padding:10px 14px;border-radius:10px;white-space:nowrap;flex-shrink:0;">
+              ⏰ Tomorrow
+            </div>`}
+        </div>`;
+      card.classList.remove('hidden');
+    } catch(e) { /* silently skip */ }
+  }
+
+  loadDashboard();
+  loadHeroCarousel();
+  loadSpinCard();
+
+  const MIN_BALANCE = 50;
+
+  function checkBalanceAndStart() {
+    if (currentBalance >= MIN_BALANCE) {
+      navigateTo('tasks.html');
+    } else {
+      document.getElementById('lowBalAmt').textContent = formatMoney(currentBalance);
+      document.getElementById('lowBalanceModal').style.display = 'flex';
+    }
+  }
+  function closeLowBalance() {
+    document.getElementById('lowBalanceModal').style.display = 'none';
+  }
+</script>
+
+<!-- Low Balance Popup -->
+<div id="lowBalanceModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;padding:24px;">
+  <div style="background:#fff;border-radius:18px;width:100%;max-width:320px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div style="padding:28px 24px 8px;text-align:center;">
+      <div style="width:56px;height:56px;background:#FEF3C7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+        <svg viewBox="0 0 24 24" style="width:28px;height:28px;stroke:#F59E0B;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div style="font-size:17px;font-weight:700;color:#111;margin-bottom:8px;">Insufficient Balance</div>
+      <div style="font-size:14px;color:#6B7280;line-height:1.6;">Account balance <strong id="lowBalAmt">$0.00</strong> is below <strong>$50.00</strong>. Not able to start tasks. Please deposit first.</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #F3F4F6;margin-top:20px;">
+      <button onclick="closeLowBalance()" style="padding:16px;background:none;border:none;border-right:1px solid #F3F4F6;font-size:15px;font-weight:600;color:#6B7280;cursor:pointer;">Cancel</button>
+      <button onclick="closeLowBalance();navigateTo('wallet.html?tab=deposit')" style="padding:16px;background:none;border:none;font-size:15px;font-weight:600;color:#7C3AED;cursor:pointer;">Deposit</button>
+    </div>
+  </div>
+</div>
+
+  </div><!-- end desktop-content -->
+</div><!-- end desktop-main -->
+</div><!-- end desktop-layout -->
+
+<script>
+  // Populate desktop sidebar
+  (async function() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+      const res = await fetch('/api/user/profile', { headers: { 'Authorization': 'Bearer ' + token } });
+      const json = await res.json();
+      if (json.success) {
+        const u = json.data;
+        const init = (u.username || 'U')[0].toUpperCase();
+        const el = document.getElementById('dsAvatar'); if(el) el.textContent = init;
+        const eu = document.getElementById('dsUsername'); if(eu) eu.textContent = u.username;
+        const ev = document.getElementById('dsVip'); if(ev) ev.textContent = u.vip_name || ('VIP ' + u.vip_level);
+        const dt = document.getElementById('dtAvatar'); if(dt) dt.textContent = init;
+        const db = document.getElementById('dtBalance'); if(db) db.textContent = 'Balance: $' + parseFloat(u.balance||0).toFixed(2);
+      }
+    } catch(e) {}
+  })();
+  function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = 'index.html';
+  }
+</script>
+</body>
+</html>

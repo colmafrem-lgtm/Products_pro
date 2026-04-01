@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InvestPro - Earn While You Shop</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  /* ── Reset for this page ── */
+  body { background: #0f0c1d; overflow: hidden; }
+
+  /* ── Full screen split layout ── */
+  .welcome-wrap {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ── LEFT PANEL ── */
+  .left-panel {
+    flex: 0 0 42%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 48px 40px;
+    overflow: hidden;
+    background: #0f0c1d;
+    background-image: url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=900&q=80&fit=crop');
+    background-size: cover;
+    background-position: center;
+  }
+
+  /* Gradient background blobs */
+  .left-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(139,92,246,0.45) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 50% at 80% 80%, rgba(236,72,153,0.35) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 50% 50%, rgba(109,40,217,0.2) 0%, transparent 70%);
+    z-index: 0;
+  }
+
+  /* Decorative circles */
+  .blob-1 {
+    position: absolute;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(139,92,246,0.3), rgba(236,72,153,0.2));
+    top: -80px; left: -80px;
+    filter: blur(40px);
+    animation: float1 8s ease-in-out infinite;
+  }
+  .blob-2 {
+    position: absolute;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(236,72,153,0.25), rgba(139,92,246,0.15));
+    bottom: 100px; right: -60px;
+    filter: blur(30px);
+    animation: float2 10s ease-in-out infinite;
+  }
+  @keyframes float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(20px,30px)} }
+  @keyframes float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-15px,-20px)} }
+
+  .left-content { position: relative; z-index: 1; }
+
+  .brand-logo {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -1px;
+    margin-bottom: 48px;
+    background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .brand-logo span {
+    background: linear-gradient(135deg, #8B5CF6, #EC4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .welcome-label {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(139,92,246,0.9);
+    margin-bottom: 12px;
+  }
+
+  .welcome-title {
+    font-size: clamp(42px, 5vw, 64px);
+    font-weight: 900;
+    line-height: 1.05;
+    color: #fff;
+    letter-spacing: -2px;
+    margin-bottom: 16px;
+  }
+
+  .welcome-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.7;
+    margin-bottom: 40px;
+    max-width: 300px;
+  }
+
+  /* CTA Buttons */
+  .cta-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn-login {
+    padding: 14px 36px;
+    border-radius: 50px;
+    background: linear-gradient(135deg, #8B5CF6, #EC4899);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 8px 30px rgba(139,92,246,0.5);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .btn-login:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(139,92,246,0.6); }
+
+  .btn-register {
+    padding: 14px 36px;
+    border-radius: 50px;
+    background: transparent;
+    color: rgba(255,255,255,0.8);
+    font-size: 15px;
+    font-weight: 600;
+    border: 1.5px solid rgba(255,255,255,0.2);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all .2s;
+    backdrop-filter: blur(10px);
+  }
+  .btn-register:hover { border-color: rgba(255,255,255,0.5); color: #fff; background: rgba(255,255,255,0.08); }
+
+  /* Stats row */
+  .stats-row {
+    display: flex;
+    gap: 28px;
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .stat-item .s-num { font-size: 22px; font-weight: 800; color: #fff; }
+  .stat-item .s-lbl { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 3px; letter-spacing: 0.5px; }
+
+  /* ── RIGHT PANEL ── */
+  .right-panel {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: #0a0714;
+  }
+
+  /* Dark gradient fade on left edge */
+  .right-panel::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 80px;
+    background: linear-gradient(to right, #0f0c1d, transparent);
+    z-index: 10;
+    pointer-events: none;
+  }
+  /* Fade on right edge */
+  .right-panel::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 60px;
+    background: linear-gradient(to left, #0a0714, transparent);
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .products-label {
+    position: absolute;
+    top: 28px;
+    left: 0; right: 0;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    z-index: 20;
+  }
+
+  /* Columns container */
+  .cols-wrap {
+    display: flex;
+    gap: 12px;
+    padding: 64px 16px 0 16px;
+    height: 100%;
+  }
+
+  /* Each scrolling column */
+  .p-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  .p-col { visibility: hidden; }
+  .p-col.ready.col-up   { visibility: visible; animation: scrollUp   55s linear infinite; }
+  .p-col.ready.col-down { visibility: visible; animation: scrollDown  65s linear infinite; }
+  .p-col.ready.col-up2  { visibility: visible; animation: scrollUp   48s linear infinite; }
+
+  @keyframes scrollUp   { 0%{transform:translateY(0)} 100%{transform:translateY(-50%)} }
+  @keyframes scrollDown { 0%{transform:translateY(-50%)} 100%{transform:translateY(0)} }
+
+  /* Product card in showcase */
+  .p-card {
+    border-radius: 14px;
+    overflow: hidden;
+    background: #1a1530;
+    border: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+    transition: transform .3s, box-shadow .3s;
+    cursor: pointer;
+  }
+  .p-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 30px rgba(139,92,246,0.3);
+    border-color: rgba(139,92,246,0.3);
+  }
+  .p-card img {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    display: block;
+  }
+  .p-card .p-info {
+    padding: 10px 12px 12px;
+  }
+  .p-card .p-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.85);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .p-card .p-price {
+    font-size: 14px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #8B5CF6, #EC4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-top: 3px;
+  }
+  .p-card .p-rate {
+    font-size: 10px;
+    color: rgba(255,255,255,0.3);
+    margin-top: 2px;
+  }
+
+  /* ── MOBILE Layout ── */
+  @media (max-width: 768px) {
+    body { overflow: auto; }
+    .welcome-wrap { flex-direction: column; height: auto; min-height: 100vh; }
+
+    .left-panel {
+      flex: none;
+      min-height: 100vh;
+      padding: 40px 24px 48px;
+      justify-content: center;
+    }
+
+    .right-panel {
+      display: none; /* hide product showcase on small mobile */
+    }
+
+    /* Show a slim horizontal product strip on mobile instead */
+    .mobile-products {
+      display: block !important;
+    }
+
+    .brand-logo { margin-bottom: 32px; }
+    .welcome-title { font-size: 44px; }
+    .stats-row { gap: 20px; }
+  }
+
+  @media (min-width: 769px) {
+    .mobile-products { display: none; }
+  }
+
+  /* Mobile product strip */
+  .mobile-products {
+    display: none;
+    overflow: hidden;
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 180px;
+  }
+
+  .mobile-strip {
+    display: flex;
+    gap: 10px;
+    padding: 0 24px;
+    animation: scrollRight 45s linear infinite;
+    width: max-content;
+  }
+
+  @keyframes scrollRight { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+  .m-card {
+    width: 110px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .m-card img { width:100%; height:70px; object-fit:cover; }
+  .m-card .m-info { padding: 7px 8px; }
+  .m-card .m-name { font-size:10px; color:rgba(255,255,255,0.7); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .m-card .m-price { font-size:11px; font-weight:800; background:linear-gradient(135deg,#8B5CF6,#EC4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+</style>
+</head>
+<body>
+
+<div class="welcome-wrap">
+
+  <!-- ══ LEFT PANEL ══ -->
+  <div class="left-panel">
+    <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(15,12,29,0.85) 0%,rgba(109,40,217,0.4) 50%,rgba(15,12,29,0.9) 100%);z-index:0;"></div>
+    <div class="blob-1"></div>
+    <div class="blob-2"></div>
+
+    <div class="left-content">
+      <div class="brand-logo">Invest<span>Pro</span></div>
+
+      <div class="welcome-label">Commission Platform</div>
+      <h1 class="welcome-title">Welcome<br>Back.</h1>
+      <p class="welcome-sub">Earn real commissions by reviewing trending products. Join thousands already earning daily.</p>
+
+      <div class="cta-group">
+        <a href="login.html" class="btn-login">Log In</a>
+        <a href="register.html" class="btn-register">Register</a>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="s-num">10K+</div>
+          <div class="s-lbl">Members</div>
+        </div>
+        <div class="stat-item">
+          <div class="s-num">$2M+</div>
+          <div class="s-lbl">Paid Out</div>
+        </div>
+        <div class="stat-item">
+          <div class="s-num">3%</div>
+          <div class="s-lbl">Max Commission</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile product strip (shown only on small screens) -->
+    <div class="mobile-products">
+      <div class="mobile-strip" id="mobileStrip"></div>
+    </div>
+  </div>
+
+  <!-- ══ RIGHT PANEL ══ -->
+  <div class="right-panel">
+    <div class="products-label">Trending Products</div>
+
+    <div class="cols-wrap" id="colsWrap">
+      <div class="p-col col-up"   id="col0"></div>
+      <div class="p-col col-down" id="col1"></div>
+      <div class="p-col col-up2" id="col2"></div>
+      <div class="p-col col-down" id="col3" style="animation-duration:28s"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="js/api.js"></script>
+<script>
+  // Welcome page — always show, no redirect
+
+  // Placeholder product cards when no API
+  const PLACEHOLDER_PRODUCTS = [
+    { name: 'Running Sneakers', price: 59.99, commission_rate: 1.5, image_url: '' },
+    { name: 'Wireless Earbuds', price: 89.99, commission_rate: 2.0, image_url: '' },
+    { name: 'Smart Watch',      price: 149.99, commission_rate: 2.0, image_url: '' },
+    { name: 'Leather Backpack', price: 79.99, commission_rate: 1.5, image_url: '' },
+    { name: 'Coffee Maker',     price: 65.99, commission_rate: 1.5, image_url: '' },
+    { name: 'Yoga Mat',         price: 35.99, commission_rate: 1.0, image_url: '' },
+    { name: 'Gaming Mouse',     price: 39.99, commission_rate: 1.5, image_url: '' },
+    { name: 'Silk Scarf',       price: 29.99, commission_rate: 1.0, image_url: '' },
+    { name: 'Skincare Set',     price: 49.99, commission_rate: 1.5, image_url: '' },
+    { name: 'Desk Lamp',        price: 27.99, commission_rate: 1.0, image_url: '' },
+    { name: 'Headphones Pro',   price: 99.99, commission_rate: 2.0, image_url: '' },
+    { name: 'Water Bottle',     price: 24.99, commission_rate: 1.0, image_url: '' },
+  ];
+
+  // Gradient placeholder colors for cards without images
+  const GRAD_COLORS = [
+    ['#4c1d95','#7c3aed'], ['#831843','#be185d'], ['#1e3a5f','#1d4ed8'],
+    ['#064e3b','#065f46'], ['#7c2d12','#9a3412'], ['#1f2937','#374151'],
+    ['#312e81','#4338ca'], ['#701a75','#a21caf'], ['#1a2e05','#365314'],
+  ];
+
+  function makeCard(p, idx) {
+    const [c1, c2] = GRAD_COLORS[idx % GRAD_COLORS.length];
+    const imgContent = p.image_url
+      ? `<img src="${p.image_url}" alt="${p.name}" onerror="this.parentElement.innerHTML='<div style=\'width:100%;height:130px;background:linear-gradient(135deg,${c1},${c2});display:flex;align-items:center;justify-content:center;font-size:32px;\'>🛍️</div>'">`
+      : `<div style="width:100%;height:130px;background:linear-gradient(135deg,${c1},${c2});display:flex;align-items:center;justify-content:center;font-size:32px;">🛍️</div>`;
+    return `
+      <div class="p-card">
+        ${imgContent}
+        <div class="p-info">
+          <div class="p-name">${p.name}</div>
+          <div class="p-price">$${parseFloat(p.price).toFixed(2)}</div>
+          <div class="p-rate">⭐ ${p.commission_rate}% commission</div>
+        </div>
+      </div>`;
+  }
+
+  function makeMobileCard(p, idx) {
+    const [c1, c2] = GRAD_COLORS[idx % GRAD_COLORS.length];
+    const imgContent = p.image_url
+      ? `<img src="${p.image_url}" alt="${p.name}" onerror="this.parentElement.innerHTML='<div style=\'width:100%;height:70px;background:linear-gradient(135deg,${c1},${c2});display:flex;align-items:center;justify-content:center;font-size:20px;\'>🛍️</div>'">`
+      : `<div style="width:100%;height:70px;background:linear-gradient(135deg,${c1},${c2});display:flex;align-items:center;justify-content:center;font-size:20px;">🛍️</div>`;
+    return `
+      <div class="m-card">
+        ${imgContent}
+        <div class="m-info">
+          <div class="m-name">${p.name}</div>
+          <div class="m-price">$${parseFloat(p.price).toFixed(2)}</div>
+        </div>
+      </div>`;
+  }
+
+  function buildColumns(products) {
+    // Ensure enough cards by duplicating for infinite scroll
+    const doubled = [...products, ...products];
+    const cols = [[], [], [], []];
+    doubled.forEach((p, i) => cols[i % 4].push(p));
+
+    for (let c = 0; c < 4; c++) {
+      const colEl = document.getElementById('col' + c);
+      if (!colEl) continue;
+      const items = [...cols[c], ...cols[c]];
+      colEl.innerHTML = items.map((p, i) => makeCard(p, i)).join('');
+      // Start animation only after content is rendered
+      requestAnimationFrame(() => colEl.classList.add('ready'));
+    }
+  }
+
+  function buildMobileStrip(products) {
+    const strip = document.getElementById('mobileStrip');
+    if (!strip) return;
+    const doubled = [...products, ...products];
+    strip.innerHTML = doubled.map((p, i) => makeMobileCard(p, i)).join('');
+  }
+
+  async function loadProducts() {
+    let products = PLACEHOLDER_PRODUCTS;
+    try {
+      const res = await fetch('/api/tasks/products');
+      const json = await res.json();
+      if (json.success && json.data && json.data.length > 0) {
+        products = json.data;
+      }
+    } catch (e) { /* use placeholders */ }
+
+    buildColumns(products);
+    buildMobileStrip(products);
+  }
+
+  loadProducts();
+</script>
+<script src="js/transitions.js"></script>
+</body>
+</html>

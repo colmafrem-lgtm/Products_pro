@@ -1,0 +1,9 @@
+backend/node_modules/
+backend/.env
+*.db-shm
+*.db-wal
+
+# Claude files
+.claude/
+CLAUDE.md
+*.claude

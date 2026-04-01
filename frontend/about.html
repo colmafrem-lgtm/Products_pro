@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us - InvestPro</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .about-hero {
+    background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+    padding: 50px 24px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .about-hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; background: rgba(255,255,255,0.07); border-radius: 50%;
+  }
+  .about-hero::after {
+    content: ''; position: absolute; bottom: -50px; left: -50px;
+    width: 160px; height: 160px; background: rgba(255,255,255,0.05); border-radius: 50%;
+  }
+  .about-hero .hero-icon {
+    width: 72px; height: 72px; background: rgba(255,255,255,0.18); border-radius: 20px;
+    display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;
+  }
+  .about-hero h1 { color: #fff; font-size: 26px; font-weight: 900; margin: 0; }
+  .about-hero p { color: rgba(255,255,255,0.75); font-size: 14px; margin-top: 8px; line-height: 1.6; }
+
+  .about-body {
+    background: var(--bg);
+    border-radius: 28px 28px 0 0;
+    margin-top: -28px;
+    padding: 28px 16px 100px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .section-title {
+    font-size: 16px; font-weight: 800; color: var(--dark);
+    display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
+  }
+  .section-title svg { stroke: var(--primary); }
+
+  .about-card {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--card-shadow); padding: 20px; margin-bottom: 16px;
+  }
+  .about-card p { font-size: 14px; color: var(--text-light); line-height: 1.75; margin: 0; }
+
+  .feature-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
+  .feature-list li {
+    display: flex; align-items: flex-start; gap: 14px;
+    background: var(--white); border-radius: var(--radius-sm);
+    padding: 16px; box-shadow: var(--card-shadow);
+  }
+  .feature-icon {
+    width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .feature-text h4 { font-size: 14px; font-weight: 700; color: var(--dark); margin: 0 0 4px; }
+  .feature-text p { font-size: 13px; color: var(--text-light); margin: 0; line-height: 1.5; }
+
+  .stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .stat-box {
+    background: var(--white); border-radius: var(--radius-sm); padding: 16px 10px;
+    text-align: center; box-shadow: var(--card-shadow);
+  }
+  .stat-box .num { font-size: 20px; font-weight: 900; color: var(--primary); }
+  .stat-box .lbl { font-size: 10px; color: var(--text-light); margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
+
+  .contact-list { display: flex; flex-direction: column; gap: 10px; }
+  .contact-item {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--white); border-radius: var(--radius-sm);
+    padding: 14px 16px; box-shadow: var(--card-shadow);
+    text-decoration: none; color: var(--text);
+  }
+  .contact-item .c-icon {
+    width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .contact-item .c-label { font-size: 12px; color: var(--text-light); }
+  .contact-item .c-value { font-size: 14px; font-weight: 600; color: var(--dark); margin-top: 1px; }
+</style>
+</head>
+<body>
+<div class="page-container">
+
+  <!-- Hero -->
+  <div class="about-hero">
+    <div class="hero-icon">
+      <svg viewBox="0 0 24 24" style="width:34px;height:34px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    </div>
+    <h1>About InvestPro</h1>
+    <p>Your trusted platform for smart earning<br>through product review tasks</p>
+  </div>
+
+  <div class="about-body">
+
+    <!-- Back button -->
+    <a href="dashboard.html" style="display:inline-flex;align-items:center;gap:6px;color:var(--primary);font-size:13px;font-weight:600;text-decoration:none;margin-bottom:20px;">
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to Home
+    </a>
+
+    <!-- Who We Are -->
+    <div class="section-title">
+      <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Who We Are
+    </div>
+    <div class="about-card">
+      <p>InvestPro is a leading online earning platform that connects users with brands looking for honest product reviews. We reward our members with real commissions for every task completed — helping you earn while you learn about amazing products.</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="num">50K+</div>
+        <div class="lbl">Members</div>
+      </div>
+      <div class="stat-box">
+        <div class="num">$2M+</div>
+        <div class="lbl">Paid Out</div>
+      </div>
+      <div class="stat-box">
+        <div class="num">4.8★</div>
+        <div class="lbl">Rating</div>
+      </div>
+    </div>
+
+    <!-- Our Mission -->
+    <div class="section-title">
+      <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      Our Mission
+    </div>
+    <div class="about-card">
+      <p>We believe everyone deserves a fair opportunity to earn online. Our mission is to create a transparent, reliable, and rewarding ecosystem where members can grow financially by completing simple product review tasks — anytime, anywhere.</p>
+    </div>
+
+    <!-- Why Choose Us -->
+    <div class="section-title">
+      <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Why Choose InvestPro
+    </div>
+    <ul class="feature-list">
+      <li>
+        <div class="feature-icon" style="background:linear-gradient(135deg,#EDE9FE,#DDD6FE);">
+          <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#8B5CF6;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="feature-text">
+          <h4>Secure & Trusted</h4>
+          <p>Your funds and data are protected with industry-standard encryption and security protocols.</p>
+        </div>
+      </li>
+      <li>
+        <div class="feature-icon" style="background:linear-gradient(135deg,#FCE7F3,#FBCFE8);">
+          <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#EC4899;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="feature-text">
+          <h4>Instant Commissions</h4>
+          <p>Earn real money credited instantly to your wallet after each completed task.</p>
+        </div>
+      </li>
+      <li>
+        <div class="feature-icon" style="background:linear-gradient(135deg,#D1FAE5,#A7F3D0);">
+          <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#10B981;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        </div>
+        <div class="feature-text">
+          <h4>VIP Growth System</h4>
+          <p>Level up from Bronze to Platinum and unlock higher commission rates and more tasks per day.</p>
+        </div>
+      </li>
+      <li>
+        <div class="feature-icon" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);">
+          <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#F59E0B;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="feature-text">
+          <h4>Referral Rewards</h4>
+          <p>Invite friends and earn bonus commissions every time they join and complete tasks.</p>
+        </div>
+      </li>
+    </ul>
+
+    <!-- Contact -->
+    <div class="section-title" style="margin-top:20px;">
+      <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.28h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21.28 15z"/></svg>
+      Contact & Support
+    </div>
+    <div class="contact-list">
+      <div class="contact-item">
+        <div class="c-icon" style="background:linear-gradient(135deg,#EDE9FE,#DDD6FE);">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#8B5CF6;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div>
+          <div class="c-label">Email Support</div>
+          <div class="c-value">support@investpro.com</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="c-icon" style="background:linear-gradient(135deg,#D1FAE5,#A7F3D0);">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#10B981;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div>
+          <div class="c-label">Live Chat</div>
+          <div class="c-value">Available 24/7</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="c-icon" style="background:linear-gradient(135deg,#DBEAFE,#BFDBFE);">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#3B82F6;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.95C18.88 4 12 4 12 4s-6.88 0-8.59.47A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.95C5.12 20 12 20 12 20s6.88 0 8.59-.47a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg>
+        </div>
+        <div>
+          <div class="c-label">Telegram Channel</div>
+          <div class="c-value">@InvestProOfficial</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="nav-item active">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span><span>Home</span>
+    </a>
+    <a href="tasks.html" class="nav-item">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><span>Tasks</span>
+    </a>
+    <a href="tasks.html" class="nav-item-center">
+      <div class="nav-fab"><svg viewBox="0 0 24 24" style="width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+    </a>
+    <a href="wallet.html" class="nav-item">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg></span><span>Wallet</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><span>Profile</span>
+    </a>
+  </nav>
+
+</div>
+<script src="js/api.js"></script>
+<script src="js/transitions.js"></script>
+<script>requireAuth();</script>
+</body>
+</html>

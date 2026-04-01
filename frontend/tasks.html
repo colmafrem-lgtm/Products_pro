@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tasks - InvestPro</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .task-counter {
+    background: var(--gradient);
+    padding: 20px;
+    color: #fff;
+    text-align: center;
+  }
+  .task-counter .done { font-size: 36px; font-weight: 900; }
+  .task-counter .info { font-size: 13px; opacity: 0.8; margin-top: 4px; }
+
+  .task-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    margin-top: 16px;
+  }
+
+  .task-card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+  }
+
+  .task-card .task-body { padding: 20px; }
+  .task-badge {
+    display: inline-block;
+    background: var(--gradient);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .task-name { font-size: 20px; font-weight: 800; color: var(--dark); }
+  .task-desc { font-size: 14px; color: var(--text-light); margin-top: 6px; line-height: 1.6; }
+  .task-price { font-size: 28px; font-weight: 900; color: var(--primary); margin-top: 12px; }
+  .commission-info {
+    background: var(--gradient-soft);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin-top: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .commission-info .label { font-size: 13px; color: var(--primary-dark); }
+  .commission-info .amount { font-size: 22px; font-weight: 800; color: var(--primary); }
+
+  .rating-wrap {
+    margin-top: 16px;
+    text-align: center;
+  }
+  .stars { font-size: 36px; letter-spacing: 6px; cursor: pointer; }
+  .stars span { transition: transform 0.1s; display: inline-block; }
+  .stars span:hover { transform: scale(1.2); }
+  .rating-label { font-size: 13px; color: var(--text-light); margin-top: 8px; }
+
+  .limit-reached {
+    text-align: center;
+    padding: 40px 20px 20px;
+  }
+  .limit-reached .big-icon { font-size: 64px; }
+  .limit-reached h2 { font-size: 22px; font-weight: 800; color: var(--dark); margin-top: 12px; }
+  .limit-reached p { font-size: 14px; color: var(--text-light); margin-top: 8px; line-height: 1.6; }
+  .limit-reached .countdown { font-size: 22px; font-weight: 700; color: var(--primary); margin-top: 12px; }
+
+  /* ── Spin Wheel Banner ── */
+  .spin-banner {
+    background: linear-gradient(135deg, #7C3AED 0%, #EC4899 100%);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    cursor: pointer;
+    transition: transform .18s, box-shadow .18s;
+  }
+  .spin-banner:active { transform: scale(0.98); }
+  .spin-banner .spin-banner-left { display: flex; align-items: center; gap: 12px; }
+  .spin-banner .spin-icon-wrap {
+    width: 46px; height: 46px; background: rgba(255,255,255,0.2);
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+  }
+  .spin-banner .spin-title { font-size: 16px; font-weight: 800; color: #fff; }
+  .spin-banner .spin-sub { font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 2px; }
+  .spin-banner .spin-btn {
+    background: rgba(255,255,255,0.25); border: none;
+    color: #fff; font-size: 13px; font-weight: 700;
+    padding: 8px 16px; border-radius: 8px; cursor: pointer;
+    white-space: nowrap;
+  }
+  .spin-banner.locked { background: linear-gradient(135deg, #6B7280 0%, #9CA3AF 100%); cursor: default; }
+
+  /* ── Spin Wheel Modal ── */
+  .spin-modal-bg {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+    z-index: 9999; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .spin-modal {
+    background: var(--white); border-radius: 28px;
+    width: 100%; max-width: 380px;
+    padding: 24px 20px 32px;
+    position: relative; text-align: center;
+  }
+  .spin-close {
+    position: absolute; top: 16px; right: 16px;
+    width: 32px; height: 32px; border: none; background: var(--bg);
+    border-radius: 50%; font-size: 18px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-light);
+  }
+  .spin-wheel-wrap {
+    position: relative; display: inline-block; margin: 16px 0;
+  }
+  .spin-pointer {
+    position: absolute; top: -8px; left: 50%;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 22px solid #1E1B4B;
+    z-index: 10;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  }
+  #spinCanvas {
+    border-radius: 50%;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    display: block;
+  }
+  .spin-spins-left {
+    font-size: 13px; color: var(--text-light);
+    margin-top: 8px;
+  }
+  .spin-spins-left strong { color: var(--primary); }
+  #spinTriggerBtn {
+    margin-top: 20px; width: 100%;
+    padding: 14px; font-size: 16px; font-weight: 800;
+    background: linear-gradient(135deg, #7C3AED 0%, #EC4899 100%);
+    color: #fff; border: none; border-radius: 14px; cursor: pointer;
+    transition: opacity .2s;
+  }
+  #spinTriggerBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Prize Result Popup */
+  .prize-result-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+    z-index: 10000; display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .prize-result-card {
+    background: var(--white); border-radius: 24px;
+    padding: 32px 24px; text-align: center; max-width: 320px; width: 100%;
+    animation: popIn .35s cubic-bezier(0.22,1,0.36,1);
+  }
+  @keyframes popIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+  .prize-circle {
+    width: 80px; height: 80px; border-radius: 50%;
+    margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;
+    font-size: 36px;
+  }
+  .prize-result-name { font-size: 22px; font-weight: 900; color: var(--dark); margin-bottom: 8px; }
+  .prize-result-msg { font-size: 14px; color: var(--text-light); line-height: 1.6; margin-bottom: 20px; }
+  .prize-result-amount {
+    font-size: 40px; font-weight: 900; color: var(--success);
+    margin: 8px 0 16px;
+  }
+
+  /* ── Product Showcase ── */
+  .showcase-wrap {
+    margin-top: 20px;
+    text-align: left;
+  }
+  .showcase-label {
+    font-size: 13px; font-weight: 700; color: var(--text-light);
+    text-transform: uppercase; letter-spacing: .6px;
+    padding: 0 4px; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .showcase-label::before {
+    content: ''; width: 3px; height: 14px;
+    background: var(--gradient); border-radius: 2px; display: inline-block;
+  }
+  .showcase-track-outer {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+  }
+  .showcase-track {
+    display: flex;
+    gap: 12px;
+    animation: showcase-scroll 22s linear infinite;
+    width: max-content;
+  }
+  .showcase-track:hover { animation-play-state: paused; }
+  @keyframes showcase-scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .product-thumb {
+    flex-shrink: 0;
+    width: 130px;
+    background: var(--white);
+    border-radius: 14px;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform .18s, box-shadow .18s;
+    border: 1.5px solid var(--border);
+  }
+  .product-thumb:active { transform: scale(0.96); }
+  .product-thumb img {
+    width: 100%; height: 90px; object-fit: cover;
+    background: var(--gradient-soft);
+  }
+  .product-thumb .pt-body { padding: 8px 10px 10px; }
+  .product-thumb .pt-name {
+    font-size: 12px; font-weight: 700; color: var(--dark);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .product-thumb .pt-price {
+    font-size: 13px; font-weight: 800; color: var(--primary);
+    margin-top: 3px;
+  }
+  .product-thumb .pt-tag {
+    font-size: 9px; font-weight: 700; color: var(--text-light);
+    text-transform: uppercase; letter-spacing: .4px; margin-top: 2px;
+  }
+
+  /* ── Invest Modal ── */
+  .invest-modal-bg {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+    z-index: 9999; display: flex; align-items: flex-end; justify-content: center;
+  }
+  .invest-modal {
+    background: var(--white); border-radius: 28px 28px 0 0;
+    width: 100%; max-width: 480px;
+    max-height: 88vh; overflow-y: auto;
+    animation: slideUp .28s cubic-bezier(0.22,0.61,0.36,1);
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+  .invest-modal-img {
+    width: 100%; height: 200px; object-fit: cover;
+    background: var(--gradient-soft);
+  }
+  .invest-modal-body { padding: 20px 20px 36px; }
+  .invest-modal-body h3 { font-size: 20px; font-weight: 800; color: var(--dark); }
+  .invest-modal-body .im-price { font-size: 28px; font-weight: 900; color: var(--primary); margin: 6px 0 4px; }
+  .invest-modal-body .im-desc { font-size: 13px; color: var(--text-light); line-height: 1.65; margin-bottom: 16px; }
+  .invest-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+  .invest-stat { background: var(--bg); border-radius: 12px; padding: 12px 14px; }
+  .invest-stat .is-label { font-size: 10px; color: var(--text-light); font-weight: 700; text-transform: uppercase; letter-spacing: .4px; }
+  .invest-stat .is-value { font-size: 18px; font-weight: 800; color: var(--dark); margin-top: 4px; }
+  .invest-input-wrap { margin-bottom: 16px; }
+  .invest-input-wrap label { font-size: 13px; font-weight: 700; color: var(--dark); display: block; margin-bottom: 8px; }
+  .invest-input-row { display: flex; gap: 8px; }
+  .invest-input-row input { flex: 1; }
+  .invest-quick-btns { display: flex; gap: 8px; margin-top: 8px; }
+  .invest-quick-btn {
+    flex: 1; padding: 6px 4px; border-radius: 8px; border: 1.5px solid var(--border);
+    background: var(--bg); font-size: 12px; font-weight: 700; color: var(--primary);
+    cursor: pointer; transition: all .15s;
+  }
+  .invest-quick-btn:hover { background: var(--gradient-soft); border-color: var(--primary); }
+</style>
+</head>
+<body><div class="desktop-layout">
+<!-- Desktop Sidebar -->
+<aside class="desktop-sidebar" id="dsSidebar">
+  <div class="ds-logo">
+    <div class="ds-logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
+    <div class="ds-logo-text">
+      <div class="name">InvestPro</div>
+      <div class="sub">Commission Platform</div>
+    </div>
+  </div>
+  <nav class="ds-nav">
+    <div class="ds-section-label">Main</div>
+    <a href="dashboard.html" class="ds-link">
+      <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Dashboard
+    </a>
+    <div class="ds-section-label">Earn</div>
+    <a href="tasks.html" class="ds-link active">
+      <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Tasks
+    </a>
+    <div class="ds-section-label">Account</div>
+    <a href="wallet.html" class="ds-link">
+      <svg viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+      Wallet
+    </a>
+    <a href="profile.html" class="ds-link">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Profile
+    </a>
+    <a href="event.html" class="ds-link">
+      <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Events
+    </a>
+    <div class="ds-section-label">More</div>
+    <a href="about.html" class="ds-link">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      About
+    </a>
+    <a href="#" onclick="logout()" class="ds-link" style="color:rgba(239,68,68,0.7);">
+      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Logout
+    </a>
+  </nav>
+  <div class="ds-footer">
+    <div class="ds-user-info">
+      <div class="ds-avatar" id="dsAvatar">U</div>
+      <div>
+        <div class="ds-user-name" id="dsUsername">Loading...</div>
+        <div class="ds-user-vip" id="dsVip">VIP 1</div>
+      </div>
+    </div>
+  </div>
+</aside>
+<!-- Desktop Main -->
+<div class="desktop-main">
+  <!-- Desktop Topbar -->
+  <div class="desktop-topbar desktop-only">
+    <div class="dt-title">Complete Tasks</div>
+    <div class="dt-right">
+      <div class="dt-balance-pill" id="dtBalance">Balance: $0.00</div>
+      <div class="dt-avatar" id="dtAvatar" onclick="window.location='profile.html'">U</div>
+    </div>
+  </div>
+  <div class="desktop-content">
+<div class="page-container">
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <a href="dashboard.html" class="back-btn">←</a>
+    <div class="title">Complete Tasks</div>
+    <div id="taskCount" style="font-size:13px;color:var(--text-light);">0/0</div>
+  </div>
+
+  <!-- Task Counter -->
+  <div class="task-counter" id="taskCounter">
+    <div class="done"><span id="doneCount">0</span>/<span id="limitCount">0</span></div>
+    <div class="info">Tasks completed today</div>
+    <div style="margin-top:12px;">
+      <div style="background:rgba(255,255,255,0.3);border-radius:50px;height:6px;overflow:hidden;">
+        <div id="taskProgressBar" style="height:100%;background:#fff;border-radius:50px;width:0%;transition:width 0.5s;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content" style="padding-top:16px;padding-bottom:120px;">
+
+    <div id="alertBox" class="hidden"></div>
+
+    <!-- Spin Wheel Banner -->
+    <div id="spinBanner" class="hidden"></div>
+
+    <!-- Task Area -->
+    <div id="taskArea">
+      <div class="spinner"></div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="nav-item">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span><span>Home</span>
+    </a>
+    <a href="tasks.html" class="nav-item active">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><span>Tasks</span>
+    </a>
+    <a href="tasks.html" class="nav-item-center">
+      <div class="nav-fab"><svg viewBox="0 0 24 24" style="width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+    </a>
+    <a href="wallet.html" class="nav-item">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg></span><span>Wallet</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><span>Profile</span>
+    </a>
+  </nav>
+
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/transitions.js"></script>
+<script>
+  requireAuth();
+
+  let currentTask = null;
+  let selectedRating = 5;
+
+  async function loadTask() {
+    document.getElementById('taskArea').innerHTML = '<div class="spinner"></div>';
+    const res = await Tasks.getAvailable();
+
+    if (!res) {
+      showAlert('alertBox', 'Failed to load task. Check connection.', 'danger');
+      return;
+    }
+
+    const d = res.data.data;
+
+    // Update counters
+    document.getElementById('doneCount').textContent = d.tasks_done || 0;
+    document.getElementById('limitCount').textContent = d.daily_limit || 0;
+    document.getElementById('taskCount').textContent = `${d.tasks_done || 0}/${d.daily_limit || 0}`;
+
+    const pct = d.daily_limit > 0 ? (d.tasks_done / d.daily_limit) * 100 : 0;
+    document.getElementById('taskProgressBar').style.width = pct + '%';
+
+    // Limit reached
+    if (d.limit_reached) {
+      const now = new Date();
+      const midnight = new Date(now); midnight.setHours(24, 0, 0, 0);
+      const msLeft = midnight - now;
+      const h = Math.floor(msLeft / 3600000);
+      const m = Math.floor((msLeft % 3600000) / 60000);
+
+      document.getElementById('taskArea').innerHTML = `
+        <div class="limit-reached">
+          <div class="big-icon">🎉</div>
+          <h2>All Tasks Completed!</h2>
+          <p>You've completed all ${d.daily_limit} tasks for today.<br>Come back tomorrow for more earnings!</p>
+          <div class="countdown">⏰ Resets in ${h}h ${m}m</div>
+          <a href="dashboard.html" class="btn btn-primary mt-16" style="display:inline-flex;">View Earnings</a>
+
+          <div class="showcase-wrap">
+            <div class="showcase-label">Featured Products</div>
+            <div class="showcase-track-outer">
+              <div class="showcase-track" id="showcaseTrack">
+                <div class="spinner" style="margin:20px auto;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      loadShowcase();
+      return;
+    }
+
+    // No products configured by admin
+    if (d.no_products) {
+      if (parseFloat(d.user_balance || 0) >= 50) {
+        renderNoProductsForm(d.tasks_done, d.daily_limit);
+      } else {
+        document.getElementById('taskArea').innerHTML = '<div class="empty-state"><div class="icon">📦</div><h3>No tasks right now</h3><p>Check back soon!</p></div>';
+      }
+      return;
+    }
+
+    // No task data
+    if (!d.task) {
+      showAlert('alertBox', res.data.message || 'No tasks available.', 'warning');
+      document.getElementById('taskArea').innerHTML = '<div class="empty-state"><div class="icon">📦</div><h3>No tasks right now</h3><p>Check back soon!</p></div>';
+      return;
+    }
+
+    currentTask = d.task;
+    renderTask(d.task, d.tasks_done, d.daily_limit);
+  }
+
+  function renderTask(task, done, limit) {
+    document.getElementById('taskArea').innerHTML = `
+      <div class="task-card">
+        <img src="${task.image_url || 'https://via.placeholder.com/400x220'}"
+             alt="${task.product_name}"
+             onerror="this.src='https://via.placeholder.com/400x220'">
+        <div class="task-body">
+          <div class="task-badge">📋 Task #${task.task_number || (done + 1)}</div>
+          <div class="task-name">${task.product_name}</div>
+          <div class="task-desc">${task.description || 'Review and rate this product to earn commission.'}</div>
+          <div class="task-price">$${parseFloat(task.price).toFixed(2)}</div>
+
+          <div class="commission-info">
+            <div>
+              <div class="label">💰 Your Commission</div>
+              <div style="font-size:12px;color:var(--text-light);margin-top:2px;">Complete task to earn</div>
+            </div>
+            <div class="amount">+$${parseFloat(task.commission_amount).toFixed(2)}</div>
+          </div>
+
+          <div class="rating-wrap">
+            <div style="font-size:14px;font-weight:600;color:var(--dark);margin-bottom:10px;">Rate this product:</div>
+            <div class="stars" id="starRating">
+              ${[1,2,3,4,5].map(n => `<span onclick="setRating(${n})" data-star="${n}">⭐</span>`).join('')}
+            </div>
+            <div class="rating-label" id="ratingLabel">Tap a star to rate</div>
+          </div>
+
+          <button id="submitBtn" onclick="submitTask()" class="btn btn-success btn-block btn-lg mt-16">
+            ✅ Submit Task & Earn $${parseFloat(task.commission_amount).toFixed(2)}
+          </button>
+        </div>
+      </div>
+
+      <div class="card mt-16" style="padding:16px;">
+        <div class="fs-13" style="color:var(--text-light);">
+          📌 <strong>Category:</strong> ${task.category || 'General'} &nbsp;|&nbsp;
+          🔢 <strong>Tasks remaining:</strong> ${limit - done}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderNoProductsForm(done, limit) {
+    document.getElementById('taskArea').innerHTML = `
+      <div class="task-card">
+        <div style="width:100%;height:220px;background:linear-gradient(135deg,#EDE9FE,#FCE7F3);display:flex;align-items:center;justify-content:center;font-size:64px;">🛍️</div>
+        <div class="task-body">
+          <div class="task-badge">📋 Task #${(done || 0) + 1}</div>
+          <div class="task-name" style="color:var(--text-light);">Product Loading...</div>
+          <div class="task-desc">Your account is ready. System is setting up products for you to review. Please check back shortly.</div>
+
+          <div class="commission-info" style="background:rgba(0,0,0,0.04);">
+            <div>
+              <div class="label" style="color:var(--text-light);">💰 Your Commission</div>
+              <div style="font-size:12px;color:var(--text-light);margin-top:2px;">Available once products are added</div>
+            </div>
+            <div class="amount" style="color:var(--text-light);">--</div>
+          </div>
+
+          <div class="rating-wrap">
+            <div style="font-size:14px;font-weight:600;color:var(--dark);margin-bottom:10px;">Rate this product:</div>
+            <div class="stars" id="starRating">
+              ${[1,2,3,4,5].map(n => `<span data-star="${n}" style="opacity:0.3;">⭐</span>`).join('')}
+            </div>
+            <div class="rating-label">Waiting for product setup</div>
+          </div>
+
+          <div style="margin-top:16px;padding:16px;background:rgba(124,58,237,0.06);border:1.5px dashed rgba(124,58,237,0.3);border-radius:14px;text-align:center;">
+            <div style="font-size:22px;margin-bottom:6px;">⏳</div>
+            <div style="font-size:14px;font-weight:700;color:#7C3AED;">Tasks Coming Soon</div>
+            <div style="font-size:12px;color:var(--text-light);margin-top:4px;">Your account balance qualifies you for tasks.<br>Please wait for admin to configure products.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-16" style="padding:16px;">
+        <div class="fs-13" style="color:var(--text-light);">
+          📌 <strong>Status:</strong> Awaiting product setup &nbsp;|&nbsp;
+          🔢 <strong>Tasks remaining:</strong> ${(limit || 0) - (done || 0)}
+        </div>
+      </div>
+    `;
+  }
+
+  function setRating(n) {
+    selectedRating = n;
+    const labels = ['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
+    document.getElementById('ratingLabel').textContent = `${labels[n]} (${n}/5 stars)`;
+    document.querySelectorAll('#starRating span').forEach((el, i) => {
+      el.style.opacity = i < n ? '1' : '0.3';
+    });
+  }
+
+  async function submitTask() {
+    if (!currentTask) return;
+    if (selectedRating === 0) {
+      showAlert('alertBox', 'Please rate the product first.', 'warning');
+      return;
+    }
+
+    const btn = document.getElementById('submitBtn');
+    showLoading(btn);
+
+    const res = await Tasks.submit(currentTask.id);
+    hideLoading(btn);
+
+    if (!res || !res.ok) {
+      showAlert('alertBox', res?.data?.message || 'Failed to submit task.', 'danger');
+      return;
+    }
+
+    // Success animation
+    document.getElementById('taskArea').innerHTML = `
+      <div class="card" style="text-align:center;padding:40px 20px;">
+        <div style="font-size:64px;margin-bottom:16px;">🎉</div>
+        <h2 style="color:var(--dark);font-size:22px;font-weight:800;">Task Completed!</h2>
+        <p style="color:var(--text-light);margin-top:8px;">You earned</p>
+        <div style="font-size:40px;font-weight:900;color:var(--success);margin:12px 0;">
+          +${formatMoney(res.data.data.commission_earned)}
+        </div>
+        <p style="font-size:13px;color:var(--text-light);">New balance: ${formatMoney(res.data.data.new_balance)}</p>
+        <button onclick="loadTask()" class="btn btn-primary btn-block mt-24" style="font-size:16px;">
+          ➡️ Next Task
+        </button>
+        <a href="dashboard.html" class="btn btn-outline btn-block mt-12">Go to Dashboard</a>
+      </div>
+    `;
+
+    currentTask = null;
+    selectedRating = 5;
+  }
+
+  // ── Product Showcase (shown when limit reached) ──
+  let allProducts = [];
+
+  async function loadShowcase() {
+    const res = await fetch('/api/tasks/products');
+    const json = await res.json();
+    allProducts = Array.isArray(json.data) ? json.data : (json.data?.products || []);
+
+    const track = document.getElementById('showcaseTrack');
+    if (!track) return;
+
+    if (!allProducts.length) {
+      track.innerHTML = '<p style="font-size:13px;color:var(--text-light);padding:12px;">No products yet.</p>';
+      return;
+    }
+
+    // Duplicate for seamless infinite scroll
+    const items = [...allProducts, ...allProducts];
+    track.innerHTML = items.map((p, i) => `
+      <div class="product-thumb" onclick="openInvest(${i % allProducts.length})">
+        <img src="${p.image_url || ''}" alt="${p.name}"
+             onerror="this.style.background='linear-gradient(135deg,#EDE9FE,#FCE7F3)';this.removeAttribute('src');">
+        <div class="pt-body">
+          <div class="pt-name">${p.name}</div>
+          <div class="pt-price">$${parseFloat(p.price).toFixed(2)}</div>
+          <div class="pt-tag">${p.category || 'Product'}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function openInvest(idx) {
+    const p = allProducts[idx];
+    if (!p) return;
+
+    const commission = (parseFloat(p.price) * 0.005).toFixed(2);
+
+    const modal = document.createElement('div');
+    modal.className = 'invest-modal-bg';
+    modal.id = 'investModalBg';
+    modal.innerHTML = `
+      <div class="invest-modal">
+        <img class="invest-modal-img"
+             src="${p.image_url || ''}"
+             alt="${p.name}"
+             onerror="this.style.background='linear-gradient(135deg,#EDE9FE,#FCE7F3)';this.removeAttribute('src');">
+        <div class="invest-modal-body">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+            <div>
+              <div style="font-size:11px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;">${p.category || 'Product'}</div>
+              <h3>${p.name}</h3>
+            </div>
+            <button onclick="closeInvest()" style="width:32px;height:32px;border:none;background:var(--bg);border-radius:50%;cursor:pointer;font-size:18px;color:var(--text-light);flex-shrink:0;display:flex;align-items:center;justify-content:center;">×</button>
+          </div>
+
+          <div class="im-price">$${parseFloat(p.price).toFixed(2)}</div>
+          <div class="im-desc">${p.description || 'A top-rated product available for investment. Earn daily commission returns when you invest in this product.'}</div>
+
+          <div class="invest-stats">
+            <div class="invest-stat">
+              <div class="is-label">Daily Return</div>
+              <div class="is-value" style="color:var(--success);">0.5%</div>
+            </div>
+            <div class="invest-stat">
+              <div class="is-label">Est. Commission</div>
+              <div class="is-value">$${commission}</div>
+            </div>
+            <div class="invest-stat">
+              <div class="is-label">Min. Invest</div>
+              <div class="is-value">$10.00</div>
+            </div>
+            <div class="invest-stat">
+              <div class="is-label">Category</div>
+              <div class="is-value" style="font-size:13px;">${p.category || 'General'}</div>
+            </div>
+          </div>
+
+          <div class="invest-input-wrap">
+            <label>Investment Amount (USD)</label>
+            <div class="invest-input-row">
+              <div class="input-group" style="flex:1;">
+                <span class="input-icon">$</span>
+                <input type="number" id="investAmount" class="form-control" placeholder="Enter amount" min="10" step="1">
+              </div>
+            </div>
+            <div class="invest-quick-btns">
+              <button class="invest-quick-btn" onclick="setInvestAmt(50)">$50</button>
+              <button class="invest-quick-btn" onclick="setInvestAmt(100)">$100</button>
+              <button class="invest-quick-btn" onclick="setInvestAmt(500)">$500</button>
+              <button class="invest-quick-btn" onclick="setInvestAmt(1000)">$1K</button>
+            </div>
+          </div>
+
+          <div id="investAlert" class="hidden"></div>
+
+          <button onclick="submitInvest()" class="btn btn-primary btn-block" style="font-size:16px;font-weight:800;">
+            <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            Calculate Return
+          </button>
+
+          <div id="demoResult" class="hidden" style="background:linear-gradient(135deg,#D1FAE5,#A7F3D0);border-radius:14px;padding:16px;margin-top:12px;text-align:center;">
+            <div style="font-size:12px;color:#065F46;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">📊 Estimated Daily Earning</div>
+            <div id="demoEarning" style="font-size:32px;font-weight:900;color:#047857;margin:6px 0;"></div>
+            <div id="demoMonthly" style="font-size:13px;color:#065F46;font-weight:600;"></div>
+            <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(6,95,70,0.15);font-size:12px;color:#065F46;line-height:1.6;margin-bottom:10px;">
+              📲 To invest, contact admin directly:
+            </div>
+            <div style="display:flex;gap:10px;justify-content:center;">
+              <a href="https://t.me/YOURUSERNAME" target="_blank" data-no-transition
+                style="flex:1;display:flex;align-items:center;justify-content:center;gap:7px;background:#229ED9;color:#fff;border-radius:12px;padding:10px 8px;font-size:13px;font-weight:700;text-decoration:none;">
+                <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#fff;flex-shrink:0;"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.737l-2.965-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.963.822z"/></svg>
+                Telegram
+              </a>
+              <a href="https://wa.me/YOURNUMBER" target="_blank" data-no-transition
+                style="flex:1;display:flex;align-items:center;justify-content:center;gap:7px;background:#25D366;color:#fff;border-radius:12px;padding:10px 8px;font-size:13px;font-weight:700;text-decoration:none;">
+                <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#fff;flex-shrink:0;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zm-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884zm8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                WhatsApp
+              </a>
+            </div>
+          </div>
+
+          <button onclick="closeInvest()" class="btn btn-outline btn-block mt-12">Close</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e => { if (e.target === modal) closeInvest(); });
+  }
+
+  function closeInvest() {
+    const m = document.getElementById('investModalBg');
+    if (m) m.remove();
+  }
+
+  function setInvestAmt(v) {
+    const el = document.getElementById('investAmount');
+    if (el) el.value = v;
+  }
+
+  function submitInvest() {
+    const amount = parseFloat(document.getElementById('investAmount')?.value || 0);
+    if (!amount || amount < 10) {
+      showAlert('investAlert', 'Please enter at least $10 to see the calculation.', 'warning');
+      return;
+    }
+
+    // Demo calculation only — no real transaction
+    const daily   = (amount * 0.005).toFixed(2);
+    const monthly = (amount * 0.005 * 30).toFixed(2);
+
+    document.getElementById('demoEarning').textContent = '+$' + daily + ' / day';
+    document.getElementById('demoMonthly').textContent = 'Estimated monthly return: $' + monthly;
+    document.getElementById('demoResult').classList.remove('hidden');
+    document.getElementById('investAlert').classList.add('hidden');
+  }
+
+  // ── Spin Wheel ──────────────────────────────────
+  let spinPrizes = [];
+  let spinLeft = 0;
+  let isSpinning = false;
+  let currentRotation = 0;
+
+  async function loadSpinInfo() {
+    try {
+      const res = await fetch('/api/user/spin-info', {
+        headers: { 'Authorization': `Bearer ${getToken()}` }
+      });
+      const json = await res.json();
+      if (!json.success) return;
+      const d = json.data;
+      spinPrizes = d.prizes || [];
+      spinLeft = d.spins_left || 0;
+      renderSpinBanner(d);
+    } catch(e) { /* silently skip */ }
+  }
+
+  function renderSpinBanner(d) {
+    const banner = document.getElementById('spinBanner');
+    if (!d.max_spins || d.max_spins === 0) {
+      banner.className = 'spin-banner locked';
+      banner.innerHTML = `
+        <div class="spin-banner-left">
+          <div class="spin-icon-wrap">🔒</div>
+          <div>
+            <div class="spin-title">Spin Wheel</div>
+            <div class="spin-sub">Upgrade VIP to unlock daily spins</div>
+          </div>
+        </div>`;
+    } else if (d.spins_left === 0) {
+      banner.className = 'spin-banner locked';
+      banner.innerHTML = `
+        <div class="spin-banner-left">
+          <div class="spin-icon-wrap">🎡</div>
+          <div>
+            <div class="spin-title">Spin Wheel</div>
+            <div class="spin-sub">No spins left today · Resets at midnight</div>
+          </div>
+        </div>`;
+    } else {
+      banner.className = 'spin-banner';
+      banner.onclick = openSpinModal;
+      banner.innerHTML = `
+        <div class="spin-banner-left">
+          <div class="spin-icon-wrap">🎡</div>
+          <div>
+            <div class="spin-title">Spin Wheel</div>
+            <div class="spin-sub">${d.spins_left} spin${d.spins_left > 1 ? 's' : ''} remaining today</div>
+          </div>
+        </div>
+        <button class="spin-btn">SPIN NOW</button>`;
+    }
+    banner.classList.remove('hidden');
+  }
+
+  function openSpinModal() {
+    if (!spinPrizes.length) { alert('No prizes configured.'); return; }
+    const modal = document.createElement('div');
+    modal.className = 'spin-modal-bg';
+    modal.id = 'spinModalBg';
+    modal.innerHTML = `
+      <div class="spin-modal">
+        <button class="spin-close" onclick="closeSpinModal()">×</button>
+        <div style="font-size:22px;font-weight:900;color:var(--dark);">🎡 Spin Wheel</div>
+        <div class="spin-spins-left">You have <strong>${spinLeft}</strong> spin${spinLeft > 1 ? 's' : ''} left today</div>
+        <div class="spin-wheel-wrap">
+          <div class="spin-pointer"></div>
+          <canvas id="spinCanvas" width="300" height="300"></canvas>
+        </div>
+        <div class="spin-spins-left" id="spinCountDisplay">Tap SPIN to try your luck!</div>
+        <button id="spinTriggerBtn" onclick="doSpin()">🎰 SPIN!</button>
+      </div>`;
+    document.body.appendChild(modal);
+    drawWheel(currentRotation);
+  }
+
+  function closeSpinModal() {
+    const m = document.getElementById('spinModalBg');
+    if (m) m.remove();
+  }
+
+  function drawWheel(rotation) {
+    const canvas = document.getElementById('spinCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const cx = canvas.width / 2, cy = canvas.height / 2, r = cx - 8;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const total = spinPrizes.reduce((s, p) => s + (parseInt(p.weight) || 1), 0);
+    let startAngle = rotation - Math.PI / 2;
+
+    spinPrizes.forEach(prize => {
+      const angle = ((parseInt(prize.weight) || 1) / total) * Math.PI * 2;
+      ctx.beginPath(); ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, r, startAngle, startAngle + angle);
+      ctx.closePath();
+      ctx.fillStyle = prize.color || '#8B5CF6'; ctx.fill();
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.5; ctx.stroke();
+
+      if (angle > 0.15) {
+        const midAngle = startAngle + angle / 2;
+        const norm = ((midAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+        const flip = norm > Math.PI / 2 && norm < Math.PI * 3 / 2;
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(flip ? midAngle + Math.PI : midAngle);
+        ctx.fillStyle = '#fff';
+        ctx.shadowColor = 'rgba(0,0,0,0.4)';
+        ctx.shadowBlur = 2;
+
+        const xEdge = flip ? -(r - 10) : (r - 10);
+        const align  = flip ? 'left' : 'right';
+        const words = prize.name.split(' ');
+
+        if (words.length >= 2 && angle > 0.28) {
+          const mid = Math.ceil(words.length / 2);
+          ctx.font = 'bold 11px Inter, sans-serif';
+          ctx.textAlign = align;
+          ctx.fillText(words.slice(0, mid).join(' '), xEdge, -7);
+          ctx.fillText(words.slice(mid).join(' '), xEdge,  7);
+        } else {
+          ctx.font = 'bold 12px Inter, sans-serif';
+          ctx.textAlign = align;
+          const label = prize.name.length > 13 ? prize.name.substring(0, 12) + '…' : prize.name;
+          ctx.fillText(label, xEdge, 4);
+        }
+        ctx.restore();
+      }
+      startAngle += angle;
+    });
+
+    // Center
+    ctx.beginPath(); ctx.arc(cx, cy, 26, 0, Math.PI * 2);
+    ctx.fillStyle = '#fff'; ctx.fill();
+    ctx.strokeStyle = '#E5E7EB'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = '#374151'; ctx.font = 'bold 11px Inter, sans-serif';
+    ctx.textAlign = 'center'; ctx.fillText('SPIN', cx, cy + 4);
+  }
+
+  async function doSpin() {
+    if (isSpinning || spinLeft <= 0) return;
+    isSpinning = true;
+    const btn = document.getElementById('spinTriggerBtn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Spinning…'; }
+
+    // Call API first to get result
+    let wonPrize = null;
+    try {
+      const res = await fetch('/api/user/spin', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' }
+      });
+      const json = await res.json();
+      if (!json.success) {
+        if (btn) { btn.disabled = false; btn.textContent = '🎰 SPIN!'; }
+        isSpinning = false;
+        alert(json.message || 'Spin failed.');
+        return;
+      }
+      wonPrize = json.data.prize;
+      spinLeft = json.data.spins_left;
+    } catch(e) {
+      if (btn) { btn.disabled = false; btn.textContent = '🎰 SPIN!'; }
+      isSpinning = false;
+      alert('Connection error.');
+      return;
+    }
+
+    // Find winning prize index and calculate target angle
+    const prizeIdx = spinPrizes.findIndex(p => p.id === wonPrize.id);
+    const total = spinPrizes.reduce((s, p) => s + (parseInt(p.weight) || 1), 0);
+
+    // Calculate the angle where winning prize center is
+    let angleStart = 0;
+    for (let i = 0; i < prizeIdx; i++) {
+      angleStart += ((parseInt(spinPrizes[i].weight) || 1) / total) * Math.PI * 2;
+    }
+    const prizeAngle = ((parseInt(spinPrizes[prizeIdx]?.weight || 1)) / total) * Math.PI * 2;
+    const prizeMid = angleStart + prizeAngle / 2;
+
+    // Target: spin 5 full rotations + land prize at top (pointer = top = -PI/2)
+    const targetRotation = currentRotation + Math.PI * 10 + (Math.PI * 2 - prizeMid) - Math.PI / 2;
+
+    // Animate
+    const duration = 4500;
+    const startTime = performance.now();
+    const startRot = currentRotation;
+
+    function animate(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const rot = startRot + (targetRotation - startRot) * eased;
+      currentRotation = rot;
+      drawWheel(rot);
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        // Done
+        isSpinning = false;
+        setTimeout(() => showPrizeResult(wonPrize), 400);
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+
+  function showPrizeResult(prize) {
+    closeSpinModal();
+    const isWin = prize.prize_type !== 'none';
+    const overlay = document.createElement('div');
+    overlay.className = 'prize-result-overlay';
+    overlay.id = 'prizeResultOverlay';
+    overlay.innerHTML = `
+      <div class="prize-result-card">
+        <div class="prize-circle" style="background:${isWin ? '#D1FAE5' : '#F3F4F6'};">
+          ${isWin ? '🎉' : '😔'}
+        </div>
+        <div class="prize-result-name">${isWin ? 'You Won!' : 'Better Luck Next Time'}</div>
+        ${isWin ? `<div class="prize-result-amount">+$${parseFloat(prize.amount).toFixed(2)}</div>` : ''}
+        <div class="prize-result-msg">
+          ${isWin
+            ? `<strong>${prize.name}</strong><br>Your prize is under review. Admin will credit your balance shortly.`
+            : 'Keep spinning! Better luck on your next try.'}
+        </div>
+        <div style="font-size:13px;color:var(--text-light);margin-bottom:16px;">
+          ${spinLeft > 0 ? `🎡 You have <strong>${spinLeft}</strong> spin${spinLeft > 1 ? 's' : ''} left today` : '🔒 No spins left today'}
+        </div>
+        <button onclick="document.getElementById('prizeResultOverlay').remove();loadSpinInfo();"
+          class="btn btn-primary btn-block" style="font-size:15px;font-weight:800;">
+          ${spinLeft > 0 ? '🎰 Spin Again' : 'Done'}
+        </button>
+        ${spinLeft > 0 ? '' : `<a href="dashboard.html" class="btn btn-outline btn-block mt-8" style="display:flex;">Go to Dashboard</a>`}
+      </div>`;
+    document.body.appendChild(overlay);
+  }
+
+  loadTask();
+  loadSpinInfo();
+</script>
+
+  </div><!-- end desktop-content -->
+</div><!-- end desktop-main -->
+</div><!-- end desktop-layout -->
+
+<script>
+  // Populate desktop sidebar
+  (async function() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+      const res = await fetch('/api/user/profile', { headers: { 'Authorization': 'Bearer ' + token } });
+      const json = await res.json();
+      if (json.success) {
+        const u = json.data;
+        const init = (u.username || 'U')[0].toUpperCase();
+        const el = document.getElementById('dsAvatar'); if(el) el.textContent = init;
+        const eu = document.getElementById('dsUsername'); if(eu) eu.textContent = u.username;
+        const ev = document.getElementById('dsVip'); if(ev) ev.textContent = u.vip_name || ('VIP ' + u.vip_level);
+        const dt = document.getElementById('dtAvatar'); if(dt) dt.textContent = init;
+        const db = document.getElementById('dtBalance'); if(db) db.textContent = 'Balance: $' + parseFloat(u.balance||0).toFixed(2);
+      }
+    } catch(e) {}
+  })();
+  function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = 'index.html';
+  }
+</script>
+</body>
+</html>

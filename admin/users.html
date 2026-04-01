@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Users - Admin Panel</title>
+<link rel="stylesheet" href="css/admin.css">
+<style>
+  .users-table { width:100%; border-collapse:collapse; font-size:13px; min-width:1400px; }
+  .users-table thead tr { background:linear-gradient(135deg,#7c3aed,#a855f7); color:#fff; }
+  .users-table th { padding:12px 14px; text-align:left; font-size:11px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; white-space:nowrap; border-right:1px solid rgba(255,255,255,0.15); }
+  .users-table th:last-child { border-right:none; }
+  .users-table td { padding:12px 14px; border-bottom:1px solid #e5e7eb; border-right:1px solid #f3f4f6; vertical-align:top; }
+  .users-table td:last-child { border-right:none; }
+  .users-table tbody tr:nth-child(even) { background:#f5f3ff; }
+  .users-table tbody tr:hover { background:#ede9fe; }
+  .users-table tbody tr:last-child td { border-bottom:none; }
+
+  .info-line { margin-bottom:4px; font-size:12px; color:#374151; line-height:1.5; }
+  .info-line strong { color:#111; }
+  .info-label { color:#9ca3af; font-size:11px; }
+
+  /* Action buttons grid */
+  .act-grid { display:grid; grid-template-columns:1fr 1fr; gap:5px; min-width:200px; }
+  .act-btn { padding:5px 8px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer; border:none; text-align:center; transition:opacity .15s; white-space:nowrap; }
+  .act-btn:hover { opacity:.85; }
+  .act-teal   { background:#0d9488; color:#fff; }
+  .act-blue   { background:#2563eb; color:#fff; }
+  .act-sky    { background:#0ea5e9; color:#fff; }
+  .act-yellow { background:#d97706; color:#fff; }
+  .act-orange { background:#ea580c; color:#fff; }
+  .act-red    { background:#dc2626; color:#fff; }
+  .act-green  { background:#16a34a; color:#fff; }
+  .act-purple { background:#7c3aed; color:#fff; }
+  .act-gray   { background:#6b7280; color:#fff; }
+  .act-full   { grid-column: span 2; }
+
+  .id-badge { display:inline-block; background:#f3f4f6; border:1px solid #e5e7eb; border-radius:6px; padding:3px 8px; font-size:13px; font-weight:700; color:#374151; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <div><div>InvestPro</div><span>Admin Panel</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">Main</div>
+    <a href="dashboard.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Dashboard</a>
+    <div class="nav-group-label">Manage</div>
+    <!-- Users Dropdown -->
+    <div class="sidebar-dropdown open" id="usersDropdown">
+      <div class="sidebar-link sidebar-dropdown-toggle" onclick="toggleDropdown('usersDropdown')">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+        Users
+        <span class="chevron"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+      </div>
+      <div class="sidebar-dropdown-menu">
+        <a href="users.html" class="sidebar-sub-link active"><span class="dot"></span> Member List</a>
+        <a href="prize-records.html" class="sidebar-sub-link"><span class="dot"></span> Prize Records</a>
+        <a href="vip-levels.html" class="sidebar-sub-link"><span class="dot"></span> VIP Levels</a>
+        <a href="points-records.html" class="sidebar-sub-link"><span class="dot"></span> Points Records</a>
+      </div>
+    </div>
+    <a href="products.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span> Products</a>
+    <a href="deposits.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span> Deposits</a>
+    <a href="withdrawals.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span> Withdrawals</a>
+    <div class="nav-group-label">System</div>
+    <a href="spin-prizes.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></span> Spin Prizes</a>
+    <a href="settings.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span> Settings</a>
+    <a href="#" onclick="Admin.logout()" class="sidebar-link" style="color:rgba(239,68,68,0.75);"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Logout</a>
+  </nav>
+  <div class="sidebar-footer">Logged in as: <strong id="adminName">Admin</strong></div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">User Management</div>
+    <div class="topbar-right">
+      <div class="admin-avatar" id="adminInitial">A</div>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div id="alertBox" class="hidden"></div>
+
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div style="padding:16px 20px;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <h3 style="font-size:16px;font-weight:700;color:#111;">All Users <span id="totalUserCount" style="font-size:13px;color:#6b7280;font-weight:400;"></span></h3>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" class="form-control" placeholder="Search users..." style="width:220px;" oninput="debounceSearch()">
+          </div>
+          <select id="statusFilter" class="form-control" style="width:130px;" onchange="loadUsers()">
+            <option value="">All Status</option>
+            <option value="active">Active</option>
+            <option value="suspended">Suspended</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th style="width:60px;">ID</th>
+              <th style="min-width:170px;">Basic Information</th>
+              <th style="min-width:160px;">Account Information</th>
+              <th style="min-width:180px;">Wallet Information</th>
+              <th style="min-width:110px;">Task Status</th>
+              <th style="min-width:120px;">Invitation Code</th>
+              <th style="min-width:140px;">Registration Time</th>
+              <th style="min-width:220px;">Operate</th>
+            </tr>
+          </thead>
+          <tbody id="usersTable">
+            <tr><td colspan="8" style="text-align:center;padding:40px;"><div class="spinner"></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination" id="pagination"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Basic Info Modal ═══ -->
+<div class="modal-overlay hidden" id="basicInfoModal">
+  <div class="modal" style="max-width:500px;">
+    <div class="modal-head">
+      <h3>Basic Information</h3>
+      <button class="modal-close" onclick="closeModal('basicInfoModal')">✕</button>
+    </div>
+    <div id="biModalAlert" class="hidden" style="margin-bottom:12px;"></div>
+    <input type="hidden" id="biUserId">
+
+    <!-- Read-only info -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;background:#f9fafb;border-radius:10px;padding:14px;">
+      <div><span style="font-size:11px;color:#9ca3af;">ID</span><div style="font-weight:700;color:#111;" id="biId">-</div></div>
+      <div><span style="font-size:11px;color:#9ca3af;">VIP Level</span><div id="biVip">-</div></div>
+      <div><span style="font-size:11px;color:#9ca3af;">Balance</span><div style="font-weight:700;color:#16a34a;" id="biBalance">-</div></div>
+      <div><span style="font-size:11px;color:#9ca3af;">Total Earned</span><div id="biEarned">-</div></div>
+      <div><span style="font-size:11px;color:#9ca3af;">Total Deposits</span><div id="biDeposits">-</div></div>
+      <div><span style="font-size:11px;color:#9ca3af;">Total Withdrawals</span><div id="biWithdrawals">-</div></div>
+    </div>
+
+    <!-- Editable fields -->
+    <div style="display:grid;gap:10px;">
+      <div class="form-group" style="margin:0;">
+        <label class="form-label">Username</label>
+        <input type="text" id="biUsername" class="form-control" placeholder="Username" readonly style="background:#f3f4f6;cursor:not-allowed;">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="form-group" style="margin:0;">
+          <label class="form-label">Full Name</label>
+          <input type="text" id="biFullName" class="form-control" placeholder="Full name">
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label class="form-label">Phone</label>
+          <input type="text" id="biPhone" class="form-control" placeholder="Phone number">
+        </div>
+      </div>
+      <div class="form-group" style="margin:0;">
+        <label class="form-label">Email</label>
+        <input type="email" id="biEmail" class="form-control" placeholder="Email address">
+      </div>
+      <div class="form-group" style="margin:0;">
+        <label class="form-label">⭐ Credit Score (0 – 100)</label>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <input type="range" id="biCreditScoreRange" min="0" max="100" value="80"
+            oninput="document.getElementById('biCreditScoreNum').value=this.value"
+            style="flex:1;accent-color:#7c3aed;">
+          <input type="number" id="biCreditScoreNum" min="0" max="100" value="80"
+            oninput="document.getElementById('biCreditScoreRange').value=this.value"
+            style="width:64px;padding:6px 8px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:14px;font-weight:700;text-align:center;">
+        </div>
+      </div>
+      <div class="form-group" style="margin:0;">
+        <label class="form-label">VIP Level</label>
+        <select id="biVipLevel" class="form-control">
+          <option value="1">Level 1 — Bronze</option>
+          <option value="2">Level 2 — Silver</option>
+          <option value="3">Level 3 — Gold</option>
+          <option value="4">Level 4 — Platinum</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin:0;">
+        <label class="form-label">🔗 Upper-Level User (Referrer)</label>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="biReferredBy" class="form-control" placeholder="Enter username or ID (leave blank = no change)">
+          <button onclick="searchReferrer()" style="background:#7c3aed;color:#fff;border:none;border-radius:8px;padding:0 14px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">Search</button>
+        </div>
+        <div id="biReferrerResult" style="margin-top:6px;font-size:12px;color:#6b7280;"></div>
+        <div style="margin-top:4px;font-size:11px;color:#9ca3af;">Current referrer shown above. Type username/ID then click Search to verify before saving.</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;">
+      <button onclick="submitBasicInfoEdit()" class="btn btn-primary">Save Changes</button>
+      <button onclick="closeModal('basicInfoModal')" class="btn btn-outline">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Balance Adjust Modal ═══ -->
+<div class="modal-overlay hidden" id="balanceModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Modify Amount</h3>
+      <button class="modal-close" onclick="closeModal('balanceModal')">✕</button>
+    </div>
+    <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;">User: <strong id="modalUsername">-</strong></p>
+    <div id="modalAlert" class="hidden"></div>
+    <div class="form-group">
+      <label class="form-label">Action</label>
+      <select id="balanceType" class="form-control">
+        <option value="add">+ Add Balance</option>
+        <option value="deduct">- Deduct Balance</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Amount (USD)</label>
+      <input type="number" id="balanceAmount" class="form-control" placeholder="Enter amount" min="0.01" step="0.01">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Note (optional)</label>
+      <input type="text" id="balanceNote" class="form-control" placeholder="Reason for adjustment">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <button onclick="submitBalanceAdjust()" class="btn btn-primary">Confirm</button>
+      <button onclick="closeModal('balanceModal')" class="btn btn-outline">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Withdrawal Password Modal ═══ -->
+<div class="modal-overlay hidden" id="withdrawPwModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Set Withdrawal Password</h3>
+      <button class="modal-close" onclick="closeModal('withdrawPwModal')">✕</button>
+    </div>
+    <p style="font-size:13px;color:var(--text-light);margin-bottom:4px;">User: <strong id="wpModalUsername">-</strong></p>
+    <p id="wpCurrentStatus" style="font-size:12px;margin-bottom:16px;"></p>
+    <div id="wpModalAlert" class="hidden"></div>
+    <div class="form-group">
+      <label class="form-label">New Withdrawal Password</label>
+      <input type="password" id="wpNewPassword" class="form-control" placeholder="Min 4 characters">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Confirm Password</label>
+      <input type="password" id="wpConfirmPassword" class="form-control" placeholder="Re-enter password">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <button onclick="submitWithdrawPw()" class="btn btn-primary">Set Password</button>
+      <button onclick="closeModal('withdrawPwModal')" class="btn btn-outline">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ View Team Modal ═══ -->
+<div class="modal-overlay hidden" id="teamModal">
+  <div class="modal" style="max-width:95vw;width:1100px;max-height:90vh;display:flex;flex-direction:column;">
+    <div class="modal-head" style="flex-shrink:0;">
+      <div>
+        <h3>Team Information — <span id="teamModalUsername" style="color:#7c3aed;"></span></h3>
+        <div style="font-size:12px;color:#6b7280;margin-top:2px;" id="teamTotalCount">Total data: 0 records</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('teamModal')">✕</button>
+    </div>
+    <div style="flex:1;overflow:auto;">
+      <div id="teamContent">
+        <div class="spinner" style="margin:30px auto;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Confirm Dialog Modal ═══ -->
+<div class="modal-overlay hidden" id="confirmModal" style="z-index:400;">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-head">
+      <h3 id="confirmModalTitle">Confirm</h3>
+      <button class="modal-close" onclick="document.getElementById('confirmModal').classList.add('hidden')">✕</button>
+    </div>
+    <p id="confirmModalMsg" style="font-size:14px;color:#374151;margin-bottom:22px;line-height:1.6;"></p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <button id="confirmModalOkBtn" onclick="" style="background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border:none;padding:10px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;">Confirm</button>
+      <button onclick="document.getElementById('confirmModal').classList.add('hidden')" style="background:#f3f4f6;color:#374151;border:1.5px solid #e5e7eb;padding:10px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Order Settings Modal ═══ -->
+<div class="modal-overlay hidden" id="orderSettingsModal" style="align-items:stretch;justify-content:flex-end;padding:0;left:240px;">
+  <div class="modal" style="width:100%;max-width:100%;height:100vh;max-height:100vh;margin:0;border-radius:0;display:flex;flex-direction:column;box-shadow:-4px 0 24px rgba(0,0,0,0.12);">
+    <div class="modal-head" style="flex-shrink:0;">
+      <div>
+        <h3>Order Settings — <span id="osModalUsername" style="color:#7c3aed;"></span></h3>
+        <div style="font-size:12px;color:#6b7280;margin-top:2px;" id="osTotalCount">Total data: 0 records</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button onclick="loadUserTasks()" style="background:#0d9488;color:#fff;border:none;width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;" title="Refresh">↻</button>
+        <button class="modal-close" onclick="closeModal('orderSettingsModal')">✕</button>
+      </div>
+    </div>
+    <div id="osModalAlert" class="hidden" style="margin:0 0 10px;flex-shrink:0;"></div>
+
+    <!-- Toolbar -->
+    <div style="padding:12px 0;border-bottom:1px solid #f3f4f6;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button onclick="openAddTaskModal()" style="background:#0d9488;color:#fff;border:none;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">+ Add</button>
+        <button onclick="openBatchTaskModal()" style="background:#7c3aed;color:#fff;border:none;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">⊞ Batch</button>
+      </div>
+      <button onclick="submitResetTasks()" style="background:#6b7280;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">Reset Today Tasks</button>
+    </div>
+
+    <div style="flex:1;overflow:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;min-width:800px;">
+        <thead>
+          <tr style="background:#f9fafb;border-bottom:2px solid #e5e7eb;">
+            <th style="padding:12px 14px;text-align:left;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-right:1px solid #e5e7eb;white-space:nowrap;">Product ID</th>
+            <th style="padding:12px 14px;text-align:left;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-right:1px solid #e5e7eb;">Product Name</th>
+            <th style="padding:12px 14px;text-align:left;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-right:1px solid #e5e7eb;white-space:nowrap;">Order Price</th>
+            <th style="padding:12px 14px;text-align:left;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-right:1px solid #e5e7eb;white-space:nowrap;">Commission</th>
+            <th style="padding:12px 14px;text-align:left;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-right:1px solid #e5e7eb;white-space:nowrap;">Task No.</th>
+            <th style="padding:12px 14px;text-align:left;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-right:1px solid #e5e7eb;">State</th>
+            <th style="padding:12px 14px;text-align:left;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-right:1px solid #e5e7eb;white-space:nowrap;">Creation Time</th>
+            <th style="padding:12px 14px;text-align:left;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;">Operate</th>
+          </tr>
+        </thead>
+        <tbody id="osTasksBody">
+          <tr><td colspan="8" style="text-align:center;padding:40px;"><div class="spinner"></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Add Task Modal (Full Panel) ═══ -->
+<div class="modal-overlay hidden" id="addTaskModal" style="align-items:stretch;justify-content:flex-end;padding:0;left:240px;">
+  <div class="modal" style="width:100%;max-width:100%;height:100vh;max-height:100vh;margin:0;border-radius:0;display:flex;flex-direction:column;box-shadow:-4px 0 24px rgba(0,0,0,0.12);">
+
+    <!-- Header -->
+    <div class="modal-head" style="flex-shrink:0;">
+      <div>
+        <h3 id="atModalTitle">Order Settings — Add Task</h3>
+        <div style="font-size:12px;color:#6b7280;margin-top:2px;">User: <strong id="atModalUsername">-</strong></div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <button onclick="submitAddTask()" style="background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border:none;padding:9px 26px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;">✔ Confirm Add Task</button>
+        <button onclick="closeModal('addTaskModal')" style="background:#f3f4f6;color:#374151;border:1.5px solid #e5e7eb;padding:9px 20px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;">Cancel</button>
+        <button class="modal-close" onclick="closeModal('addTaskModal')">✕</button>
+      </div>
+    </div>
+
+    <div style="flex:1;overflow-y:auto;padding:24px;">
+      <div id="atModalAlert" class="hidden" style="margin-bottom:16px;"></div>
+
+      <!-- Form Fields -->
+      <div style="max-width:600px;">
+
+        <!-- Task Status -->
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+          <label style="width:160px;text-align:right;font-size:13px;color:#374151;font-weight:600;flex-shrink:0;">Task Status</label>
+          <input type="text" id="atTaskStatus" class="form-control" placeholder="e.g. 1-10" value="" style="max-width:220px;">
+          <span style="font-size:12px;color:#9ca3af;">Total task range (e.g. 1-10)</span>
+        </div>
+
+        <!-- Start Node -->
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+          <label style="width:160px;text-align:right;font-size:13px;color:#ef4444;font-weight:600;flex-shrink:0;">* Start Node</label>
+          <input type="number" id="atStartNode" class="form-control" placeholder="From which order to start" min="1" value="1" style="max-width:220px;">
+        </div>
+
+        <!-- Order Price -->
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+          <label style="width:160px;text-align:right;font-size:13px;color:#374151;font-weight:600;flex-shrink:0;">Order Price</label>
+          <input type="number" id="atOrderPrice" class="form-control" placeholder="Leave empty to use product price" min="0" step="0.01" style="max-width:220px;">
+          <span style="font-size:12px;color:#9ca3af;">Override price (optional)</span>
+        </div>
+
+        <!-- Commission Multiplier -->
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+          <label style="width:160px;text-align:right;font-size:13px;color:#ef4444;font-weight:600;flex-shrink:0;">* Commission<br>Multiplier</label>
+          <input type="number" id="atCommissionMult" class="form-control" value="1" min="1" step="1" style="max-width:220px;">
+          <span style="font-size:12px;color:#9ca3af;">Multiply commission amount</span>
+        </div>
+
+        <!-- Product Price Search -->
+        <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;">
+          <label style="width:160px;text-align:right;font-size:13px;color:#374151;font-weight:600;flex-shrink:0;padding-top:8px;">Product Price</label>
+          <div style="flex:1;max-width:420px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <input type="number" id="atPriceMin" class="form-control" placeholder="Min $" style="width:110px;" min="0" step="0.01">
+              <span style="color:#9ca3af;font-weight:700;">—</span>
+              <input type="number" id="atPriceMax" class="form-control" placeholder="Max $" style="width:110px;" min="0" step="0.01">
+              <button type="button" onclick="searchProducts()" style="background:#0d9488;color:#fff;border:none;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">Search</button>
+              <button type="button" onclick="clearProductSearch()" style="background:#6b7280;color:#fff;border:none;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">Clear</button>
+            </div>
+            <div style="font-size:12px;color:#9ca3af;">Leave empty to show all products. Enter price range to filter.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Batch Selected Products List (shown only in batch mode) -->
+      <div id="atBatchRow" style="display:none;margin-bottom:16px;">
+        <div style="background:#faf5ff;border:1.5px solid #ddd6fe;border-radius:10px;padding:14px 16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+            <span style="font-size:13px;font-weight:700;color:#7c3aed;">📋 Selected Products for Batch — <span id="batchCountLabel">0 selected</span></span>
+            <button type="button" onclick="clearBatchSelected()" style="background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb;padding:4px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">Clear All</button>
+          </div>
+          <div id="batchSelectedList" style="font-size:12px;color:#9ca3af;font-style:italic;">No products selected yet. Click "Add to Batch" on products below.</div>
+        </div>
+      </div>
+
+      <!-- Product Table -->
+      <div style="margin-top:8px;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead>
+            <tr style="background:#f9fafb;border-bottom:2px solid #e5e7eb;">
+              <th style="padding:11px 14px;text-align:left;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-right:1px solid #e5e7eb;width:70px;">ID</th>
+              <th style="padding:11px 14px;text-align:left;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-right:1px solid #e5e7eb;width:80px;">Image</th>
+              <th style="padding:11px 14px;text-align:left;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-right:1px solid #e5e7eb;">Product Name</th>
+              <th style="padding:11px 14px;text-align:left;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-right:1px solid #e5e7eb;width:120px;">Price</th>
+              <th style="padding:11px 14px;text-align:left;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;width:100px;">Choose</th>
+            </tr>
+          </thead>
+          <tbody id="atProductTable">
+            <tr><td colspan="4" style="padding:24px;text-align:center;color:#9ca3af;">Search or enter Product ID above to find products.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="js/admin-api.js"></script>
+<script>
+  requireAdminAuth();
+  initAdminTopbar();
+
+  let currentPage = 1;
+  let selectedUserId = null;
+  let searchTimer;
+
+  function debounceSearch() {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => { currentPage = 1; loadUsers(); }, 400);
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.add('hidden');
+    selectedUserId = null;
+  }
+
+  async function loadUsers() {
+    const search = document.getElementById('searchInput').value;
+    const status = document.getElementById('statusFilter').value;
+
+    document.getElementById('usersTable').innerHTML =
+      '<tr><td colspan="8" style="text-align:center;padding:40px;"><div class="spinner"></div></td></tr>';
+
+    const res = await Admin.getUsers(currentPage, search, status);
+
+    if (!res || !res.ok) {
+      document.getElementById('usersTable').innerHTML =
+        '<tr><td colspan="8" style="text-align:center;color:var(--danger);padding:30px;">Failed to load users</td></tr>';
+      return;
+    }
+
+    const { users, pagination } = res.data.data;
+    document.getElementById('totalUserCount').textContent = `— ${pagination.total} users`;
+
+    if (!users || users.length === 0) {
+      document.getElementById('usersTable').innerHTML =
+        '<tr><td colspan="8" style="text-align:center;color:var(--text-light);padding:30px;">No users found.</td></tr>';
+      renderPagination(pagination);
+      return;
+    }
+
+    document.getElementById('usersTable').innerHTML = users.map(u => {
+      const statusBadge = u.status === 'active'
+        ? '<span class="badge badge-success">active</span>'
+        : '<span class="badge badge-danger">suspended</span>';
+
+      return `
+      <tr>
+        <!-- ID -->
+        <td><span class="id-badge">#${u.id}</span></td>
+
+        <!-- Basic Information -->
+        <td>
+          <div class="info-line"><strong>${u.username}</strong>${u.is_test ? ' <span style="background:#fef3c7;color:#92400e;font-size:10px;font-weight:800;padding:2px 6px;border-radius:4px;border:1px solid #fcd34d;vertical-align:middle;">TEST</span>' : ''}</div>
+          <div class="info-line"><span class="info-label">Name:</span> ${u.full_name || '-'}</div>
+          <div class="info-line"><span class="info-label">Level:</span> <span class="badge badge-purple" style="font-size:11px;">${u.vip_name || 'VIP '+u.vip_level}</span></div>
+          <div class="info-line"><span class="info-label">Phone:</span> ${u.phone || '-'}</div>
+          <div class="info-line"><span class="info-label">Email:</span> <span style="font-size:11px;color:#6b7280;">${u.email}</span></div>
+          <div class="info-line"><span class="info-label">Referrals:</span> ${u.total_referrals || 0} members</div>
+        </td>
+
+        <!-- Account Information -->
+        <td>
+          <div class="info-line"><span class="info-label">Type:</span> Regular User</div>
+          <div class="info-line"><span class="info-label">Status:</span> ${statusBadge}</div>
+          <div class="info-line"><span class="info-label">W.Password:</span> ${u.withdrawal_password ? '<span style="color:#16a34a;font-size:11px;">Set</span>' : '<span style="color:#d97706;font-size:11px;">Not Set</span>'}</div>
+        </td>
+
+        <!-- Wallet Information -->
+        <td>
+          <div class="info-line"><span class="info-label">Balance:</span> <strong style="color:#16a34a;">${fmt$(u.balance)}</strong></div>
+          <div class="info-line"><span class="info-label">Total Earned:</span> ${fmt$(u.total_earned)}</div>
+          <div class="info-line"><span class="info-label">Total Deposits:</span> ${fmt$(u.total_deposits)}</div>
+          <div class="info-line"><span class="info-label">Total Withdrawals:</span> ${fmt$(u.total_withdrawals)}</div>
+        </td>
+
+        <!-- Task Status -->
+        <td>
+          <div class="info-line"><span class="info-label">Today:</span> <strong>${u.today_tasks || 0}</strong> tasks</div>
+          <div class="info-line"><span class="info-label">Total:</span> ${u.total_tasks || 0} tasks</div>
+        </td>
+
+        <!-- Invitation Code -->
+        <td>
+          <div style="font-family:monospace;background:#f3f4f6;border-radius:6px;padding:4px 8px;font-size:12px;font-weight:700;color:#7c3aed;display:inline-block;word-break:break-all;">
+            ${u.referral_code || '-'}
+          </div>
+          ${u.referred_by ? `<div class="info-line" style="margin-top:6px;"><span class="info-label">Invited by:</span> #${u.referred_by}</div>` : ''}
+        </td>
+
+        <!-- Registration Time -->
+        <td style="font-size:12px;color:#6b7280;">
+          ${fmtDate(u.created_at)}
+        </td>
+
+        <!-- Operate -->
+        <td>
+          <div class="act-grid">
+            <button class="act-btn act-teal" onclick="openBasicInfo(${JSON.stringify(u).replace(/"/g,'&quot;')})">Basic Info</button>
+            <button class="act-btn act-blue" onclick="openBalanceModal(${u.id},'${u.username}')">Modify Amount</button>
+            <button class="act-btn act-sky" onclick="openOrderSettings(${u.id},'${u.username}')">Add Orders</button>
+            <button class="act-btn act-blue" onclick="openTeamModal(${u.id},'${u.username}')">View Team</button>
+            <button class="act-btn act-yellow" onclick="openWithdrawPwModal(${u.id},'${u.username}',${u.withdrawal_password ? 'true':'false'})">Password</button>
+            ${u.status === 'active'
+              ? `<button class="act-btn act-orange" onclick="toggleStatus(${u.id},'suspended')">Account Ban</button>`
+              : `<button class="act-btn act-green" onclick="toggleStatus(${u.id},'active')">Activate</button>`}
+            <button class="act-btn act-full" onclick="toggleTransaction(${u.id},'${u.username}',${u.transaction_disabled ? 1 : 0})"
+              style="background:${u.transaction_disabled ? '#16a34a' : '#0369a1'};color:#fff;">
+              ${u.transaction_disabled ? '✓ Enable Transaction' : 'Transaction Disabled'}
+            </button>
+            <button class="act-btn" onclick="toggleTestUser(${u.id},'${u.username}',${u.is_test ? 1 : 0})"
+              style="background:${u.is_test ? '#92400e' : '#b45309'};color:#fff;">
+              ${u.is_test ? '✓ Is Test User' : 'Set as Test'}
+            </button>
+            <button class="act-btn act-red" onclick="resetTasks(${u.id},'${u.username}')">Reset Tasks Volume</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+
+    renderPagination(pagination);
+  }
+
+  function renderPagination(p) {
+    if (!p || p.pages <= 1) { document.getElementById('pagination').innerHTML = ''; return; }
+    let html = '';
+    if (currentPage > 1) html += `<button class="page-btn" onclick="goPage(${currentPage-1})">←</button>`;
+    for (let i = 1; i <= p.pages; i++) {
+      if (i === currentPage) html += `<button class="page-btn active">${i}</button>`;
+      else if (i === 1 || i === p.pages || Math.abs(i - currentPage) <= 2)
+        html += `<button class="page-btn" onclick="goPage(${i})">${i}</button>`;
+      else if (Math.abs(i - currentPage) === 3) html += '<span style="padding:0 4px;">...</span>';
+    }
+    if (currentPage < p.pages) html += `<button class="page-btn" onclick="goPage(${currentPage+1})">→</button>`;
+    html += `<span style="font-size:12px;color:var(--text-light);margin-left:8px;">${p.total} users</span>`;
+    document.getElementById('pagination').innerHTML = html;
+  }
+
+  function goPage(p) { currentPage = p; loadUsers(); }
+
+  // ── Basic Info (editable) ──
+  function openBasicInfo(u) {
+    document.getElementById('biUserId').value      = u.id;
+    document.getElementById('biId').textContent    = '#' + u.id;
+    document.getElementById('biVip').innerHTML     = `<span class="badge badge-purple" style="font-size:11px;">${u.vip_name||'VIP'+u.vip_level}</span>`;
+    document.getElementById('biBalance').textContent    = fmt$(u.balance);
+    document.getElementById('biEarned').textContent     = fmt$(u.total_earned);
+    document.getElementById('biDeposits').textContent   = fmt$(u.total_deposits);
+    document.getElementById('biWithdrawals').textContent= fmt$(u.total_withdrawals);
+    document.getElementById('biUsername').value    = u.username;
+    document.getElementById('biFullName').value    = u.full_name || '';
+    document.getElementById('biPhone').value       = u.phone || '';
+    document.getElementById('biEmail').value       = u.email || '';
+    document.getElementById('biVipLevel').value    = u.vip_level || 1;
+    const cs = u.credit_score !== undefined ? u.credit_score : 80;
+    document.getElementById('biCreditScoreRange').value = cs;
+    document.getElementById('biCreditScoreNum').value   = cs;
+    document.getElementById('biReferredBy').value  = '';
+    document.getElementById('biReferrerResult').innerHTML = u.referred_by
+      ? `<span style="color:#7c3aed;font-weight:600;">Current referrer ID: ${u.referred_by}</span>`
+      : '<span style="color:#9ca3af;">No referrer set</span>';
+    document.getElementById('biModalAlert').classList.add('hidden');
+    document.getElementById('basicInfoModal').classList.remove('hidden');
+  }
+
+  async function searchReferrer() {
+    const q = document.getElementById('biReferredBy').value.trim();
+    if (!q) { document.getElementById('biReferrerResult').innerHTML = '<span style="color:#dc2626;">Enter username or ID first.</span>'; return; }
+    const token = localStorage.getItem('admin_token');
+    const res = await fetch(`/api/admin/users/search?q=${encodeURIComponent(q)}`, { headers: { 'Authorization': `Bearer ${token}` } });
+    const json = await res.json();
+    if (!json.success || !json.data.length) {
+      document.getElementById('biReferrerResult').innerHTML = `<span style="color:#dc2626;">❌ User "${q}" not found.</span>`;
+      return;
+    }
+    const found = json.data[0];
+    document.getElementById('biReferredBy').value = found.username;
+    document.getElementById('biReferrerResult').innerHTML =
+      `<span style="color:#059669;font-weight:600;">✅ Found: ${found.username} (ID: ${found.id}) — Ref Code: ${found.referral_code || 'N/A'}</span>`;
+  }
+
+  async function submitBasicInfoEdit() {
+    const id        = document.getElementById('biUserId').value;
+    const full_name = document.getElementById('biFullName').value.trim();
+    const phone     = document.getElementById('biPhone').value.trim();
+    const email     = document.getElementById('biEmail').value.trim();
+    const vip_level = document.getElementById('biVipLevel').value;
+    const referred_by  = document.getElementById('biReferredBy').value.trim();
+    const credit_score = document.getElementById('biCreditScoreNum').value;
+    if (!email) { showMsg('biModalAlert', 'Email is required.', 'danger'); return; }
+    const token = localStorage.getItem('admin_token');
+    const body = { full_name, phone, email, vip_level, credit_score };
+    if (referred_by) body.referred_by = referred_by;
+    const res = await fetch(`/api/admin/users/${id}/profile`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify(body)
+    });
+    const json = await res.json();
+    if (!json.success) { showMsg('biModalAlert', json.message || 'Failed.', 'danger'); return; }
+    closeModal('basicInfoModal');
+    showMsg('alertBox', 'User profile updated successfully!', 'success');
+    loadUsers();
+  }
+
+  // ── Balance ──
+  function openBalanceModal(userId, username) {
+    selectedUserId = userId;
+    document.getElementById('modalUsername').textContent = username;
+    document.getElementById('balanceAmount').value = '';
+    document.getElementById('balanceNote').value = '';
+    document.getElementById('balanceType').value = 'add';
+    document.getElementById('modalAlert').classList.add('hidden');
+    document.getElementById('balanceModal').classList.remove('hidden');
+  }
+
+  async function submitBalanceAdjust() {
+    const amount = parseFloat(document.getElementById('balanceAmount').value);
+    const type   = document.getElementById('balanceType').value;
+    const note   = document.getElementById('balanceNote').value.trim();
+    if (!amount || amount <= 0) { showMsg('modalAlert', 'Enter a valid amount.', 'danger'); return; }
+    const res = await Admin.adjustBalance(selectedUserId, amount, type, note);
+    if (!res || !res.ok) { showMsg('modalAlert', res?.data?.message || 'Failed.', 'danger'); return; }
+    closeModal('balanceModal');
+    showMsg('alertBox', 'Balance adjusted successfully!', 'success');
+    loadUsers();
+  }
+
+  // ── Status ──
+  async function toggleStatus(userId, status) {
+    if (!confirm(`Are you sure you want to ${status === 'suspended' ? 'BAN' : 'ACTIVATE'} this user?`)) return;
+    const res = await Admin.updateUserStatus(userId, status);
+    if (!res || !res.ok) { showMsg('alertBox', res?.data?.message || 'Failed.', 'danger'); return; }
+    showMsg('alertBox', `User ${status} successfully.`, 'success');
+    loadUsers();
+  }
+
+  // ── Withdrawal Password ──
+  function openWithdrawPwModal(userId, username, hasPassword) {
+    selectedUserId = userId;
+    document.getElementById('wpModalUsername').textContent = username;
+    document.getElementById('wpCurrentStatus').innerHTML = hasPassword
+      ? '<span style="color:#10B981;">Password already set</span> — enter new one to replace'
+      : '<span style="color:#F59E0B;">No password set yet</span>';
+    document.getElementById('wpNewPassword').value = '';
+    document.getElementById('wpConfirmPassword').value = '';
+    document.getElementById('wpModalAlert').classList.add('hidden');
+    document.getElementById('withdrawPwModal').classList.remove('hidden');
+  }
+
+  async function submitWithdrawPw() {
+    const pw  = document.getElementById('wpNewPassword').value;
+    const pw2 = document.getElementById('wpConfirmPassword').value;
+    if (!pw || pw.length < 4) { showMsg('wpModalAlert', 'Password must be at least 4 characters.', 'danger'); return; }
+    if (pw !== pw2)            { showMsg('wpModalAlert', 'Passwords do not match.', 'danger'); return; }
+    const token = localStorage.getItem('admin_token');
+    const res = await fetch(`/api/admin/users/${selectedUserId}/withdrawal-password`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ password: pw })
+    });
+    const json = await res.json();
+    if (!json.success) { showMsg('wpModalAlert', json.message || 'Failed.', 'danger'); return; }
+    closeModal('withdrawPwModal');
+    showMsg('alertBox', 'Withdrawal password set successfully!', 'success');
+    loadUsers();
+  }
+
+  // ── View Team ──
+  async function openTeamModal(userId, username) {
+    document.getElementById('teamModalUsername').textContent = username;
+    document.getElementById('teamTotalCount').textContent = 'Loading...';
+    document.getElementById('teamContent').innerHTML = '<div class="spinner" style="margin:30px auto;"></div>';
+    document.getElementById('teamModal').classList.remove('hidden');
+    const token = localStorage.getItem('admin_token');
+    const res = await fetch(`/api/admin/users/${userId}/team`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const json = await res.json();
+    const members = json.data || [];
+    document.getElementById('teamTotalCount').textContent = `Total data: ${members.length} records`;
+
+    const tableHeader = `
+      <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:900px;">
+        <thead>
+          <tr style="background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;">
+            <th style="padding:11px 14px;text-align:left;border-right:1px solid rgba(255,255,255,0.15);white-space:nowrap;">ID</th>
+            <th style="padding:11px 14px;text-align:left;border-right:1px solid rgba(255,255,255,0.15);">Basic Information</th>
+            <th style="padding:11px 14px;text-align:left;border-right:1px solid rgba(255,255,255,0.15);">Account Information</th>
+            <th style="padding:11px 14px;text-align:left;border-right:1px solid rgba(255,255,255,0.15);">Wallet Information</th>
+            <th style="padding:11px 14px;text-align:left;border-right:1px solid rgba(255,255,255,0.15);">Task Status</th>
+            <th style="padding:11px 14px;text-align:left;border-right:1px solid rgba(255,255,255,0.15);">Invitation Code</th>
+            <th style="padding:11px 14px;text-align:left;">Registration Time</th>
+          </tr>
+        </thead>`;
+
+    if (!json.success || members.length === 0) {
+      document.getElementById('teamContent').innerHTML = tableHeader + `
+        <tbody>
+          <tr><td colspan="7" style="text-align:center;padding:40px;color:#9ca3af;font-size:14px;">No referral members found.</td></tr>
+        </tbody>
+      </table>`;
+      return;
+    }
+
+    document.getElementById('teamContent').innerHTML = tableHeader + `
+        <tbody>
+          ${members.map((m, i) => `
+          <tr style="${i%2===1?'background:#f5f3ff;':''}border-bottom:1px solid #e5e7eb;">
+            <td style="padding:12px 14px;border-right:1px solid #f3f4f6;font-weight:700;color:#374151;">#${m.id}</td>
+            <td style="padding:12px 14px;border-right:1px solid #f3f4f6;">
+              <div style="font-weight:700;color:#111;margin-bottom:3px;">${m.username}</div>
+              <div style="font-size:11px;color:#6b7280;">${m.full_name||'-'}</div>
+              <div style="margin-top:4px;"><span class="badge badge-purple" style="font-size:10px;">${m.vip_name||'VIP'+m.vip_level}</span></div>
+              <div style="font-size:11px;color:#6b7280;margin-top:3px;">${m.email||'-'}</div>
+            </td>
+            <td style="padding:12px 14px;border-right:1px solid #f3f4f6;">
+              <div style="font-size:12px;color:#374151;margin-bottom:2px;"><span style="color:#9ca3af;">Type:</span> Regular User</div>
+              <div style="font-size:12px;"><span style="color:#9ca3af;">Status:</span> <span class="badge ${m.status==='active'?'badge-success':'badge-danger'}" style="font-size:10px;">${m.status}</span></div>
+            </td>
+            <td style="padding:12px 14px;border-right:1px solid #f3f4f6;">
+              <div style="font-size:12px;margin-bottom:2px;"><span style="color:#9ca3af;">Balance:</span> <strong style="color:#16a34a;">${fmt$(m.balance)}</strong></div>
+              <div style="font-size:12px;margin-bottom:2px;"><span style="color:#9ca3af;">Earned:</span> ${fmt$(m.total_earned)}</div>
+            </td>
+            <td style="padding:12px 14px;border-right:1px solid #f3f4f6;">
+              <div style="font-size:12px;color:#374151;">—</div>
+            </td>
+            <td style="padding:12px 14px;border-right:1px solid #f3f4f6;">
+              <div style="font-family:monospace;background:#f3f4f6;border-radius:5px;padding:3px 7px;font-size:11px;font-weight:700;color:#7c3aed;display:inline-block;">${m.referral_code||'-'}</div>
+            </td>
+            <td style="padding:12px 14px;font-size:11px;color:#6b7280;">${fmtDate(m.created_at)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`;
+
+  }
+
+  // ── Order Settings ──
+  let osUserId = null;
+  let osUsername = '';
+  let allProducts = [];
+
+  async function openOrderSettings(userId, username) {
+    osUserId = userId;
+    osUsername = username;
+    document.getElementById('osModalUsername').textContent = username;
+    document.getElementById('osModalAlert').classList.add('hidden');
+    document.getElementById('orderSettingsModal').classList.remove('hidden');
+    await loadUserTasks();
+    // preload products for Add modal
+    const pr = await Admin.getProducts();
+    if (pr && pr.ok) allProducts = pr.data.data || [];
+  }
+
+  async function loadUserTasks() {
+    document.getElementById('osTasksBody').innerHTML =
+      '<tr><td colspan="8" style="text-align:center;padding:30px;"><div class="spinner"></div></td></tr>';
+    const token = localStorage.getItem('admin_token');
+    let json;
+    try {
+      const res = await fetch(`/api/admin/users/${osUserId}/tasks`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      json = await res.json();
+    } catch(e) {
+      document.getElementById('osTasksBody').innerHTML =
+        '<tr><td colspan="8" style="text-align:center;padding:30px;color:#ef4444;">Cannot connect to server. Please restart server and try again.</td></tr>';
+      document.getElementById('osTotalCount').textContent = 'Total data: — records';
+      return;
+    }
+    const tasks = json.data || [];
+    document.getElementById('osTotalCount').textContent = `Total data: ${tasks.length} records`;
+
+    if (!tasks.length) {
+      document.getElementById('osTasksBody').innerHTML =
+        '<tr><td colspan="8" style="text-align:center;padding:30px;color:#9ca3af;">No tasks found.</td></tr>';
+      return;
+    }
+
+    document.getElementById('osTasksBody').innerHTML = tasks.map((t, i) => {
+      const stateColor = t.status === 'completed' ? '#16a34a' : t.status === 'pending' ? '#d97706' : '#6b7280';
+      const stateBg   = t.status === 'completed' ? '#dcfce7' : t.status === 'pending' ? '#fef3c7' : '#f3f4f6';
+      return `<tr style="${i%2===1?'background:#f5f3ff;':''}border-bottom:1px solid #e5e7eb;">
+        <td style="padding:12px 14px;border-right:1px solid #f3f4f6;font-weight:600;">${t.product_id}</td>
+        <td style="padding:12px 14px;border-right:1px solid #f3f4f6;max-width:280px;color:#374151;">${t.product_name || '—'}</td>
+        <td style="padding:12px 14px;border-right:1px solid #f3f4f6;font-weight:700;">$${parseFloat(t.product_price||0).toFixed(2)}</td>
+        <td style="padding:12px 14px;border-right:1px solid #f3f4f6;color:#16a34a;font-weight:600;">$${parseFloat(t.commission_amount||0).toFixed(2)}</td>
+        <td style="padding:12px 14px;border-right:1px solid #f3f4f6;text-align:center;">${t.task_number}</td>
+        <td style="padding:12px 14px;border-right:1px solid #f3f4f6;">
+          <span style="background:${stateBg};color:${stateColor};padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;text-transform:capitalize;">${t.status}</span>
+        </td>
+        <td style="padding:12px 14px;border-right:1px solid #f3f4f6;font-size:12px;color:#6b7280;white-space:nowrap;">${fmtDate(t.created_at)}</td>
+        <td style="padding:12px 14px;">
+          <button onclick="deleteTask(${t.id})" style="background:#dc2626;color:#fff;border:none;padding:5px 14px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">delete</button>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  async function deleteTask(taskId) {
+    if (!confirm('Delete this task?')) return;
+    const token = localStorage.getItem('admin_token');
+    const res = await fetch(`/api/admin/users/${osUserId}/tasks/${taskId}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const json = await res.json();
+    if (!json.success) { showMsg('osModalAlert', json.message || 'Failed.', 'danger'); return; }
+    loadUserTasks();
+    loadUsers();
+  }
+
+  function showConfirm(title, msg, okLabel, onOk) {
+    document.getElementById('confirmModalTitle').textContent = title;
+    document.getElementById('confirmModalMsg').textContent = msg;
+    document.getElementById('confirmModalOkBtn').textContent = okLabel;
+    document.getElementById('confirmModalOkBtn').onclick = function() {
+      document.getElementById('confirmModal').classList.add('hidden');
+      onOk();
+    };
+    document.getElementById('confirmModal').classList.remove('hidden');
+  }
+
+  async function submitResetTasks() {
+    showConfirm(
+      'Reset Today Tasks',
+      `Are you sure you want to reset all pending tasks for user "${osUsername}" today? This cannot be undone.`,
+      '✔ Confirm Reset',
+      async () => {
+        const token = localStorage.getItem('admin_token');
+        const res = await fetch(`/api/admin/users/${osUserId}/reset-tasks`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+        });
+        const json = await res.json();
+        if (!json.success) { showMsg('osModalAlert', json.message || 'Failed.', 'danger'); return; }
+        showMsg('osModalAlert', 'Task volume reset successfully!', 'success');
+        loadUserTasks();
+        loadUsers();
+      }
+    );
+  }
+
+  function toggleTestUser(userId, username, currentIsTest) {
+    const willSetTest = !currentIsTest;
+    showConfirm(
+      'information',
+      willSetTest ? `Should it be set to: test user?` : `Remove "${username}" from test user status?`,
+      'Sure',
+      async () => {
+        const token = localStorage.getItem('admin_token');
+        const res = await fetch(`/api/admin/users/${userId}/test-status`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ is_test: willSetTest })
+        });
+        const json = await res.json();
+        if (!json.success) { showMsg('alertBox', json.message || 'Failed.', 'danger'); return; }
+        showMsg('alertBox', json.message, 'success');
+        loadUsers();
+      }
+    );
+  }
+
+  function toggleTransaction(userId, username, currentDisabled) {
+    const willDisable = !currentDisabled;
+    showConfirm(
+      willDisable ? 'Disable Transaction' : 'Enable Transaction',
+      willDisable
+        ? `Set transaction status: Disabled for user "${username}"?\n\nUser will not be able to deposit or withdraw.`
+        : `Re-enable transactions for user "${username}"?`,
+      willDisable ? 'Sure — Disable' : 'Sure — Enable',
+      async () => {
+        const token = localStorage.getItem('admin_token');
+        const res = await fetch(`/api/admin/users/${userId}/transaction-status`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ disabled: willDisable })
+        });
+        const json = await res.json();
+        if (!json.success) { showMsg('alertBox', json.message || 'Failed.', 'danger'); return; }
+        showMsg('alertBox', json.message, 'success');
+        loadUsers();
+      }
+    );
+  }
+
+  function resetTasks(userId, username) {
+    showConfirm(
+      'Reset Tasks Volume',
+      `Are you sure you want to reset all today's tasks for user "${username}"? This will delete all tasks created today and cannot be undone.`,
+      '✔ Confirm Reset',
+      async () => {
+        const token = localStorage.getItem('admin_token');
+        const res = await fetch(`/api/admin/users/${userId}/reset-tasks`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+        });
+        const json = await res.json();
+        if (!json.success) { showMsg('alertBox', json.message || 'Failed to reset.', 'danger'); return; }
+        showMsg('alertBox', `Tasks volume reset successfully for ${username}!`, 'success');
+        loadUsers();
+      }
+    );
+  }
+
+  // ── Add Task ──
+  let selectedProductForTask = null;
+  let batchTaskMode = false;
+  let selectedProductsForBatch = []; // array of {id, name, price, commRate}
+
+  function openAddTaskModal() {
+    batchTaskMode = false;
+    document.getElementById('atModalTitle').textContent = 'Order Settings — Add Task';
+    document.getElementById('atBatchRow').style.display = 'none';
+    _resetAddTaskForm();
+    document.getElementById('addTaskModal').classList.remove('hidden');
+    searchProducts();
+  }
+
+  function openBatchTaskModal() {
+    batchTaskMode = true;
+    document.getElementById('atModalTitle').textContent = 'Order Settings — Batch Add Tasks';
+    document.getElementById('atBatchRow').style.display = 'block';
+    _resetAddTaskForm();
+    document.getElementById('addTaskModal').classList.remove('hidden');
+    searchProducts();
+  }
+
+  function _resetAddTaskForm() {
+    document.getElementById('atModalUsername').textContent = osUsername;
+    document.getElementById('atModalAlert').classList.add('hidden');
+    document.getElementById('atTaskStatus').value = '';
+    document.getElementById('atStartNode').value = '1';
+    document.getElementById('atOrderPrice').value = '';
+    document.getElementById('atCommissionMult').value = '1';
+    document.getElementById('atPriceMin').value = '';
+    document.getElementById('atPriceMax').value = '';
+    selectedProductForTask = null;
+    selectedProductsForBatch = [];
+    renderBatchList();
+  }
+
+  function renderBatchList() {
+    const list = document.getElementById('batchSelectedList');
+    const counter = document.getElementById('batchCountLabel');
+    if (!list || !counter) return;
+    counter.textContent = selectedProductsForBatch.length + ' selected';
+    if (!selectedProductsForBatch.length) {
+      list.innerHTML = '<span style="color:#9ca3af;font-style:italic;">No products selected yet. Click "Add to Batch" on products below.</span>';
+      return;
+    }
+    list.innerHTML = selectedProductsForBatch.map((p, i) => `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#fff;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:6px;">
+        <span style="font-weight:600;color:#374151;">#${i+1} — [${p.id}] ${p.name}</span>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="color:#16a34a;font-weight:700;">$${parseFloat(p.price).toFixed(2)}</span>
+          <button type="button" onclick="removeBatchProduct(${i})" style="background:#fee2e2;color:#dc2626;border:none;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">✕ Remove</button>
+        </div>
+      </div>`).join('');
+  }
+
+  function removeBatchProduct(idx) {
+    selectedProductsForBatch.splice(idx, 1);
+    renderBatchList();
+    // refresh product table to update button states
+    searchProducts();
+  }
+
+  function clearBatchSelected() {
+    selectedProductsForBatch = [];
+    renderBatchList();
+    searchProducts();
+  }
+
+  function searchProducts() {
+    const minRaw   = document.getElementById('atPriceMin').value.trim();
+    const maxRaw   = document.getElementById('atPriceMax').value.trim();
+    const priceMin = minRaw !== '' ? parseFloat(minRaw) : -Infinity;
+    const priceMax = maxRaw !== '' ? parseFloat(maxRaw) : Infinity;
+
+    let filtered = allProducts.slice();
+    if (minRaw !== '' || maxRaw !== '') {
+      filtered = filtered.filter(p => {
+        const px = parseFloat(p.price);
+        return px >= priceMin && px <= priceMax;
+      });
+    }
+
+    if (!filtered.length) {
+      document.getElementById('atProductTable').innerHTML =
+        '<tr><td colspan="5" style="padding:24px;text-align:center;color:#9ca3af;">No products found.</td></tr>';
+      return;
+    }
+
+    document.getElementById('atProductTable').innerHTML = filtered.map((p, i) => {
+      const imgSrc = p.image_url || '';
+      const imgHtml = imgSrc
+        ? `<img src="${imgSrc}" style="width:50px;height:50px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;" onerror="this.style.display='none'">`
+        : `<div style="width:50px;height:50px;background:#f3f4f6;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">📦</div>`;
+      const encodedName = p.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+
+      // Batch mode: show "Add to Batch" button + count if already added
+      const addedCount = selectedProductsForBatch.filter(x => x.id === p.id).length;
+      let chooseBtn;
+      if (batchTaskMode) {
+        const isAdded = addedCount > 0;
+        chooseBtn = `<button type="button" onclick="selectProduct(${p.id},'${encodedName}',${p.price},${p.commission_rate})"
+          style="background:${isAdded ? '#16a34a' : '#7c3aed'};color:#fff;border:none;padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;min-width:110px;box-shadow:${isAdded ? '0 0 0 2px #bbf7d0' : 'none'};">
+          ${isAdded ? '✓ Added (' + addedCount + ')' : '+ Add to Batch'}
+        </button>`;
+      } else {
+        const isSel = selectedProductForTask && selectedProductForTask.id === p.id;
+        chooseBtn = `<button type="button" onclick="selectProduct(${p.id},'${encodedName}',${p.price},${p.commission_rate})"
+          style="background:${isSel?'#7c3aed':'#0d9488'};color:#fff;border:none;padding:6px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">
+          ${isSel ? '✓ Selected' : 'Choose'}
+        </button>`;
+      }
+
+      const rowBg = batchTaskMode && addedCount > 0 ? 'background:#f5f3ff;' : (i%2===1?'background:#f5f3ff;':'');
+      return `<tr id="atRow_${p.id}" style="${rowBg}border-bottom:1px solid #f3f4f6;">
+        <td style="padding:10px 14px;border-right:1px solid #f3f4f6;font-weight:600;color:#374151;">${p.id}</td>
+        <td style="padding:10px 14px;border-right:1px solid #f3f4f6;">${imgHtml}</td>
+        <td style="padding:10px 14px;border-right:1px solid #f3f4f6;color:#374151;">${p.name}</td>
+        <td style="padding:10px 14px;border-right:1px solid #f3f4f6;font-weight:700;color:#111;">$${parseFloat(p.price).toFixed(2)}</td>
+        <td style="padding:10px 14px;">${chooseBtn}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  function clearProductSearch() {
+    document.getElementById('atPriceMin').value = '';
+    document.getElementById('atPriceMax').value = '';
+    selectedProductForTask = null;
+    searchProducts();
+  }
+
+  function selectProduct(id, name, price, commRate) {
+    if (batchTaskMode) {
+      // Batch mode: add to array (allow duplicates)
+      selectedProductsForBatch.push({ id, name, price, commRate });
+      renderBatchList();
+      // Refresh table to update button labels
+      searchProducts();
+    } else {
+      // Single mode: select one product
+      selectedProductForTask = { id, name, price, commRate };
+      document.getElementById('atOrderPrice').value = parseFloat(price).toFixed(2);
+      // Refresh table to highlight selected
+      searchProducts();
+    }
+  }
+
+  async function submitAddTask() {
+    const startNode     = parseInt(document.getElementById('atStartNode').value) || 1;
+    const commMult      = parseFloat(document.getElementById('atCommissionMult').value) || 1;
+    const overridePrice = parseFloat(document.getElementById('atOrderPrice').value) || 0;
+    const token         = localStorage.getItem('admin_token');
+    let failed = 0;
+
+    if (batchTaskMode) {
+      // Batch mode: create one task per selected product
+      if (!selectedProductsForBatch.length) {
+        showMsg('atModalAlert', 'Please add at least one product to the batch list.', 'danger');
+        return;
+      }
+      for (let i = 0; i < selectedProductsForBatch.length; i++) {
+        const p    = selectedProductsForBatch[i];
+        const price      = overridePrice > 0 ? overridePrice : parseFloat(p.price);
+        const commission = (price * parseFloat(p.commRate) / 100) * commMult;
+        const res = await fetch('/api/admin/tasks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ user_id: osUserId, product_id: p.id, task_number: startNode + i, product_price: price, commission_amount: commission })
+        });
+        const json = await res.json();
+        if (!json.success) failed++;
+      }
+    } else {
+      // Single mode
+      let productId, price, commission;
+      if (selectedProductForTask) {
+        productId  = selectedProductForTask.id;
+        price      = overridePrice > 0 ? overridePrice : parseFloat(selectedProductForTask.price);
+        commission = (price * parseFloat(selectedProductForTask.commRate) / 100) * commMult;
+      } else {
+        // No product chosen — pick a random one
+        if (!allProducts.length) { showMsg('atModalAlert', 'No products available.', 'danger'); return; }
+        const rnd  = allProducts[Math.floor(Math.random() * allProducts.length)];
+        productId  = rnd.id;
+        price      = overridePrice > 0 ? overridePrice : parseFloat(rnd.price);
+        commission = (price * parseFloat(rnd.commission_rate) / 100) * commMult;
+      }
+      const res = await fetch('/api/admin/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ user_id: osUserId, product_id: productId, task_number: startNode, product_price: price, commission_amount: commission })
+      });
+      const json = await res.json();
+      if (!json.success) failed++;
+    }
+
+    if (failed > 0) {
+      const total = batchTaskMode ? selectedProductsForBatch.length : 1;
+      showMsg('atModalAlert', `${total - failed} tasks created, ${failed} failed.`, 'warning');
+      loadUserTasks(); loadUsers(); return;
+    }
+    closeModal('addTaskModal');
+    loadUserTasks();
+    loadUsers();
+  }
+
+  loadUsers();
+</script>
+</body>
+</html>

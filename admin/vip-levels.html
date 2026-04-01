@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIP Levels - Admin Panel</title>
+<link rel="stylesheet" href="css/admin.css">
+<style>
+  .vip-table { width:100%; border-collapse:collapse; background:#fff; border-radius:14px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,0.06); }
+  .vip-table thead { background:linear-gradient(135deg,#7c3aed,#a855f7); color:#fff; }
+  .vip-table th { padding:14px 16px; text-align:left; font-size:12px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; border-right:1px solid rgba(255,255,255,0.15); }
+  .vip-table th:last-child { border-right:none; }
+  .vip-table td { padding:14px 16px; font-size:14px; border-bottom:1px solid #e5e7eb; border-right:1px solid #f3f4f6; vertical-align:middle; }
+  .vip-table td:last-child { border-right:none; }
+  .vip-table tbody tr:last-child td { border-bottom:none; }
+  .vip-table tbody tr:nth-child(even) { background:#f5f3ff; }
+  .vip-table tbody tr:hover { background:#ede9fe; }
+  .vip-badge { display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:50px; font-size:14px; font-weight:700; }
+  .vip-badge .vip-icon { font-size:26px; line-height:1; }
+  .vip-color-dot { width:14px; height:14px; border-radius:50%; display:inline-block; border:2px solid rgba(0,0,0,0.1); }
+  .grade-num { font-weight:800; font-size:16px; color:#374151; }
+  .stat-chip { display:inline-block; background:#f3f4f6; border-radius:6px; padding:3px 8px; font-size:12px; font-weight:600; color:#374151; }
+  .commission-chip { background:#dcfce7; color:#16a34a; }
+  .tasks-chip { background:#dbeafe; color:#1d4ed8; }
+  .deposit-chip { background:#fef3c7; color:#d97706; }
+  .btn-edit-vip { background:linear-gradient(135deg,#7c3aed,#a855f7); color:#fff; border:none; padding:8px 18px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; transition:opacity .2s; }
+  .btn-edit-vip:hover { opacity:.85; }
+  .btn-delete-vip { background:#fff; color:#ef4444; border:1.5px solid #fca5a5; padding:8px 14px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; transition:all .2s; }
+  .btn-delete-vip:hover { background:#fef2f2; border-color:#ef4444; }
+  .btn-add-vip { background:linear-gradient(135deg,#7c3aed,#a855f7); color:#fff; border:none; padding:10px 20px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:8px; transition:opacity .2s; }
+  .btn-add-vip:hover { opacity:.88; }
+  .summary-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+  .sum-card { background:#fff; border-radius:14px; padding:18px 20px; box-shadow:0 2px 8px rgba(0,0,0,0.06); display:flex; flex-direction:column; gap:4px; border-left:4px solid; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <div><div>InvestPro</div><span>Admin Panel</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">Main</div>
+    <a href="dashboard.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Dashboard</a>
+    <div class="nav-group-label">Manage</div>
+    <!-- Users Dropdown -->
+    <div class="sidebar-dropdown open" id="usersDropdown">
+      <div class="sidebar-link sidebar-dropdown-toggle" onclick="toggleDropdown('usersDropdown')">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+        Users
+        <span class="chevron"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+      </div>
+      <div class="sidebar-dropdown-menu">
+        <a href="users.html" class="sidebar-sub-link"><span class="dot"></span> Member List</a>
+        <a href="prize-records.html" class="sidebar-sub-link"><span class="dot"></span> Prize Records</a>
+        <a href="vip-levels.html" class="sidebar-sub-link active"><span class="dot"></span> VIP Levels</a>
+        <a href="points-records.html" class="sidebar-sub-link"><span class="dot"></span> Points Records</a>
+      </div>
+    </div>
+    <a href="products.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span> Products</a>
+    <a href="deposits.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span> Deposits</a>
+    <a href="withdrawals.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span> Withdrawals</a>
+    <div class="nav-group-label">System</div>
+    <a href="spin-prizes.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></span> Spin Prizes</a>
+    <a href="settings.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span> Settings</a>
+    <a href="#" onclick="Admin.logout()" class="sidebar-link" style="color:rgba(239,68,68,0.75);"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Logout</a>
+  </nav>
+  <div class="sidebar-footer">Logged in as: <strong id="adminName">Admin</strong></div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">VIP Level Management</div>
+    <div class="topbar-right">
+      <div class="admin-avatar" id="adminInitial">A</div>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div id="alertBox" class="hidden"></div>
+
+    <!-- Summary Cards -->
+    <div class="summary-cards" id="summaryCards"></div>
+
+    <!-- VIP Table -->
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div style="padding:18px 20px 14px;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <div style="font-size:16px;font-weight:700;color:#111;">Membership Level List <span style="font-size:13px;color:#6b7280;font-weight:400;" id="totalCount">— 0 levels</span></div>
+        <button class="btn-add-vip" onclick="openAddModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Membership Level
+        </button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="vip-table">
+          <thead>
+            <tr>
+              <th>Grade</th>
+              <th>Name</th>
+              <th>Min Deposit</th>
+              <th>Commission</th>
+              <th>Daily Tasks</th>
+              <th>Description</th>
+              <th>Color</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="vipTableBody">
+            <tr><td colspan="8" style="text-align:center;padding:40px;"><div class="spinner"></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit VIP Modal -->
+<div class="modal-overlay hidden" id="vipModal">
+  <div class="modal" style="max-width:620px;max-height:90vh;overflow-y:auto;">
+    <div class="modal-head" style="position:sticky;top:0;background:#fff;z-index:1;border-bottom:1px solid #f3f4f6;padding-bottom:14px;">
+      <h3 id="vipModalTitle">Edit VIP Level</h3>
+      <button class="modal-close" onclick="closeVipModal()">✕</button>
+    </div>
+    <div id="vipModalAlert" class="hidden" style="margin-top:12px;"></div>
+    <input type="hidden" id="editVipId">
+
+    <!-- Form rows styled like reference image -->
+    <div style="margin-top:16px;">
+
+      <!-- Name -->
+      <div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid #f3f4f6;">
+        <div style="width:160px;text-align:right;font-size:13px;color:#374151;font-weight:600;flex-shrink:0;"><span style="color:#ef4444;">*</span> Level Name</div>
+        <input type="text" id="editVipName" class="form-control" placeholder="e.g. Bronze, Silver..." style="flex:1;">
+      </div>
+
+      <!-- Badge Color -->
+      <div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid #f3f4f6;">
+        <div style="width:160px;text-align:right;font-size:13px;color:#374151;font-weight:600;flex-shrink:0;">Badge Color</div>
+        <div style="display:flex;gap:8px;align-items:center;flex:1;">
+          <input type="color" id="editVipColor" value="#8B5CF6" style="width:44px;height:40px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;padding:2px;flex-shrink:0;">
+          <input type="text" id="editVipColorHex" class="form-control" placeholder="#8B5CF6" oninput="syncColorPicker()">
+        </div>
+      </div>
+
+      <!-- Daily Order Volume -->
+      <div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid #f3f4f6;">
+        <div style="width:160px;text-align:right;font-size:13px;color:#374151;font-weight:600;flex-shrink:0;"><span style="color:#ef4444;">*</span> Daily Order Volume</div>
+        <input type="number" id="editVipTaskLimit" class="form-control" placeholder="35" min="1" step="1" style="flex:1;">
+        <div style="font-size:12px;color:#9ca3af;white-space:nowrap;">Total tasks per day</div>
+      </div>
+
+      <!-- Task Wheel (sets per day) -->
+      <div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid #f3f4f6;">
+        <div style="width:160px;text-align:right;font-size:13px;color:#374151;font-weight:600;flex-shrink:0;"><span style="color:#ef4444;">*</span> Task Wheel</div>
+        <input type="number" id="editVipTaskWheel" class="form-control" placeholder="2" min="1" step="1" style="flex:1;">
+        <div style="font-size:12px;color:#9ca3af;white-space:nowrap;">Sets / rounds per day</div>
+      </div>
+
+      <!-- Amount Limit (min deposit) -->
+      <div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid #f3f4f6;">
+        <div style="width:160px;text-align:right;font-size:13px;color:#374151;font-weight:600;flex-shrink:0;"><span style="color:#ef4444;">*</span> Amount Limit</div>
+        <input type="number" id="editVipMinDeposit" class="form-control" placeholder="50.00" min="0" step="0.01" style="flex:1;">
+        <div style="font-size:12px;color:#9ca3af;white-space:nowrap;">Balance limit for placing orders</div>
+      </div>
+
+      <!-- Upgrade Rewards -->
+      <div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid #f3f4f6;">
+        <div style="width:160px;text-align:right;font-size:13px;color:#374151;font-weight:600;flex-shrink:0;"><span style="color:#ef4444;">*</span> Upgrade Rewards</div>
+        <input type="number" id="editVipUpgradeRewards" class="form-control" placeholder="5.00" min="0" step="0.01" style="flex:1;">
+        <div style="font-size:12px;color:#9ca3af;white-space:nowrap;">Amount returned upon upgrade</div>
+      </div>
+
+      <!-- Price per Grade -->
+      <div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid #f3f4f6;">
+        <div style="width:160px;text-align:right;font-size:13px;color:#374151;font-weight:600;flex-shrink:0;"><span style="color:#ef4444;">*</span> Price per Grade</div>
+        <input type="number" id="editVipPricePerGrade" class="form-control" placeholder="99.00" min="0" step="0.01" style="flex:1;">
+        <div style="font-size:12px;color:#9ca3af;white-space:nowrap;">Membership purchase amount</div>
+      </div>
+
+      <!-- Min Withdrawal -->
+      <div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid #f3f4f6;">
+        <div style="width:160px;text-align:right;font-size:13px;color:#ef4444;font-weight:600;flex-shrink:0;">Minimum Withdrawal</div>
+        <input type="number" id="editVipMinWithdrawal" class="form-control" placeholder="10.00" min="0" step="0.01" style="flex:1;">
+      </div>
+
+      <!-- Max Withdrawal -->
+      <div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid #f3f4f6;">
+        <div style="width:160px;text-align:right;font-size:13px;color:#ef4444;font-weight:600;flex-shrink:0;">Maximum Withdrawal</div>
+        <input type="number" id="editVipMaxWithdrawal" class="form-control" placeholder="1000.00" min="0" step="0.01" style="flex:1;">
+      </div>
+
+      <!-- Transaction Fee Rate -->
+      <div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid #f3f4f6;">
+        <div style="width:160px;text-align:right;font-size:13px;color:#374151;font-weight:600;flex-shrink:0;"><span style="color:#ef4444;">*</span> Transaction Fee Rate</div>
+        <input type="number" id="editVipTxFee" class="form-control" placeholder="0" min="0" max="1" step="0.001" style="flex:1;">
+        <div style="font-size:12px;color:#9ca3af;white-space:nowrap;">Withdrawal Amount* (e.g. 0 = free)</div>
+      </div>
+
+      <!-- Order Commission Rate -->
+      <div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid #f3f4f6;">
+        <div style="width:160px;text-align:right;font-size:13px;color:#374151;font-weight:600;flex-shrink:0;"><span style="color:#ef4444;">*</span> Commission Rate</div>
+        <input type="number" id="editVipCommission" class="form-control" placeholder="0.005" min="0" max="1" step="0.001" style="flex:1;">
+        <div style="font-size:12px;color:#9ca3af;white-space:nowrap;">Order Amount* (e.g. 0.005 = 0.5%)</div>
+      </div>
+
+      <!-- Description -->
+      <div style="display:flex;align-items:flex-start;gap:16px;padding:12px 0;">
+        <div style="width:160px;text-align:right;font-size:13px;color:#374151;font-weight:600;flex-shrink:0;padding-top:8px;">Description</div>
+        <textarea id="editVipDesc" class="form-control" rows="2" placeholder="Short description..." style="flex:1;resize:vertical;"></textarea>
+      </div>
+
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:8px;padding-top:14px;border-top:1px solid #f3f4f6;position:sticky;bottom:0;background:#fff;">
+      <button onclick="closeVipModal()" class="btn btn-secondary" style="flex:1;">Cancel</button>
+      <button onclick="submitVipForm()" id="saveVipBtn" class="btn btn-primary" style="flex:2;">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/admin-api.js"></script>
+<script>
+  requireAdminAuth();
+  const info = getAdminInfo();
+  if (info) {
+    document.getElementById('adminName').textContent = info.username || 'Admin';
+    document.getElementById('adminInitial').textContent = (info.username || 'A')[0].toUpperCase();
+  }
+
+  const LEVEL_ICONS = ['🥉','🥈','🥇','💎','👑'];
+  let allLevels = [];
+
+  async function loadVipLevels() {
+    const res = await adminAPI('/admin/vip-levels');
+    if (!res || !res.ok) {
+      document.getElementById('vipTableBody').innerHTML =
+        '<tr><td colspan="8" style="text-align:center;color:#ef4444;padding:30px;">Failed to load VIP levels.</td></tr>';
+      return;
+    }
+    allLevels = res.data.data || [];
+    document.getElementById('totalCount').textContent = `— ${allLevels.length} levels`;
+    renderSummaryCards(allLevels);
+    renderTable(allLevels);
+  }
+
+  function renderSummaryCards(levels) {
+    const colors = ['#7c3aed','#2563eb','#d97706','#dc2626'];
+    const icons  = ['🥉','🥈','🥇','💎'];
+    document.getElementById('summaryCards').innerHTML = levels.map((v, i) => `
+      <div class="sum-card" style="border-left-color:${v.color||colors[i%colors.length]}">
+        <div style="font-size:22px">${icons[i] || '⭐'}</div>
+        <div style="font-size:15px;font-weight:800;color:#111;">${v.name}</div>
+        <div style="font-size:12px;color:#6b7280;">Min: $${parseFloat(v.min_deposit).toFixed(2)}</div>
+        <div style="font-size:12px;color:#16a34a;font-weight:600;">${v.commission_rate}% / task</div>
+      </div>`).join('');
+  }
+
+  function renderTable(levels) {
+    const icons = ['🥉','🥈','🥇','💎','👑'];
+    document.getElementById('vipTableBody').innerHTML = levels.map((v, i) => `
+      <tr>
+        <td><div class="grade-num">${v.level}</div></td>
+        <td>
+          <div class="vip-badge" style="background:${v.color||'#8B5CF6'}22;color:${v.color||'#8B5CF6'};">
+            <span class="vip-icon">${icons[i]||'⭐'}</span> ${v.name}
+          </div>
+        </td>
+        <td><span class="stat-chip deposit-chip">$${parseFloat(v.min_deposit).toFixed(2)}</span></td>
+        <td><span class="stat-chip commission-chip">${v.commission_rate}%</span></td>
+        <td><span class="stat-chip tasks-chip">${v.daily_task_limit} tasks/day</span></td>
+        <td style="max-width:200px;color:#6b7280;font-size:13px;">${v.description||'—'}</td>
+        <td>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span class="vip-color-dot" style="background:${v.color||'#8B5CF6'};"></span>
+            <span style="font-size:12px;color:#9ca3af;">${v.color||'#8B5CF6'}</span>
+          </div>
+        </td>
+        <td>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button class="btn-edit-vip" onclick="openEditModal(${v.id})">✏️ Edit</button>
+            <button class="btn-delete-vip" onclick="confirmDeleteVip(${v.id},'${v.name.replace(/'/g,"\\'")}')">🗑️ Delete</button>
+          </div>
+        </td>
+      </tr>`).join('');
+  }
+
+  let vipModalMode = 'edit'; // 'edit' or 'add'
+
+  function openAddModal() {
+    vipModalMode = 'add';
+    document.getElementById('editVipId').value             = '';
+    document.getElementById('editVipName').value           = '';
+    document.getElementById('editVipMinDeposit').value     = '';
+    document.getElementById('editVipCommission').value     = '';
+    document.getElementById('editVipTaskLimit').value      = '';
+    document.getElementById('editVipTaskWheel').value      = '1';
+    document.getElementById('editVipUpgradeRewards').value = '0';
+    document.getElementById('editVipPricePerGrade').value  = '0';
+    document.getElementById('editVipMinWithdrawal').value  = '10';
+    document.getElementById('editVipMaxWithdrawal').value  = '1000';
+    document.getElementById('editVipTxFee').value          = '0';
+    document.getElementById('editVipDesc').value           = '';
+    document.getElementById('editVipColor').value          = '#8B5CF6';
+    document.getElementById('editVipColorHex').value       = '#8B5CF6';
+    document.getElementById('vipModalTitle').textContent   = 'Add New Membership Level';
+    document.getElementById('saveVipBtn').textContent      = 'Create Level';
+    document.getElementById('vipModalAlert').classList.add('hidden');
+    document.getElementById('vipModal').classList.remove('hidden');
+  }
+
+  function openEditModal(id) {
+    vipModalMode = 'edit';
+    const v = allLevels.find(x => x.id === id);
+    if (!v) return;
+    document.getElementById('editVipId').value              = v.id;
+    document.getElementById('editVipName').value            = v.name;
+    document.getElementById('editVipMinDeposit').value      = v.min_deposit;
+    document.getElementById('editVipCommission').value      = v.commission_rate;
+    document.getElementById('editVipTaskLimit').value       = v.daily_task_limit;
+    document.getElementById('editVipTaskWheel').value       = v.task_wheel || 1;
+    document.getElementById('editVipUpgradeRewards').value  = v.upgrade_rewards || 0;
+    document.getElementById('editVipPricePerGrade').value   = v.price_per_grade || 0;
+    document.getElementById('editVipMinWithdrawal').value   = v.min_withdrawal || 10;
+    document.getElementById('editVipMaxWithdrawal').value   = v.max_withdrawal || 1000;
+    document.getElementById('editVipTxFee').value           = v.transaction_fee_rate || 0;
+    document.getElementById('editVipDesc').value            = v.description || '';
+    document.getElementById('editVipColor').value           = v.color || '#8B5CF6';
+    document.getElementById('editVipColorHex').value        = v.color || '#8B5CF6';
+    document.getElementById('vipModalTitle').textContent    = `Edit — ${v.name} (Level ${v.level})`;
+    document.getElementById('saveVipBtn').textContent       = 'Save Changes';
+    document.getElementById('vipModalAlert').classList.add('hidden');
+    document.getElementById('vipModal').classList.remove('hidden');
+    document.getElementById('vipModal').scrollTop = 0;
+  }
+
+  function closeVipModal() {
+    document.getElementById('vipModal').classList.add('hidden');
+  }
+
+  // Sync color picker <-> hex input
+  document.getElementById('editVipColor').addEventListener('input', function() {
+    document.getElementById('editVipColorHex').value = this.value;
+  });
+  function syncColorPicker() {
+    const hex = document.getElementById('editVipColorHex').value;
+    if (/^#[0-9A-Fa-f]{6}$/.test(hex)) document.getElementById('editVipColor').value = hex;
+  }
+
+  async function submitVipForm() {
+    const id             = document.getElementById('editVipId').value;
+    const name           = document.getElementById('editVipName').value.trim();
+    const minDeposit     = document.getElementById('editVipMinDeposit').value;
+    const commission     = document.getElementById('editVipCommission').value;
+    const taskLimit      = document.getElementById('editVipTaskLimit').value;
+    const taskWheel      = document.getElementById('editVipTaskWheel').value;
+    const upgradeRewards = document.getElementById('editVipUpgradeRewards').value;
+    const pricePerGrade  = document.getElementById('editVipPricePerGrade').value;
+    const minWithdrawal  = document.getElementById('editVipMinWithdrawal').value;
+    const maxWithdrawal  = document.getElementById('editVipMaxWithdrawal').value;
+    const txFee          = document.getElementById('editVipTxFee').value;
+    const description    = document.getElementById('editVipDesc').value.trim();
+    const color          = document.getElementById('editVipColor').value;
+    const alertEl        = document.getElementById('vipModalAlert');
+    const btn            = document.getElementById('saveVipBtn');
+
+    if (!name || minDeposit === '' || commission === '' || !taskLimit) {
+      alertEl.className = 'alert alert-danger';
+      alertEl.textContent = 'Please fill in all required fields.';
+      alertEl.classList.remove('hidden');
+      return;
+    }
+
+    const payload = {
+      name, min_deposit: minDeposit, commission_rate: commission,
+      daily_task_limit: taskLimit, task_wheel: taskWheel,
+      upgrade_rewards: upgradeRewards, price_per_grade: pricePerGrade,
+      min_withdrawal: minWithdrawal, max_withdrawal: maxWithdrawal,
+      transaction_fee_rate: txFee, description, color
+    };
+
+    btn.textContent = 'Saving...';
+    btn.disabled = true;
+
+    let res;
+    if (vipModalMode === 'add') {
+      res = await adminAPI('/admin/vip-levels', 'POST', payload);
+    } else {
+      res = await adminAPI(`/admin/vip-levels/${id}`, 'PUT', payload);
+    }
+
+    btn.textContent = vipModalMode === 'add' ? 'Create Level' : 'Save Changes';
+    btn.disabled = false;
+
+    if (!res || !res.ok) {
+      alertEl.className = 'alert alert-danger';
+      alertEl.textContent = res?.data?.message || 'Failed to save.';
+      alertEl.classList.remove('hidden');
+      return;
+    }
+
+    closeVipModal();
+    showGlobalAlert(vipModalMode === 'add' ? '✅ VIP level created successfully!' : '✅ VIP level updated successfully!', 'success');
+    loadVipLevels();
+  }
+
+  async function confirmDeleteVip(id, name) {
+    if (!confirm(`Delete VIP level "${name}"?\n\nThis cannot be undone. Users must be reassigned first.`)) return;
+    const res = await adminAPI(`/admin/vip-levels/${id}`, 'DELETE');
+    if (!res || !res.ok) {
+      showGlobalAlert(res?.data?.message || 'Failed to delete.', 'danger');
+      return;
+    }
+    showGlobalAlert(`✅ "${name}" level deleted.`, 'success');
+    loadVipLevels();
+  }
+
+  function showGlobalAlert(msg, type) {
+    const el = document.getElementById('alertBox');
+    el.className = `alert alert-${type}`;
+    el.textContent = msg;
+    el.classList.remove('hidden');
+    setTimeout(() => el.classList.add('hidden'), 3500);
+  }
+
+  loadVipLevels();
+</script>
+</body>
+</html>

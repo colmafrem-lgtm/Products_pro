@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login - InvestPro</title>
+<link rel="stylesheet" href="css/admin.css">
+<style>
+  body { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: var(--gradient); }
+  .login-card { background: var(--white); border-radius: 20px; padding: 40px 36px; width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+  .login-logo { text-align: center; margin-bottom: 28px; }
+  .login-logo .brand { font-size: 28px; font-weight: 900; color: var(--dark); }
+  .login-logo .sub { font-size: 13px; color: var(--text-light); margin-top: 4px; }
+  .login-logo .icon { font-size: 48px; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+<div class="login-card">
+  <div class="login-logo">
+    <div class="icon">🔐</div>
+    <div class="brand">InvestPro</div>
+    <div class="sub">Admin Control Panel</div>
+  </div>
+
+  <div id="alertBox" class="hidden"></div>
+
+  <form id="loginForm">
+    <div class="form-group">
+      <label class="form-label">Admin Username</label>
+      <input type="text" id="username" class="form-control" placeholder="Enter admin username" value="admin" required>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" id="password" class="form-control" placeholder="Enter password" required>
+    </div>
+    <button type="submit" id="loginBtn" class="btn btn-primary" style="width:100%;padding:12px;font-size:15px;">
+      Login to Dashboard
+    </button>
+  </form>
+
+  <p style="text-align:center;font-size:12px;color:var(--text-light);margin-top:20px;">
+    Default: admin / Admin@123
+  </p>
+</div>
+
+<script src="js/admin-api.js"></script>
+<script>
+  if (getAdminToken()) window.location.href = 'dashboard.html';
+
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('loginBtn');
+    btn.disabled = true;
+    btn.textContent = 'Logging in...';
+
+    const res = await Admin.login(
+      document.getElementById('username').value.trim(),
+      document.getElementById('password').value
+    );
+
+    btn.disabled = false;
+    btn.textContent = 'Login to Dashboard';
+
+    if (!res || !res.ok) {
+      showMsg('alertBox', res?.data?.message || 'Login failed.', 'danger');
+      return;
+    }
+
+    saveAdminSession(res.data.data.token, res.data.data.admin);
+    window.location.href = 'dashboard.html';
+  });
+</script>
+</body>
+</html>

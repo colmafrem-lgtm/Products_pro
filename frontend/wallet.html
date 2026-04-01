@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wallet - InvestPro</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .wallet-hero {
+    background: var(--gradient);
+    padding: 30px 20px;
+    color: #fff;
+    text-align: center;
+  }
+  .wallet-balance { font-size: 42px; font-weight: 900; letter-spacing: -1px; }
+  .wallet-label { font-size: 14px; opacity: 0.8; margin-bottom: 12px; }
+  .wallet-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+  .tab-bar { display: flex; background: var(--white); border-bottom: 1px solid var(--border); }
+  .tab-btn { flex: 1; padding: 14px; text-align: center; font-size: 14px; font-weight: 600; color: var(--text-light); cursor: pointer; border: none; background: none; border-bottom: 3px solid transparent; }
+  .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .deposit-info {
+    background: var(--gradient-soft);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 20px;
+    border-left: 4px solid var(--primary);
+  }
+  .deposit-info h4 { font-size: 14px; font-weight: 700; color: var(--primary-dark); }
+  .deposit-info p { font-size: 13px; color: var(--text-light); margin-top: 4px; }
+
+  .wallet-address {
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    font-family: monospace;
+    font-size: 13px;
+    color: var(--text);
+    word-break: break-all;
+    border: 1px dashed var(--primary);
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  .filter-tabs { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; }
+  .filter-tab { padding: 6px 14px; border-radius: 50px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; border: none; }
+  .filter-tab.active { background: var(--gradient); color: #fff; }
+  .filter-tab:not(.active) { background: var(--white); color: var(--text-light); border: 1px solid var(--border); }
+  @keyframes slideUp { from{transform:translateY(100%);opacity:0} to{transform:translateY(0);opacity:1} }
+</style>
+</head>
+<body><div class="desktop-layout">
+<!-- Desktop Sidebar -->
+<aside class="desktop-sidebar" id="dsSidebar">
+  <div class="ds-logo">
+    <div class="ds-logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
+    <div class="ds-logo-text">
+      <div class="name">InvestPro</div>
+      <div class="sub">Commission Platform</div>
+    </div>
+  </div>
+  <nav class="ds-nav">
+    <div class="ds-section-label">Main</div>
+    <a href="dashboard.html" class="ds-link">
+      <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Dashboard
+    </a>
+    <div class="ds-section-label">Earn</div>
+    <a href="tasks.html" class="ds-link">
+      <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Tasks
+    </a>
+    <div class="ds-section-label">Account</div>
+    <a href="wallet.html" class="ds-link active">
+      <svg viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+      Wallet
+    </a>
+    <a href="profile.html" class="ds-link">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Profile
+    </a>
+    <a href="event.html" class="ds-link">
+      <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Events
+    </a>
+    <div class="ds-section-label">More</div>
+    <a href="about.html" class="ds-link">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      About
+    </a>
+    <a href="#" onclick="logout()" class="ds-link" style="color:rgba(239,68,68,0.7);">
+      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Logout
+    </a>
+  </nav>
+  <div class="ds-footer">
+    <div class="ds-user-info">
+      <div class="ds-avatar" id="dsAvatar">U</div>
+      <div>
+        <div class="ds-user-name" id="dsUsername">Loading...</div>
+        <div class="ds-user-vip" id="dsVip">VIP 1</div>
+      </div>
+    </div>
+  </div>
+</aside>
+<!-- Desktop Main -->
+<div class="desktop-main">
+  <!-- Desktop Topbar -->
+  <div class="desktop-topbar desktop-only">
+    <div class="dt-title">Wallet</div>
+    <div class="dt-right">
+      <div class="dt-balance-pill" id="dtBalance">Balance: $0.00</div>
+      <div class="dt-avatar" id="dtAvatar" onclick="window.location='profile.html'">U</div>
+    </div>
+  </div>
+  <div class="desktop-content">
+<div class="page-container">
+
+  <!-- Hero -->
+  <div class="wallet-hero">
+    <div class="wallet-label">Available Balance</div>
+    <div class="wallet-balance" id="walletBalance">$0.00</div>
+    <div style="font-size:13px;opacity:0.7;">Total Earned: <span id="totalEarned">$0.00</span></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('deposit')">💰 Deposit</button>
+    <button class="tab-btn" onclick="switchTab('withdraw')">💸 Withdraw</button>
+    <button class="tab-btn" onclick="switchTab('history')">📋 History</button>
+  </div>
+
+  <div class="page-content" style="padding-top:20px;padding-bottom:100px;">
+
+    <div id="alertBox" class="hidden"></div>
+
+    <!-- Deposit Tab -->
+    <div id="tab-deposit" class="tab-content active">
+      <div class="deposit-info">
+        <h4>📌 How to Deposit</h4>
+        <p>1. Enter amount and click Submit<br>
+           2. Send USDT to the wallet address shown<br>
+           3. Enter your transaction hash<br>
+           4. Admin will approve within 24 hours</p>
+      </div>
+
+      <form id="depositForm" class="card">
+        <div class="card-header">💰 Deposit Funds</div>
+
+        <div class="form-group">
+          <label class="form-label">Amount (USD)</label>
+          <div class="input-group">
+            <span class="input-icon">$</span>
+            <input type="number" id="depositAmount" class="form-control" placeholder="Minimum $10" min="10" step="0.01" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Payment Method</label>
+          <select id="depositMethod" class="form-control">
+            <option value="USDT">USDT (TRC20)</option>
+            <option value="ETH">ETH (ERC20)</option>
+            <option value="BTC">Bitcoin (BTC)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Deposit Wallet Address</label>
+          <div class="wallet-address" onclick="copyAddress(this)" id="depositWallet">
+            Loading wallet address...
+          </div>
+          <div style="font-size:11px;color:var(--text-light);margin-top:6px;">👆 Tap to copy address</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Transaction Hash (TxID)</label>
+          <div class="input-group">
+            <span class="input-icon">🔗</span>
+            <input type="text" id="txnHash" class="form-control" placeholder="Paste your transaction hash">
+          </div>
+        </div>
+
+        <button type="button" id="depositBtn" onclick="openDepositContact()" class="btn btn-primary btn-block">
+          Contact to Deposit
+        </button>
+      </form>
+
+      <!-- Deposit Contact Popup -->
+      <div id="depositContactModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:flex-end;justify-content:center;">
+        <div style="background:var(--white);border-radius:28px 28px 0 0;width:100%;max-width:480px;padding:28px 20px 36px;animation:slideUp .28s cubic-bezier(0.22,0.61,0.36,1);">
+
+          <!-- Handle bar -->
+          <div style="width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px;"></div>
+
+          <!-- Header -->
+          <div style="text-align:center;margin-bottom:20px;">
+            <div style="width:56px;height:56px;background:var(--gradient-soft);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+              <svg viewBox="0 0 24 24" style="width:26px;height:26px;stroke:var(--primary);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.28h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21.28 15z"/></svg>
+            </div>
+            <div style="font-size:18px;font-weight:800;color:var(--dark);">Contact to Deposit</div>
+            <div style="font-size:13px;color:var(--text-light);margin-top:6px;line-height:1.5;">
+              Our customer service team will assist you<br>with your deposit right away.
+            </div>
+          </div>
+
+          <!-- Amount preview -->
+          <div id="depositAmtPreview" style="background:var(--gradient-soft);border-radius:12px;padding:12px 16px;margin-bottom:20px;text-align:center;display:none;">
+            <div style="font-size:11px;color:var(--primary);font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Deposit Amount</div>
+            <div id="depositAmtVal" style="font-size:24px;font-weight:900;color:var(--dark);margin-top:4px;"></div>
+          </div>
+
+          <!-- Buttons -->
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <a id="depositTelegramBtn" href="https://t.me/YOURUSERNAME" target="_blank" data-no-transition
+              style="display:flex;align-items:center;gap:14px;background:#229ED9;color:#fff;border-radius:16px;padding:16px 20px;text-decoration:none;transition:opacity .15s;"
+              onmouseenter="this.style.opacity='.88'" onmouseleave="this.style.opacity='1'">
+              <div style="width:44px;height:44px;background:rgba(255,255,255,0.2);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:#fff;"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.737l-2.965-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.963.822z"/></svg>
+              </div>
+              <div>
+                <div style="font-size:16px;font-weight:800;">Telegram</div>
+                <div style="font-size:12px;opacity:.8;margin-top:2px;">Chat with us on Telegram</div>
+              </div>
+              <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;margin-left:auto;"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+
+            <a id="depositWhatsappBtn" href="https://wa.me/YOURNUMBER" target="_blank" data-no-transition
+              style="display:flex;align-items:center;gap:14px;background:#25D366;color:#fff;border-radius:16px;padding:16px 20px;text-decoration:none;transition:opacity .15s;"
+              onmouseenter="this.style.opacity='.88'" onmouseleave="this.style.opacity='1'">
+              <div style="width:44px;height:44px;background:rgba(255,255,255,0.2);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:#fff;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zm-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884zm8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              </div>
+              <div>
+                <div style="font-size:16px;font-weight:800;">WhatsApp</div>
+                <div style="font-size:12px;opacity:.8;margin-top:2px;">Chat with us on WhatsApp</div>
+              </div>
+              <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;margin-left:auto;"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+          </div>
+
+          <button onclick="closeDepositContact()" class="btn btn-outline btn-block mt-16" style="font-size:14px;">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Withdraw Tab -->
+    <div id="tab-withdraw" class="tab-content">
+      <div class="deposit-info" style="background:#FEF3C7;border-color:var(--warning);">
+        <h4 style="color:#92400E;">⚠️ Withdrawal Info</h4>
+        <p>• Minimum withdrawal: $<span id="withdrawMinInfo">--</span><br>
+           • Maximum withdrawal: $<span id="withdrawMaxInfo">--</span><br>
+           • Processing fee: 2%<br>
+           • Processing time: 24 hours<br>
+           • Ensure wallet address is correct!</p>
+      </div>
+
+      <form id="withdrawForm" class="card">
+        <div class="card-header">💸 Withdraw Funds</div>
+
+        <div class="form-group">
+          <label class="form-label">Amount (USD)</label>
+          <div class="input-group">
+            <span class="input-icon">$</span>
+            <input type="number" id="withdrawAmount" class="form-control" placeholder="Minimum $20" min="20" step="0.01" required>
+          </div>
+          <div id="feePreview" style="font-size:12px;color:var(--text-light);margin-top:6px;"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Payment Method</label>
+          <select id="withdrawMethod" class="form-control">
+            <option value="USDT">USDT (TRC20)</option>
+            <option value="ETH">ETH (ERC20)</option>
+            <option value="BTC">Bitcoin (BTC)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Your Wallet Address *</label>
+          <div class="input-group">
+            <span class="input-icon">👛</span>
+            <input type="text" id="walletAddress" class="form-control" placeholder="Enter your wallet address" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Withdrawal Password *</label>
+          <div class="input-group">
+            <span class="input-icon">🔐</span>
+            <input type="password" id="withdrawalPassword" class="form-control" placeholder="Enter withdrawal password" required>
+          </div>
+          <div style="font-size:11px;color:var(--text-light);margin-top:5px;">
+            Contact admin if you haven't set a withdrawal password yet.
+          </div>
+        </div>
+
+        <button type="submit" id="withdrawBtn" class="btn btn-primary btn-block">Submit Withdrawal Request</button>
+      </form>
+    </div>
+
+    <!-- Withdrawal Limit Alert Modal -->
+    <div id="withdrawLimitModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+      <div style="background:var(--white);border-radius:24px;width:100%;max-width:360px;padding:28px 24px;text-align:center;animation:slideUp .25s cubic-bezier(0.22,0.61,0.36,1);">
+        <div style="width:64px;height:64px;background:#FEF3C7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+          <svg viewBox="0 0 24 24" style="width:32px;height:32px;stroke:#D97706;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div style="font-size:18px;font-weight:800;color:var(--dark);margin-bottom:10px;">Insufficient Balance</div>
+        <div style="font-size:14px;color:var(--text-light);line-height:1.6;margin-bottom:6px;">
+          Your current balance is <strong style="color:var(--dark);" id="wlmCurrentBal">$0.00</strong>.
+        </div>
+        <div style="font-size:14px;color:var(--text-light);line-height:1.6;margin-bottom:20px;">
+          Your VIP level requires a minimum withdrawal of <strong style="color:var(--primary);" id="wlmMinBal">$10.00</strong>.<br>
+          Please deposit more funds to meet the requirement.
+        </div>
+        <button onclick="closeWithdrawLimit();switchTab('deposit')" class="btn btn-primary btn-block" style="margin-bottom:10px;">
+          Deposit Now
+        </button>
+        <button onclick="closeWithdrawLimit()" class="btn btn-outline btn-block" style="font-size:14px;">
+          Close
+        </button>
+      </div>
+    </div>
+
+    <!-- History Tab -->
+    <div id="tab-history" class="tab-content">
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="filterTxns('all')">All</button>
+        <button class="filter-tab" onclick="filterTxns('commission')">Commission</button>
+        <button class="filter-tab" onclick="filterTxns('deposit')">Deposits</button>
+        <button class="filter-tab" onclick="filterTxns('withdrawal')">Withdrawals</button>
+      </div>
+      <div id="transactionsList">
+        <div class="spinner"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="nav-item">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span><span>Home</span>
+    </a>
+    <a href="tasks.html" class="nav-item">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><span>Tasks</span>
+    </a>
+    <a href="tasks.html" class="nav-item-center">
+      <div class="nav-fab"><svg viewBox="0 0 24 24" style="width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+    </a>
+    <a href="wallet.html" class="nav-item active">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg></span><span>Wallet</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><span>Profile</span>
+    </a>
+  </nav>
+
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/transitions.js"></script>
+<script>
+  requireAuth();
+  let allTransactions = [];
+
+  let vipMinWithdrawal = 10;
+  let vipMaxWithdrawal = 1000;
+  let currentBalance = 0;
+
+  async function loadWallet() {
+    const res = await User.getDashboard();
+    if (res && res.ok) {
+      const d = res.data.data;
+      currentBalance = parseFloat(d.balance) || 0;
+      document.getElementById('walletBalance').textContent = formatMoney(d.balance);
+      document.getElementById('totalEarned').textContent   = formatMoney(d.total_earned);
+      // Store VIP withdrawal limits
+      vipMinWithdrawal = d.vip_min_withdrawal || 10;
+      vipMaxWithdrawal = d.vip_max_withdrawal || 1000;
+      // Update displayed info in withdraw tab
+      const minEl = document.getElementById('withdrawMinInfo');
+      const maxEl = document.getElementById('withdrawMaxInfo');
+      if (minEl) minEl.textContent = `${vipMinWithdrawal.toFixed(2)}`;
+      if (maxEl) maxEl.textContent = `${vipMaxWithdrawal.toFixed(2)}`;
+      // Update input min attribute
+      const amtInput = document.getElementById('withdrawAmount');
+      if (amtInput) { amtInput.min = vipMinWithdrawal; amtInput.placeholder = `Minimum $${vipMinWithdrawal}`; }
+    }
+
+    // Load deposit wallet address from profile
+    const profile = await User.getProfile();
+    if (profile && profile.ok) {
+      // In real app, get from settings API
+      document.getElementById('depositWallet').textContent = 'T...YourUSDTWalletHere (set in admin settings)';
+    }
+
+    loadTransactions();
+  }
+
+  async function loadTransactions() {
+    const res = await User.getTransactions(1);
+    if (!res || !res.ok) return;
+    allTransactions = res.data.data.transactions;
+    renderTransactions(allTransactions);
+  }
+
+  function renderTransactions(txns) {
+    const container = document.getElementById('transactionsList');
+    if (!txns || txns.length === 0) {
+      container.innerHTML = `<div class="empty-state"><div class="icon">📭</div><h3>No transactions</h3><p>Your transaction history will appear here</p></div>`;
+      return;
+    }
+
+    container.innerHTML = `<div class="card" style="padding:8px 16px;">` + txns.map(t => {
+      const isIncome = ['commission', 'deposit', 'refund'].includes(t.type);
+      const icons = { commission: '🎯', deposit: '💰', withdrawal: '💸', refund: '↩️' };
+      const statusColors = { completed: 'success', pending: 'warning', rejected: 'danger' };
+      return `
+        <div class="txn-item">
+          <div class="txn-icon ${isIncome ? 'income' : 'expense'}">${icons[t.type] || '💲'}</div>
+          <div class="txn-desc">
+            <div class="name">${t.description || t.type}</div>
+            <div class="date">${formatDate(t.created_at)} · <span class="badge badge-${statusColors[t.status] || 'purple'}">${t.status}</span></div>
+          </div>
+          <div class="txn-amount ${isIncome ? 'positive' : 'negative'}">
+            ${isIncome ? '+' : '-'}${formatMoney(t.amount)}
+          </div>
+        </div>
+      `;
+    }).join('') + `</div>`;
+  }
+
+  function filterTxns(type) {
+    document.querySelectorAll('.filter-tab').forEach(el => el.classList.remove('active'));
+    event.target.classList.add('active');
+    const filtered = type === 'all' ? allTransactions : allTransactions.filter(t => t.type === type);
+    renderTransactions(filtered);
+  }
+
+  function switchTab(name) {
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    // support both click event and programmatic call
+    const btn = document.querySelector(`.tab-btn[onclick="switchTab('${name}')"]`);
+    if (btn) btn.classList.add('active');
+    document.getElementById('tab-' + name).classList.add('active');
+    if (name === 'history') loadTransactions();
+  }
+
+  function copyAddress(el) {
+    navigator.clipboard.writeText(el.textContent.trim()).then(() => {
+      const original = el.textContent;
+      el.textContent = '✅ Address Copied!';
+      setTimeout(() => el.textContent = original, 2000);
+    });
+  }
+
+  // Fee preview on withdraw
+  document.getElementById('withdrawAmount')?.addEventListener('input', function () {
+    const amount = parseFloat(this.value) || 0;
+    const fee = (amount * 2) / 100;
+    const net = amount - fee;
+    document.getElementById('feePreview').textContent =
+      amount > 0 ? `Fee: $${fee.toFixed(2)} | You receive: $${net.toFixed(2)}` : '';
+  });
+
+  // Deposit form
+  document.getElementById('depositForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('depositBtn');
+    showLoading(btn);
+
+    const res = await User.deposit({
+      amount: parseFloat(document.getElementById('depositAmount').value),
+      payment_method: document.getElementById('depositMethod').value,
+      txn_hash: document.getElementById('txnHash').value.trim()
+    });
+
+    hideLoading(btn);
+
+    if (!res || !res.ok) {
+      showAlert('alertBox', res?.data?.message || 'Deposit failed.', 'danger');
+      return;
+    }
+
+    showAlert('alertBox', 'Deposit request submitted! Admin will review within 24 hours.', 'success');
+    document.getElementById('depositForm').reset();
+  });
+
+  function closeWithdrawLimit() {
+    document.getElementById('withdrawLimitModal').style.display = 'none';
+  }
+
+  // Withdrawal form
+  document.getElementById('withdrawForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const requestedAmount = parseFloat(document.getElementById('withdrawAmount').value) || 0;
+
+    // Check if balance meets VIP minimum withdrawal requirement
+    if (currentBalance < vipMinWithdrawal) {
+      document.getElementById('wlmCurrentBal').textContent = formatMoney(currentBalance);
+      document.getElementById('wlmMinBal').textContent = `$${vipMinWithdrawal.toFixed(2)}`;
+      document.getElementById('withdrawLimitModal').style.display = 'flex';
+      return;
+    }
+
+    // Check if requested amount exceeds balance
+    if (requestedAmount > currentBalance) {
+      showAlert('alertBox', `Insufficient balance. Your balance is ${formatMoney(currentBalance)}.`, 'danger');
+      return;
+    }
+
+    const btn = document.getElementById('withdrawBtn');
+    showLoading(btn);
+
+    const res = await User.withdraw({
+      amount: parseFloat(document.getElementById('withdrawAmount').value),
+      payment_method: document.getElementById('withdrawMethod').value,
+      wallet_address: document.getElementById('walletAddress').value.trim(),
+      withdrawal_password: document.getElementById('withdrawalPassword').value
+    });
+
+    hideLoading(btn);
+
+    if (!res || !res.ok) {
+      showAlert('alertBox', res?.data?.message || 'Withdrawal failed.', 'danger');
+      return;
+    }
+
+    showAlert('alertBox', 'Withdrawal request submitted! Will be processed within 24 hours.', 'success');
+    document.getElementById('withdrawForm').reset();
+    loadWallet();
+  });
+
+  loadWallet();
+
+  // Auto-switch tab if URL has ?tab=deposit (or withdraw/history)
+  const _tabParam = new URLSearchParams(window.location.search).get('tab');
+  if (_tabParam) switchTab(_tabParam);
+
+  // ── Deposit Contact Popup ──
+  function openDepositContact() {
+    const amount = parseFloat(document.getElementById('depositAmount').value) || 0;
+    const method = document.getElementById('depositMethod').value;
+
+    // Show amount preview if entered
+    const preview = document.getElementById('depositAmtPreview');
+    if (amount >= 10) {
+      document.getElementById('depositAmtVal').textContent = `$${amount.toFixed(2)} · ${method}`;
+      preview.style.display = 'block';
+
+      // Append amount + method to contact links as message
+      const msg = encodeURIComponent(`Hello, I want to deposit $${amount.toFixed(2)} via ${method}. Please assist me.`);
+      document.getElementById('depositTelegramBtn').href  = `https://t.me/YOURUSERNAME?text=${msg}`;
+      document.getElementById('depositWhatsappBtn').href  = `https://wa.me/YOURNUMBER?text=${msg}`;
+    } else {
+      preview.style.display = 'none';
+      document.getElementById('depositTelegramBtn').href  = 'https://t.me/YOURUSERNAME';
+      document.getElementById('depositWhatsappBtn').href  = 'https://wa.me/YOURNUMBER';
+    }
+
+    const modal = document.getElementById('depositContactModal');
+    modal.style.display = 'flex';
+    modal.onclick = e => { if (e.target === modal) closeDepositContact(); };
+  }
+
+  function closeDepositContact() {
+    document.getElementById('depositContactModal').style.display = 'none';
+  }
+</script>
+
+  </div><!-- end desktop-content -->
+</div><!-- end desktop-main -->
+</div><!-- end desktop-layout -->
+
+<script>
+  // Populate desktop sidebar
+  (async function() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+      const res = await fetch('/api/user/profile', { headers: { 'Authorization': 'Bearer ' + token } });
+      const json = await res.json();
+      if (json.success) {
+        const u = json.data;
+        const init = (u.username || 'U')[0].toUpperCase();
+        const el = document.getElementById('dsAvatar'); if(el) el.textContent = init;
+        const eu = document.getElementById('dsUsername'); if(eu) eu.textContent = u.username;
+        const ev = document.getElementById('dsVip'); if(ev) ev.textContent = u.vip_name || ('VIP ' + u.vip_level);
+        const dt = document.getElementById('dtAvatar'); if(dt) dt.textContent = init;
+        const db = document.getElementById('dtBalance'); if(db) db.textContent = 'Balance: $' + parseFloat(u.balance||0).toFixed(2);
+      }
+    } catch(e) {}
+  })();
+  function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = 'index.html';
+  }
+</script>
+</body>
+</html>

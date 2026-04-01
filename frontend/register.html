@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register - InvestPro</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  body { min-height:100vh; display:flex; background:var(--bg); }
+  .auth-left {
+    flex:0 0 38%; background:var(--gradient);
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+    padding:60px 40px; position:relative; overflow:hidden;
+  }
+  .auth-left::before { content:''; position:absolute; width:350px; height:350px; border-radius:50%; background:rgba(255,255,255,0.07); top:-80px; right:-80px; }
+  .auth-left::after  { content:''; position:absolute; width:250px; height:250px; border-radius:50%; background:rgba(255,255,255,0.05); bottom:-60px; left:-60px; }
+  .auth-left-content { position:relative; z-index:1; color:#fff; text-align:center; }
+  .auth-brand { font-size:34px; font-weight:900; letter-spacing:-1.5px; margin-bottom:12px; }
+  .auth-brand span { opacity:.7; }
+  .auth-tagline { font-size:14px; opacity:.8; line-height:1.7; max-width:260px; }
+  .vip-cards { margin-top:40px; display:flex; flex-direction:column; gap:10px; }
+  .vip-row { display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.1); border-radius:10px; padding:10px 14px; font-size:13px; }
+  .vip-row .vname { font-weight:700; }
+  .vip-row .vrate { opacity:.9; font-weight:800; }
+  .auth-right { flex:1; display:flex; align-items:center; justify-content:center; padding:32px 24px; overflow-y:auto; }
+  .auth-form-wrap { width:100%; max-width:420px; }
+  .auth-form-wrap h2 { font-size:26px; font-weight:800; color:var(--dark); margin-bottom:6px; }
+  .auth-form-wrap .sub { font-size:14px; color:var(--text-light); margin-bottom:28px; }
+  .input-icon-wrap { position:relative; }
+  .input-icon-wrap .i-icon { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--text-light); width:18px; height:18px; pointer-events:none; }
+  .input-icon-wrap .form-control { padding-left:44px; }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .auth-footer { text-align:center; margin-top:16px; font-size:14px; color:var(--text-light); }
+  .auth-footer a { color:var(--primary); font-weight:600; text-decoration:none; }
+  @media (max-width:768px) {
+    .auth-left { display:none; }
+    .auth-right { padding:48px 24px; }
+    .form-row { grid-template-columns:1fr; }
+    .mobile-brand { display:block !important; }
+  }
+  .mobile-brand { display:none; text-align:center; margin-bottom:28px; }
+  .mobile-brand .m-logo { font-size:28px; font-weight:900; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .mobile-brand .m-tag { font-size:12px; color:var(--text-light); letter-spacing:1px; margin-top:4px; }
+</style>
+</head>
+<body>
+
+<div class="auth-left">
+  <div class="auth-left-content">
+    <div class="auth-brand">Invest<span>Pro</span></div>
+    <p class="auth-tagline">Join thousands earning commissions daily by reviewing trending products.</p>
+    <div class="vip-cards">
+      <div class="vip-row"><span class="vname">🥉 Bronze</span><span class="vrate">1.0% / task</span></div>
+      <div class="vip-row"><span class="vname">🥈 Silver</span><span class="vrate">1.5% / task</span></div>
+      <div class="vip-row"><span class="vname">🥇 Gold</span><span class="vrate">2.0% / task</span></div>
+      <div class="vip-row"><span class="vname">💎 Diamond</span><span class="vrate">3.0% / task</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="auth-right">
+  <div class="auth-form-wrap">
+    <div class="mobile-brand">
+      <div class="m-logo">InvestPro</div>
+      <div class="m-tag">SMART COMMISSION PLATFORM</div>
+    </div>
+    <h2>Create account</h2>
+    <p class="sub">Start earning commissions today — it's free</p>
+    <div id="alertBox" class="hidden"></div>
+    <form id="registerForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Username *</label>
+          <div class="input-icon-wrap">
+            <i data-lucide="at-sign" class="i-icon"></i>
+            <input type="text" id="username" class="form-control" placeholder="Username" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <div class="input-icon-wrap">
+            <i data-lucide="user" class="i-icon"></i>
+            <input type="text" id="full_name" class="form-control" placeholder="Full name">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address *</label>
+        <div class="input-icon-wrap">
+          <i data-lucide="mail" class="i-icon"></i>
+          <input type="email" id="email" class="form-control" placeholder="your@email.com" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <div class="input-icon-wrap">
+            <i data-lucide="phone" class="i-icon"></i>
+            <input type="tel" id="phone" class="form-control" placeholder="Phone (optional)">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Referral Code</label>
+          <div class="input-icon-wrap">
+            <i data-lucide="gift" class="i-icon"></i>
+            <input type="text" id="referral_code" class="form-control" placeholder="Optional">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password *</label>
+        <div class="input-icon-wrap">
+          <i data-lucide="lock" class="i-icon"></i>
+          <input type="password" id="password" class="form-control" placeholder="At least 6 characters" required>
+        </div>
+      </div>
+      <button type="submit" id="registerBtn" class="btn btn-primary btn-block btn-lg" style="gap:8px;">
+        <i data-lucide="user-plus" style="width:18px;height:18px;"></i> Create Account
+      </button>
+    </form>
+    <div class="auth-footer" style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
+      Already have an account? <a href="login.html">Log in here</a>
+    </div>
+    <div class="auth-footer" style="margin-top:10px;">
+      <a href="index.html" style="color:var(--text-light);font-size:13px;display:inline-flex;align-items:center;gap:4px;">
+        <i data-lucide="arrow-left" style="width:13px;height:13px;"></i> Back to Home
+      </a>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/transitions.js"></script>
+<script>
+  lucide.createIcons();
+  if (getToken()) navigateTo('dashboard.html');
+
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('ref')) document.getElementById('referral_code').value = params.get('ref');
+
+  document.getElementById('registerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('registerBtn');
+    const payload = {
+      username: document.getElementById('username').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      full_name: document.getElementById('full_name').value.trim(),
+      phone: document.getElementById('phone').value.trim(),
+      password: document.getElementById('password').value,
+      referral_code: document.getElementById('referral_code').value.trim()
+    };
+    if (!payload.username || !payload.email || !payload.password) {
+      showAlert('alertBox', 'Username, email and password are required.', 'danger'); return;
+    }
+    if (payload.password.length < 6) {
+      showAlert('alertBox', 'Password must be at least 6 characters.', 'danger'); return;
+    }
+    showLoading(btn);
+    const res = await Auth.register(payload);
+    hideLoading(btn);
+    if (!res || !res.ok) { showAlert('alertBox', res?.data?.message || 'Registration failed.', 'danger'); return; }
+    saveSession(res.data.data.token, res.data.data.user);
+    navigateTo('dashboard.html');
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Points Records - Admin Panel</title>
+<link rel="stylesheet" href="css/admin.css">
+<style>
+  .stat-pills { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
+  .stat-pill {
+    padding:8px 18px; border-radius:8px; font-size:13px; font-weight:700; color:#fff;
+    display:flex; align-items:center; gap:8px;
+  }
+  .pill-green  { background:#059669; }
+  .pill-blue   { background:#2563eb; }
+  .pill-purple { background:#7c3aed; }
+
+  .filter-bar {
+    display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+    padding:14px 16px; background:#f9fafb; border-radius:10px;
+    border:1px solid #e5e7eb; margin-bottom:16px;
+  }
+  .filter-bar input, .filter-bar select {
+    border:1.5px solid #e5e7eb; border-radius:8px; padding:7px 12px;
+    font-size:13px; background:#fff; outline:none; min-width:150px;
+  }
+  .filter-bar input:focus, .filter-bar select:focus { border-color:#7c3aed; }
+  .btn-search {
+    background:linear-gradient(135deg,#7c3aed,#a855f7); color:#fff;
+    border:none; border-radius:8px; padding:8px 20px; font-size:13px;
+    font-weight:700; cursor:pointer;
+  }
+  .btn-reset {
+    background:#f3f4f6; color:#374151; border:1.5px solid #e5e7eb;
+    border-radius:8px; padding:8px 16px; font-size:13px; font-weight:600; cursor:pointer;
+  }
+
+  .type-badge {
+    display:inline-block; padding:3px 10px; border-radius:20px;
+    font-size:11px; font-weight:700; white-space:nowrap;
+  }
+  .type-commission { background:#d1fae5; color:#065f46; }
+  .type-deposit    { background:#dbeafe; color:#1e40af; }
+  .type-withdrawal { background:#fee2e2; color:#991b1b; }
+  .type-prize      { background:#fef3c7; color:#92400e; }
+  .type-referral   { background:#ede9fe; color:#5b21b6; }
+  .type-adjustment { background:#f3f4f6; color:#374151; }
+  .type-vip        { background:#fce7f3; color:#9d174d; }
+  .type-other      { background:#f3f4f6; color:#6b7280; }
+
+  .amount-pos { color:#059669; font-weight:700; }
+  .amount-neg { color:#dc2626; font-weight:700; }
+
+  .pagination { display:flex; gap:6px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
+  .pg-btn {
+    padding:6px 12px; border-radius:7px; border:1.5px solid #e5e7eb;
+    background:#fff; font-size:13px; cursor:pointer; font-weight:600;
+  }
+  .pg-btn.active { background:#7c3aed; color:#fff; border-color:#7c3aed; }
+  .pg-btn:hover:not(.active) { background:#f3f4f6; }
+
+  .total-label { font-size:12px; color:#6b7280; text-align:right; margin-bottom:8px; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <div><div>InvestPro</div><span>Admin Panel</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">Main</div>
+    <a href="dashboard.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Dashboard</a>
+    <div class="nav-group-label">Manage</div>
+    <div class="sidebar-dropdown open" id="usersDropdown">
+      <div class="sidebar-link sidebar-dropdown-toggle" onclick="toggleDropdown('usersDropdown')">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+        Users
+        <span class="chevron"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+      </div>
+      <div class="sidebar-dropdown-menu">
+        <a href="users.html" class="sidebar-sub-link"><span class="dot"></span> Member List</a>
+        <a href="prize-records.html" class="sidebar-sub-link"><span class="dot"></span> Prize Records</a>
+        <a href="vip-levels.html" class="sidebar-sub-link"><span class="dot"></span> VIP Levels</a>
+        <a href="points-records.html" class="sidebar-sub-link active"><span class="dot"></span> Points Records</a>
+      </div>
+    </div>
+    <a href="products.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span> Products</a>
+    <a href="deposits.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span> Deposits</a>
+    <a href="withdrawals.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span> Withdrawals</a>
+    <div class="nav-group-label">System</div>
+    <a href="spin-prizes.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></span> Spin Prizes</a>
+    <a href="settings.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span> Settings</a>
+    <a href="#" onclick="Admin.logout()" class="sidebar-link" style="color:rgba(239,68,68,0.75);"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Logout</a>
+  </nav>
+  <div class="sidebar-footer">Logged in as: <strong id="adminName">Admin</strong></div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">Points Records</div>
+    <div class="topbar-right">
+      <div class="admin-avatar" id="adminInitial">A</div>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div id="alertBox" class="hidden"></div>
+
+    <!-- Stats -->
+    <div class="stat-pills" id="statPills">
+      <div class="stat-pill pill-green">Total points gained: —</div>
+      <div class="stat-pill pill-blue">Total points deducted: —</div>
+      <div class="stat-pill pill-purple">Total records: —</div>
+    </div>
+
+    <!-- Filter -->
+    <div class="filter-bar">
+      <input type="text" id="filterUsername" placeholder="Search by username..." />
+      <select id="filterType">
+        <option value="">All Types</option>
+        <option value="commission">Commission</option>
+        <option value="deposit">Deposit</option>
+        <option value="withdrawal">Withdrawal</option>
+        <option value="prize">Prize</option>
+        <option value="referral_bonus">Referral Bonus</option>
+        <option value="adjustment">Adjustment</option>
+        <option value="vip_upgrade">VIP Upgrade</option>
+      </select>
+      <input type="date" id="filterDate" />
+      <button class="btn-search" onclick="loadRecords(1)">🔍 Search</button>
+      <button class="btn-reset" onclick="resetFilter()">✕ Reset</button>
+    </div>
+
+    <div class="total-label" id="totalLabel">Total data: 0 records</div>
+
+    <!-- Table -->
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div style="overflow-x:auto;">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>User</th>
+              <th>Upper-level User</th>
+              <th>Type</th>
+              <th>Before</th>
+              <th>After</th>
+              <th>Amount</th>
+              <th>Description</th>
+              <th>Creation Time</th>
+            </tr>
+          </thead>
+          <tbody id="recordsBody">
+            <tr><td colspan="9" style="text-align:center;padding:40px;"><div class="spinner"></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="pagination" id="paginationWrap"></div>
+  </div>
+</div>
+
+<script src="js/admin-api.js"></script>
+<script>
+  requireAdminAuth();
+  initAdminTopbar();
+
+  let currentPage = 1;
+
+  const typeLabels = {
+    commission:     ['Commission',    'type-commission'],
+    deposit:        ['Deposit',       'type-deposit'],
+    withdrawal:     ['Withdrawal',    'type-withdrawal'],
+    prize:          ['Prize',         'type-prize'],
+    referral_bonus: ['Referral',      'type-referral'],
+    adjustment:     ['Adjustment',    'type-adjustment'],
+    vip_upgrade:    ['VIP Upgrade',   'type-vip'],
+  };
+
+  async function loadRecords(page = 1) {
+    currentPage = page;
+    document.getElementById('recordsBody').innerHTML =
+      '<tr><td colspan="9" style="text-align:center;padding:40px;"><div class="spinner"></div></td></tr>';
+
+    const username  = document.getElementById('filterUsername').value.trim();
+    const type      = document.getElementById('filterType').value;
+    const dateFrom  = document.getElementById('filterDate').value;
+
+    let url = `/admin/points-records?page=${page}&limit=50`;
+    if (username) url += `&username=${encodeURIComponent(username)}`;
+    if (type)     url += `&type=${encodeURIComponent(type)}`;
+    if (dateFrom) url += `&date_from=${encodeURIComponent(dateFrom)}`;
+
+    try {
+      const res = await adminAPI(url);
+      if (!res || !res.ok) {
+        document.getElementById('recordsBody').innerHTML =
+          '<tr><td colspan="9" style="text-align:center;padding:30px;color:#dc2626;">Failed to load records.</td></tr>';
+        return;
+      }
+
+      const d = res.data.data;
+      const records = d.records || [];
+      const pg = d.pagination;
+
+      // Stats
+      document.getElementById('statPills').innerHTML = `
+        <div class="stat-pill pill-green">Total points gained: $${parseFloat(d.total_gained).toFixed(2)}</div>
+        <div class="stat-pill pill-blue">Total points deducted: $${parseFloat(d.total_deducted).toFixed(2)}</div>
+        <div class="stat-pill pill-purple">Total: ${pg.total} records</div>
+      `;
+      document.getElementById('totalLabel').textContent = `Total data: ${pg.total} records`;
+
+      if (!records.length) {
+        document.getElementById('recordsBody').innerHTML =
+          '<tr><td colspan="9" style="text-align:center;padding:40px;color:#6b7280;">No records found.</td></tr>';
+        renderPagination(pg);
+        return;
+      }
+
+      document.getElementById('recordsBody').innerHTML = records.map(r => {
+        const [label, cls] = typeLabels[r.type] || [r.type, 'type-other'];
+        const amt = parseFloat(r.amount);
+        const amtHtml = `<span class="${amt >= 0 ? 'amount-pos' : 'amount-neg'}">${amt >= 0 ? '+' : ''}$${Math.abs(amt).toFixed(2)}</span>`;
+        const upperUser = r.referrer_username
+          ? `${r.referrer_username}<span style="color:#9ca3af;font-size:11px;">(${r.referrer_id})</span>`
+          : '<span style="color:#9ca3af;">—</span>';
+        return `<tr>
+          <td style="font-weight:700;color:#7c3aed;">${r.id}</td>
+          <td><a href="users.html" style="color:#2563eb;font-weight:600;">${r.username}</a></td>
+          <td>${upperUser}</td>
+          <td><span class="type-badge ${cls}">${label}</span></td>
+          <td style="color:#374151;">$${parseFloat(r.balance_before).toFixed(2)}</td>
+          <td style="color:#374151;">$${parseFloat(r.balance_after).toFixed(2)}</td>
+          <td>${amtHtml}</td>
+          <td style="font-size:12px;color:#6b7280;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${r.description || ''}">${r.description || '—'}</td>
+          <td style="font-size:12px;color:#6b7280;white-space:nowrap;">${r.created_at}</td>
+        </tr>`;
+      }).join('');
+
+      renderPagination(pg);
+    } catch(e) {
+      document.getElementById('recordsBody').innerHTML =
+        '<tr><td colspan="9" style="text-align:center;padding:30px;color:#dc2626;">Error loading records.</td></tr>';
+    }
+  }
+
+  function renderPagination(pg) {
+    const wrap = document.getElementById('paginationWrap');
+    if (pg.pages <= 1) { wrap.innerHTML = ''; return; }
+    let html = '';
+    const start = Math.max(1, currentPage - 3);
+    const end   = Math.min(pg.pages, currentPage + 3);
+    if (start > 1) html += `<button class="pg-btn" onclick="loadRecords(1)">1</button><span style="padding:6px;">…</span>`;
+    for (let i = start; i <= end; i++) {
+      html += `<button class="pg-btn${i === currentPage ? ' active' : ''}" onclick="loadRecords(${i})">${i}</button>`;
+    }
+    if (end < pg.pages) html += `<span style="padding:6px;">…</span><button class="pg-btn" onclick="loadRecords(${pg.pages})">${pg.pages}</button>`;
+    wrap.innerHTML = html;
+  }
+
+  function resetFilter() {
+    document.getElementById('filterUsername').value = '';
+    document.getElementById('filterType').value = '';
+    document.getElementById('filterDate').value = '';
+    loadRecords(1);
+  }
+
+  // Search on Enter
+  document.getElementById('filterUsername').addEventListener('keydown', e => {
+    if (e.key === 'Enter') loadRecords(1);
+  });
+
+  loadRecords(1);
+</script>
+</body>
+</html>

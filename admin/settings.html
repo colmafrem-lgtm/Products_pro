@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings - Admin Panel</title>
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <div><div>InvestPro</div><span>Admin Panel</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">Main</div>
+    <a href="dashboard.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Dashboard</a>
+    <div class="nav-group-label">Manage</div>
+    <!-- Users Dropdown -->
+    <div class="sidebar-dropdown open" id="usersDropdown">
+      <div class="sidebar-link sidebar-dropdown-toggle" onclick="toggleDropdown('usersDropdown')">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+        Users
+        <span class="chevron"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+      </div>
+      <div class="sidebar-dropdown-menu">
+        <a href="users.html" class="sidebar-sub-link"><span class="dot"></span> Member List</a>
+        <a href="prize-records.html" class="sidebar-sub-link"><span class="dot"></span> Prize Records</a>
+        <a href="vip-levels.html" class="sidebar-sub-link"><span class="dot"></span> VIP Levels</a>
+        <a href="points-records.html" class="sidebar-sub-link"><span class="dot"></span> Points Records</a>
+      </div>
+    </div>
+    <a href="products.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span> Products</a>
+    <a href="deposits.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span> Deposits</a>
+    <a href="withdrawals.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span> Withdrawals</a>
+    <div class="nav-group-label">System</div>
+    <a href="spin-prizes.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></span> Spin Prizes</a>
+    <a href="settings.html" class="sidebar-link active"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span> Settings</a>
+    <a href="#" onclick="Admin.logout()" class="sidebar-link" style="color:rgba(239,68,68,0.75);"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Logout</a>
+  </nav>
+  <div class="sidebar-footer">Logged in as: <strong id="adminName">Admin</strong></div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">Site Settings</div>
+    <div class="topbar-right">
+      <button onclick="saveSettings()" id="saveBtn" class="btn btn-primary">💾 Save All Settings</button>
+      <div class="admin-avatar" id="adminInitial">A</div>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div id="alertBox" class="hidden"></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;" id="settingsGrid">
+      <div class="spinner" style="grid-column:1/-1;"></div>
+    </div>
+  </div>
+</div>
+
+<script src="js/admin-api.js"></script>
+<script>
+  requireAdminAuth();
+  initAdminTopbar();
+
+  let allSettings = [];
+
+  const settingGroups = {
+    'Site Information': ['site_name', 'site_logo', 'support_email', 'support_telegram'],
+    'Financial Rules': ['min_deposit', 'min_withdrawal', 'withdrawal_fee', 'referral_bonus'],
+    'Wallet Addresses': ['usdt_wallet'],
+    'System': ['maintenance_mode']
+  };
+
+  const settingLabels = {
+    site_name: 'Site Name',
+    site_logo: 'Site Logo URL',
+    support_email: 'Support Email',
+    support_telegram: 'Telegram Support',
+    min_deposit: 'Minimum Deposit ($)',
+    min_withdrawal: 'Minimum Withdrawal ($)',
+    withdrawal_fee: 'Withdrawal Fee (%)',
+    referral_bonus: 'Referral Bonus ($)',
+    usdt_wallet: 'USDT (TRC20) Wallet Address',
+    maintenance_mode: 'Maintenance Mode (true/false)'
+  };
+
+  const settingIcons = {
+    site_name: '🌐', site_logo: '🖼️', support_email: '📧', support_telegram: '💬',
+    min_deposit: '💰', min_withdrawal: '💸', withdrawal_fee: '💹', referral_bonus: '🎁',
+    usdt_wallet: '👛', maintenance_mode: '🔧'
+  };
+
+  async function loadSettings() {
+    const res = await Admin.getSettings();
+    const grid = document.getElementById('settingsGrid');
+
+    if (!res || !res.ok) {
+      grid.innerHTML = '<div class="alert alert-danger" style="grid-column:1/-1;">Failed to load settings. (Requires superadmin role)</div>';
+      return;
+    }
+
+    allSettings = res.data.data;
+    const settingsMap = {};
+    allSettings.forEach(s => settingsMap[s.setting_key] = s.setting_value);
+
+    let html = '';
+    for (const [groupName, keys] of Object.entries(settingGroups)) {
+      html += `
+        <div class="card">
+          <div class="card-head"><h3>${groupName}</h3></div>
+          <div class="card-body">
+            ${keys.map(key => `
+              <div class="form-group">
+                <label class="form-label">${settingIcons[key] || '⚙️'} ${settingLabels[key] || key}</label>
+                ${key === 'maintenance_mode'
+                  ? `<select id="setting_${key}" class="form-control">
+                      <option value="false" ${settingsMap[key] === 'false' ? 'selected' : ''}>Disabled</option>
+                      <option value="true"  ${settingsMap[key] === 'true'  ? 'selected' : ''}>Enabled</option>
+                     </select>`
+                  : `<input type="${key.includes('email') ? 'email' : key.includes('wallet') ? 'text' : 'text'}"
+                            id="setting_${key}"
+                            class="form-control"
+                            value="${settingsMap[key] || ''}"
+                            placeholder="Enter ${settingLabels[key] || key}">`
+                }
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    grid.innerHTML = html;
+  }
+
+  async function saveSettings() {
+    const btn = document.getElementById('saveBtn');
+    btn.disabled = true; btn.textContent = 'Saving...';
+
+    const allKeys = Object.values(settingGroups).flat();
+    const settings = allKeys.map(key => ({
+      key,
+      value: document.getElementById('setting_' + key)?.value || ''
+    }));
+
+    const res = await Admin.updateSettings(settings);
+    btn.disabled = false; btn.textContent = '💾 Save All Settings';
+
+    if (!res || !res.ok) {
+      showMsg('alertBox', res?.data?.message || 'Failed to save settings.', 'danger');
+      return;
+    }
+
+    showMsg('alertBox', '✅ Settings saved successfully!', 'success');
+  }
+
+  loadSettings();
+</script>
+</body>
+</html>

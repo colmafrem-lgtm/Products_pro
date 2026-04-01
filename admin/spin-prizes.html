@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spin Prizes - InvestPro Admin</title>
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-icon">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+    </div>
+    <div><div style="font-size:18px;font-weight:900;color:#fff;letter-spacing:-0.5px;">InvestPro</div><span>Admin Panel</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">Main</div>
+    <a href="dashboard.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Dashboard</a>
+    <div class="nav-group-label">Manage</div>
+    <!-- Users Dropdown -->
+    <div class="sidebar-dropdown open" id="usersDropdown">
+      <div class="sidebar-link sidebar-dropdown-toggle" onclick="toggleDropdown('usersDropdown')">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+        Users
+        <span class="chevron"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+      </div>
+      <div class="sidebar-dropdown-menu">
+        <a href="users.html" class="sidebar-sub-link"><span class="dot"></span> Member List</a>
+        <a href="prize-records.html" class="sidebar-sub-link"><span class="dot"></span> Prize Records</a>
+        <a href="vip-levels.html" class="sidebar-sub-link"><span class="dot"></span> VIP Levels</a>
+        <a href="points-records.html" class="sidebar-sub-link"><span class="dot"></span> Points Records</a>
+      </div>
+    </div>
+    <a href="products.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span> Products</a>
+    <a href="deposits.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span> Deposits</a>
+    <a href="withdrawals.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span> Withdrawals</a>
+    <div class="nav-group-label">System</div>
+    <a href="spin-prizes.html" class="sidebar-link active"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></span> Spin Prizes</a>
+    <a href="settings.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span> Settings</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div id="adminName" style="font-weight:600;color:#fff;margin-bottom:4px;"></div>
+    <a href="index.html" onclick="clearAdminSession()" style="color:var(--danger);font-size:12px;display:flex;align-items:center;gap:6px;">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Logout
+    </a>
+  </div>
+</aside>
+
+<!-- Main -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">Spin Wheel Prizes</div>
+    <div class="topbar-right">
+      <button class="btn btn-primary btn-sm" onclick="openAddModal()">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Prize
+      </button>
+      <div class="admin-avatar" id="adminInitial">A</div>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div id="alertBox" class="hidden"></div>
+
+    <div style="display:grid;grid-template-columns:1fr 440px;gap:20px;align-items:start;">
+
+      <!-- Prizes Table -->
+      <div class="card">
+        <div class="card-head">
+          <h3>Prize Configuration</h3>
+          <span style="font-size:13px;color:var(--text-light);" id="totalPrizes">0 prizes</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Color</th>
+                <th>Prize Name</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Weight</th>
+                <th>Probability</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="prizesTable">
+              <tr><td colspan="9" style="text-align:center;padding:40px;"><div class="spinner"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Wheel Preview -->
+      <div class="card" style="position:sticky;top:80px;">
+        <div class="card-head">
+          <h3>Wheel Preview</h3>
+        </div>
+        <div class="card-body" style="text-align:center;">
+          <canvas id="previewWheel" width="400" height="400" style="max-width:100%;border-radius:50%;box-shadow:0 4px 20px rgba(0,0,0,0.1);"></canvas>
+          <div style="margin-top:16px;font-size:13px;color:var(--text-light);">Live preview — updates as you save prizes</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Info Card -->
+    <div class="card mt-16" style="border-left:4px solid var(--primary);">
+      <div class="card-body" style="display:flex;gap:16px;align-items:flex-start;">
+        <div style="width:40px;height:40px;background:#EDE9FE;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div>
+          <div style="font-weight:700;color:var(--dark);margin-bottom:4px;">How Spin Prizes Work</div>
+          <div style="font-size:13px;color:var(--text-light);line-height:1.7;">
+            • <strong>Weight</strong> controls probability — higher weight = more likely to win<br>
+            • <strong>Type "USDT"</strong> → prize goes to Prize Records (pending admin review)<br>
+            • <strong>Type "None"</strong> → no reward, just a "Better luck next time" result<br>
+            • VIP levels control how many spins each user gets per day (<strong>Task Wheel</strong> field)<br>
+            • Users access the spin wheel from the Tasks page
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal-overlay hidden" id="prizeModal">
+  <div class="modal" style="max-width:440px;">
+    <div class="modal-head">
+      <h3 id="modalTitle">Add Prize</h3>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div id="modalAlert" class="hidden"></div>
+    <input type="hidden" id="editId">
+    <div class="form-group">
+      <label class="form-label">Prize Name *</label>
+      <input type="text" id="prizeName" class="form-control" placeholder="e.g. Lucky Bonus $10">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Prize Type</label>
+      <select id="prizeType" class="form-control" onchange="toggleAmountField()">
+        <option value="usdt">USDT (Cash Reward)</option>
+        <option value="none">None (Better Luck Next Time)</option>
+      </select>
+    </div>
+    <div class="form-group" id="amountGroup">
+      <label class="form-label">Amount (USDT)</label>
+      <input type="number" id="prizeAmount" class="form-control" placeholder="0.00" min="0" step="0.01">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Weight (Probability) — Higher = More Likely</label>
+      <input type="number" id="prizeWeight" class="form-control" placeholder="10" min="1" max="999">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Segment Color</label>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="color" id="prizeColor" value="#8B5CF6" style="width:50px;height:40px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;padding:2px;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <div class="color-swatch" style="background:#EF4444;" onclick="setColor('#EF4444')"></div>
+          <div class="color-swatch" style="background:#F59E0B;" onclick="setColor('#F59E0B')"></div>
+          <div class="color-swatch" style="background:#10B981;" onclick="setColor('#10B981')"></div>
+          <div class="color-swatch" style="background:#3B82F6;" onclick="setColor('#3B82F6')"></div>
+          <div class="color-swatch" style="background:#8B5CF6;" onclick="setColor('#8B5CF6')"></div>
+          <div class="color-swatch" style="background:#EC4899;" onclick="setColor('#EC4899')"></div>
+          <div class="color-swatch" style="background:#9CA3AF;" onclick="setColor('#9CA3AF')"></div>
+          <div class="color-swatch" style="background:#1E1B4B;" onclick="setColor('#1E1B4B')"></div>
+        </div>
+      </div>
+    </div>
+    <div id="isActiveGroup" class="form-group hidden">
+      <label class="form-label">Status</label>
+      <select id="isActive" class="form-control">
+        <option value="1">Active</option>
+        <option value="0">Inactive</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:8px;">
+      <button class="btn btn-primary" style="flex:1;" onclick="savePrize()">Save Prize</button>
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay hidden" id="confirmModal">
+  <div class="modal" style="max-width:380px;text-align:center;">
+    <div style="font-size:48px;margin-bottom:12px;">⚠️</div>
+    <h3 id="confirmTitle" style="font-size:18px;font-weight:700;color:var(--dark);margin-bottom:8px;"></h3>
+    <p id="confirmMsg" style="font-size:14px;color:var(--text-light);margin-bottom:20px;line-height:1.6;"></p>
+    <div style="display:flex;gap:10px;">
+      <button id="confirmOkBtn" class="btn btn-danger" style="flex:1;"></button>
+      <button class="btn btn-outline" style="flex:1;" onclick="document.getElementById('confirmModal').classList.add('hidden')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<style>
+.color-swatch { width:28px;height:28px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:all .15s; }
+.color-swatch:hover { transform:scale(1.15);border-color:rgba(0,0,0,0.2); }
+</style>
+
+<script src="js/admin-api.js"></script>
+<script>
+  requireAdminAuth();
+  initAdminTopbar();
+
+  let prizes = [];
+
+  function showConfirm(title, msg, okLabel, onOk) {
+    document.getElementById('confirmTitle').textContent = title;
+    document.getElementById('confirmMsg').textContent = msg;
+    document.getElementById('confirmOkBtn').textContent = okLabel;
+    document.getElementById('confirmOkBtn').onclick = function() {
+      document.getElementById('confirmModal').classList.add('hidden');
+      onOk();
+    };
+    document.getElementById('confirmModal').classList.remove('hidden');
+  }
+
+  async function loadPrizes() {
+    const res = await adminAPI('/admin/spin-prizes');
+    if (!res || !res.ok) {
+      document.getElementById('prizesTable').innerHTML =
+        '<tr><td colspan="9" style="text-align:center;color:var(--danger);padding:30px;">Failed to load prizes. Please restart the server.</td></tr>';
+      return;
+    }
+    prizes = res.data?.data || [];
+    renderTable();
+    drawPreviewWheel();
+  }
+
+  function renderTable() {
+    document.getElementById('totalPrizes').textContent = prizes.length + ' prizes';
+    const totalWeight = prizes.reduce((s, p) => s + (parseInt(p.weight) || 1), 0);
+    const tbody = document.getElementById('prizesTable');
+    if (!prizes.length) {
+      tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--text-light);padding:30px;">No prizes yet. Click "Add Prize" to create one.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = prizes.map((p, i) => {
+      const prob = totalWeight > 0 ? ((parseInt(p.weight) / totalWeight) * 100).toFixed(1) : '0.0';
+      return `<tr>
+        <td>${i + 1}</td>
+        <td><div style="width:24px;height:24px;border-radius:6px;background:${p.color};display:inline-block;"></div></td>
+        <td><strong>${p.name}</strong></td>
+        <td>${p.prize_type === 'none' ? '<span class="badge badge-gray">None</span>' : '<span class="badge badge-success">USDT</span>'}</td>
+        <td>${p.prize_type === 'none' ? '—' : fmt$(p.amount)}</td>
+        <td>${p.weight}</td>
+        <td><strong>${prob}%</strong></td>
+        <td>${p.is_active ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-gray">Inactive</span>'}</td>
+        <td>
+          <button class="btn btn-warning btn-xs" onclick="openEditModal(${p.id})">Edit</button>
+          <button class="btn btn-danger btn-xs" onclick="deletePrize(${p.id}, '${p.name.replace(/'/g,"\\'")}')">Delete</button>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  function drawPreviewWheel() {
+    const canvas = document.getElementById('previewWheel');
+    const ctx = canvas.getContext('2d');
+    const cx = canvas.width / 2, cy = canvas.height / 2, r = cx - 8;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const activePrizes = prizes.filter(p => p.is_active);
+    if (!activePrizes.length) {
+      ctx.fillStyle = '#E5E7EB';
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#9CA3AF'; ctx.font = '14px Inter, sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('No prizes', cx, cy);
+      return;
+    }
+
+    const total = activePrizes.reduce((s, p) => s + (parseInt(p.weight) || 1), 0);
+    let startAngle = -Math.PI / 2;
+
+    activePrizes.forEach(prize => {
+      const angle = ((parseInt(prize.weight) || 1) / total) * Math.PI * 2;
+      // Segment
+      ctx.beginPath(); ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, r, startAngle, startAngle + angle);
+      ctx.closePath();
+      ctx.fillStyle = prize.color; ctx.fill();
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.stroke();
+
+      // Label — only draw if segment is big enough
+      if (angle > 0.15) {
+        const midAngle = startAngle + angle / 2;
+        // Normalize to [0, 2π) and determine if text needs flipping
+        const norm = ((midAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+        const flip = norm > Math.PI / 2 && norm < Math.PI * 3 / 2;
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(flip ? midAngle + Math.PI : midAngle);
+        ctx.fillStyle = '#fff';
+        ctx.shadowColor = 'rgba(0,0,0,0.4)';
+        ctx.shadowBlur = 3;
+
+        const xEdge = flip ? -(r - 12) : (r - 12);
+        const align  = flip ? 'left' : 'right';
+
+        const words = prize.name.split(' ');
+        if (words.length >= 2 && angle > 0.28) {
+          const mid = Math.ceil(words.length / 2);
+          const line1 = words.slice(0, mid).join(' ');
+          const line2 = words.slice(mid).join(' ');
+          ctx.font = 'bold 12px Inter, sans-serif';
+          ctx.textAlign = align;
+          ctx.fillText(line1, xEdge, -8);
+          ctx.fillText(line2, xEdge,  8);
+        } else {
+          ctx.font = 'bold 13px Inter, sans-serif';
+          ctx.textAlign = align;
+          const label = prize.name.length > 16 ? prize.name.substring(0, 15) + '…' : prize.name;
+          ctx.fillText(label, xEdge, 5);
+        }
+        ctx.restore();
+      }
+      startAngle += angle;
+    });
+
+    // Center circle
+    ctx.beginPath(); ctx.arc(cx, cy, 32, 0, Math.PI * 2);
+    ctx.fillStyle = '#fff'; ctx.fill();
+    ctx.strokeStyle = '#E5E7EB'; ctx.lineWidth = 3; ctx.stroke();
+    ctx.fillStyle = '#374151'; ctx.font = 'bold 13px Inter, sans-serif'; ctx.textAlign = 'center';
+    ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0;
+    ctx.fillText('SPIN', cx, cy + 5);
+
+    // Pointer
+    ctx.beginPath();
+    ctx.moveTo(cx - 13, 5); ctx.lineTo(cx + 13, 5); ctx.lineTo(cx, 26);
+    ctx.closePath(); ctx.fillStyle = '#1E1B4B'; ctx.fill();
+  }
+
+  function openAddModal() {
+    document.getElementById('modalTitle').textContent = 'Add Prize';
+    document.getElementById('editId').value = '';
+    document.getElementById('prizeName').value = '';
+    document.getElementById('prizeType').value = 'usdt';
+    document.getElementById('prizeAmount').value = '';
+    document.getElementById('prizeWeight').value = '10';
+    document.getElementById('prizeColor').value = '#8B5CF6';
+    document.getElementById('isActiveGroup').classList.add('hidden');
+    document.getElementById('amountGroup').classList.remove('hidden');
+    document.getElementById('modalAlert').classList.add('hidden');
+    document.getElementById('prizeModal').classList.remove('hidden');
+  }
+
+  function openEditModal(id) {
+    const p = prizes.find(x => x.id === id);
+    if (!p) return;
+    document.getElementById('modalTitle').textContent = 'Edit Prize';
+    document.getElementById('editId').value = p.id;
+    document.getElementById('prizeName').value = p.name;
+    document.getElementById('prizeType').value = p.prize_type;
+    document.getElementById('prizeAmount').value = p.amount;
+    document.getElementById('prizeWeight').value = p.weight;
+    document.getElementById('prizeColor').value = p.color;
+    document.getElementById('isActive').value = p.is_active ? '1' : '0';
+    document.getElementById('isActiveGroup').classList.remove('hidden');
+    toggleAmountField();
+    document.getElementById('modalAlert').classList.add('hidden');
+    document.getElementById('prizeModal').classList.remove('hidden');
+  }
+
+  function closeModal() {
+    document.getElementById('prizeModal').classList.add('hidden');
+  }
+
+  function toggleAmountField() {
+    const type = document.getElementById('prizeType').value;
+    document.getElementById('amountGroup').style.display = type === 'none' ? 'none' : 'block';
+  }
+
+  function setColor(c) {
+    document.getElementById('prizeColor').value = c;
+  }
+
+  async function savePrize() {
+    const id = document.getElementById('editId').value;
+    const name = document.getElementById('prizeName').value.trim();
+    const prize_type = document.getElementById('prizeType').value;
+    const amount = parseFloat(document.getElementById('prizeAmount').value) || 0;
+    const weight = parseInt(document.getElementById('prizeWeight').value) || 10;
+    const color = document.getElementById('prizeColor').value;
+    const is_active = parseInt(document.getElementById('isActive')?.value ?? '1');
+
+    if (!name) { showMsg('modalAlert', 'Prize name is required.'); return; }
+    if (weight < 1) { showMsg('modalAlert', 'Weight must be at least 1.'); return; }
+
+    const body = { name, prize_type, amount, weight, color, is_active };
+    const res = id
+      ? await adminAPI(`/admin/spin-prizes/${id}`, 'PUT', body)
+      : await adminAPI('/admin/spin-prizes', 'POST', body);
+
+    if (!res || !res.ok) { showMsg('modalAlert', res?.data?.message || 'Error saving prize.'); return; }
+    closeModal();
+    showMsg('alertBox', id ? 'Prize updated!' : 'Prize created!', 'success');
+    loadPrizes();
+  }
+
+  function deletePrize(id, name) {
+    showConfirm('Delete Prize', `Are you sure you want to delete "${name}"?`, 'Delete', async () => {
+      const res = await adminAPI(`/admin/spin-prizes/${id}`, 'DELETE');
+      if (!res || !res.ok) { showMsg('alertBox', res?.data?.message || 'Error.'); return; }
+      showMsg('alertBox', 'Prize deleted.', 'success');
+      loadPrizes();
+    });
+  }
+
+  loadPrizes();
+</script>
+</body>
+</html>
