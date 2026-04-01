@@ -26,14 +26,191 @@ async function startServer() {
     // Auto-create DB directory if needed (Railway volume mount)
     const dbDir = path.dirname(DB_FILE);
     if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir, { recursive: true });
-    const sqliteDb = fs.existsSync(DB_FILE)
-        ? new SQL.Database(fs.readFileSync(DB_FILE))
-        : new SQL.Database();
+    const isNewDb = !fs.existsSync(DB_FILE);
+    const sqliteDb = isNewDb
+        ? new SQL.Database()
+        : new SQL.Database(fs.readFileSync(DB_FILE));
     sqliteDb.run('PRAGMA foreign_keys = ON');
 
     const db = require('./config/db');
     db._init(sqliteDb);
     console.log('✅ SQLite database connected');
+
+    // ─── Full Schema Init (runs only on fresh DB) ─────────────────────────────
+    if (isNewDb) {
+        console.log('🆕 Fresh database detected — creating schema...');
+        const bcrypt = require('bcryptjs');
+
+        sqliteDb.run(`
+            CREATE TABLE IF NOT EXISTS vip_levels (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                level INTEGER UNIQUE NOT NULL,
+                name TEXT NOT NULL,
+                min_deposit REAL NOT NULL,
+                commission_rate REAL NOT NULL,
+                daily_task_limit INTEGER NOT NULL,
+                description TEXT,
+                color TEXT DEFAULT '#8B5CF6',
+                task_wheel INTEGER DEFAULT 1,
+                task_set_size INTEGER DEFAULT 10,
+                task_commission_multiplier REAL DEFAULT 1.0
+            );
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL,
+                email TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL,
+                full_name TEXT DEFAULT '',
+                phone TEXT DEFAULT '',
+                referral_code TEXT UNIQUE,
+                referred_by INTEGER DEFAULT NULL,
+                balance REAL DEFAULT 0.00,
+                total_earned REAL DEFAULT 0.00,
+                vip_level INTEGER DEFAULT 1,
+                status TEXT DEFAULT 'active',
+                avatar TEXT DEFAULT NULL,
+                withdrawal_password TEXT DEFAULT NULL,
+                transaction_disabled INTEGER DEFAULT 0,
+                is_test INTEGER DEFAULT 0,
+                credit_score INTEGER DEFAULT 80,
+                created_at TEXT DEFAULT (datetime('now')),
+                updated_at TEXT DEFAULT (datetime('now'))
+            );
+            CREATE TABLE IF NOT EXISTS products (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                description TEXT,
+                price REAL NOT NULL,
+                image_url TEXT,
+                category TEXT,
+                commission_rate REAL DEFAULT 1.00,
+                status TEXT DEFAULT 'active',
+                created_at TEXT DEFAULT (datetime('now'))
+            );
+            CREATE TABLE IF NOT EXISTS tasks (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                product_id INTEGER NOT NULL,
+                task_number INTEGER NOT NULL,
+                product_price REAL NOT NULL,
+                commission_amount REAL NOT NULL,
+                status TEXT DEFAULT 'pending',
+                submitted_at TEXT DEFAULT NULL,
+                completed_at TEXT DEFAULT NULL,
+                created_at TEXT DEFAULT (datetime('now'))
+            );
+            CREATE TABLE IF NOT EXISTS transactions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                type TEXT NOT NULL,
+                amount REAL NOT NULL,
+                balance_before REAL NOT NULL,
+                balance_after REAL NOT NULL,
+                description TEXT,
+                reference_id INTEGER DEFAULT NULL,
+                status TEXT DEFAULT 'completed',
+                created_at TEXT DEFAULT (datetime('now'))
+            );
+            CREATE TABLE IF NOT EXISTS deposits (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                amount REAL NOT NULL,
+                payment_method TEXT DEFAULT 'USDT',
+                wallet_address TEXT,
+                txn_hash TEXT,
+                status TEXT DEFAULT 'pending',
+                admin_note TEXT,
+                created_at TEXT DEFAULT (datetime('now')),
+                processed_at TEXT DEFAULT NULL
+            );
+            CREATE TABLE IF NOT EXISTS withdrawals (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                amount REAL NOT NULL,
+                fee REAL DEFAULT 0.00,
+                net_amount REAL NOT NULL,
+                payment_method TEXT DEFAULT 'USDT',
+                wallet_address TEXT NOT NULL,
+                status TEXT DEFAULT 'pending',
+                admin_note TEXT,
+                created_at TEXT DEFAULT (datetime('now')),
+                processed_at TEXT DEFAULT NULL
+            );
+            CREATE TABLE IF NOT EXISTS admins (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL,
+                email TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL,
+                role TEXT DEFAULT 'admin',
+                status TEXT DEFAULT 'active',
+                created_at TEXT DEFAULT (datetime('now'))
+            );
+            CREATE TABLE IF NOT EXISTS settings (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                setting_key TEXT UNIQUE NOT NULL,
+                setting_value TEXT,
+                description TEXT,
+                updated_at TEXT DEFAULT (datetime('now'))
+            );
+            CREATE TABLE IF NOT EXISTS prize_records (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                prize_name TEXT NOT NULL,
+                prize_value REAL DEFAULT 0,
+                prize_type TEXT DEFAULT 'spin',
+                created_at TEXT DEFAULT (datetime('now'))
+            );
+            CREATE TABLE IF NOT EXISTS spin_prizes (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                value REAL DEFAULT 0,
+                probability REAL DEFAULT 10,
+                color TEXT DEFAULT '#8B5CF6',
+                is_active INTEGER DEFAULT 1,
+                created_at TEXT DEFAULT (datetime('now'))
+            );
+        `);
+
+        // Seed VIP levels
+        [[1,'Bronze',0,1.00,10,'Starter 1% commission','#CD7F32'],
+         [2,'Silver',100,1.50,20,'Silver 1.5% commission','#C0C0C0'],
+         [3,'Gold',500,2.00,30,'Gold 2% commission','#FFD700'],
+         [4,'Platinum',1000,2.50,50,'Platinum 2.5% commission','#E5E4E2'],
+         [5,'Diamond',5000,3.00,100,'Diamond 3% commission','#B9F2FF'],
+        ].forEach(v => sqliteDb.run(
+            `INSERT OR IGNORE INTO vip_levels (level,name,min_deposit,commission_rate,daily_task_limit,description,color) VALUES (?,?,?,?,?,?,?)`, v));
+
+        // Seed admin account
+        const adminHash = bcrypt.hashSync('Admin@123', 10);
+        sqliteDb.run(`INSERT OR IGNORE INTO admins (username,email,password,role) VALUES (?,?,?,?)`,
+            ['admin','admin@investpro.com', adminHash,'superadmin']);
+
+        // Seed settings
+        [['site_name','InvestPro','Website name'],
+         ['min_deposit','10','Min deposit $'],
+         ['min_withdrawal','20','Min withdrawal $'],
+         ['withdrawal_fee','2','Withdrawal fee %'],
+         ['referral_bonus','5','Referral bonus $'],
+         ['maintenance_mode','false','Maintenance mode'],
+         ['usdt_wallet','TYourWalletHere','USDT TRC20 wallet'],
+         ['support_email','support@investpro.com','Support email'],
+         ['support_telegram','@investpro_support','Telegram handle'],
+        ].forEach(s => sqliteDb.run(
+            `INSERT OR IGNORE INTO settings (setting_key,setting_value,description) VALUES (?,?,?)`, s));
+
+        // Seed spin prizes
+        [['$0 (Try Again)',0,40,'#6B7280'],['$1 Bonus',1,25,'#10B981'],
+         ['$3 Bonus',3,15,'#3B82F6'],['$5 Bonus',5,10,'#8B5CF6'],
+         ['$10 Bonus',10,6,'#F59E0B'],['$20 Bonus',20,3,'#EF4444'],
+         ['$50 Bonus',50,1,'#EC4899'],
+        ].forEach(p => sqliteDb.run(
+            `INSERT OR IGNORE INTO spin_prizes (name,value,probability,color) VALUES (?,?,?,?)`, p));
+
+        // Save fresh schema to file
+        const data = sqliteDb.export();
+        fs.writeFileSync(DB_FILE, Buffer.from(data));
+        console.log('✅ Fresh schema + admin seeded! Login: admin / Admin@123');
+    }
 
     // Add withdrawal_password column if it doesn't exist (safe migration)
     try {
