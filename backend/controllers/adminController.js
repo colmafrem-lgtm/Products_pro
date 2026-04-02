@@ -605,14 +605,18 @@ const updateUserProfile = async (req, res) => {
         const emailVal = (email && email.trim()) ? email.trim() : null;
         const vipVal = parseInt(vip_level) || 1;
 
+        // Check if VIP level is changing so we can reset task count
+        const [curRows] = await db.query('SELECT vip_level FROM users WHERE id = ?', [userId]);
+        const vipChanged = curRows.length > 0 && parseInt(curRows[0].vip_level) !== vipVal;
+
         if (referredById !== null) {
             await db.query(
-                'UPDATE users SET full_name=?, phone=?, email=?, vip_level=?, referred_by=?, credit_score=? WHERE id=?',
+                `UPDATE users SET full_name=?, phone=?, email=?, vip_level=?, referred_by=?, credit_score=?${vipChanged ? ', task_reset_at=NOW()' : ''} WHERE id=?`,
                 [full_name || '', phone || '', emailVal, vipVal, referredById, cs, userId]
             );
         } else {
             await db.query(
-                'UPDATE users SET full_name=?, phone=?, email=?, vip_level=?, credit_score=? WHERE id=?',
+                `UPDATE users SET full_name=?, phone=?, email=?, vip_level=?, credit_score=?${vipChanged ? ', task_reset_at=NOW()' : ''} WHERE id=?`,
                 [full_name || '', phone || '', emailVal, vipVal, cs, userId]
             );
         }
@@ -996,9 +1000,57 @@ const getPointsRecords = async (req, res) => {
     }
 };
 
+// POST /api/admin/users — create user manually
+const createUser = async (req, res) => {
+    const { username, password, full_name, phone, email, vip_level, initial_balance } = req.body;
+    if (!username || !password) return res.status(400).json({ success: false, message: 'Username and password are required.' });
+    try {
+        const bcrypt = require('bcryptjs');
+        const [exist] = await db.query('SELECT id FROM users WHERE username = ?', [username]);
+        if (exist.length > 0) return res.status(400).json({ success: false, message: 'Username already taken.' });
+        const hash = await bcrypt.hash(password, 10);
+        const code = username.toUpperCase().replace(/[^A-Z0-9]/g,'').substring(0,4) + Math.random().toString(36).substring(2,6).toUpperCase();
+        const emailVal = (email && email.trim()) ? email.trim() : null;
+        const vipVal = parseInt(vip_level) || 1;
+        const balance = parseFloat(initial_balance) || 0;
+        const [result] = await db.query(
+            `INSERT INTO users (username, email, password, full_name, phone, referral_code, vip_level, balance) VALUES (?,?,?,?,?,?,?,?)`,
+            [username, emailVal, hash, full_name || '', phone || '', code, vipVal, balance]
+        );
+        if (balance > 0) {
+            await db.query(
+                `INSERT INTO transactions (user_id, type, amount, balance_before, balance_after, description, status) VALUES (?, 'deposit', ?, 0, ?, 'Admin initial balance', 'completed')`,
+                [result.insertId, balance, balance]
+            );
+        }
+        res.json({ success: true, message: 'User created successfully.' });
+    } catch (error) {
+        console.error('Create user error:', error.message);
+        res.status(500).json({ success: false, message: 'Server error: ' + error.message });
+    }
+};
+
+// DELETE /api/admin/users — bulk delete users
+const deleteUsers = async (req, res) => {
+    const { ids } = req.body;
+    if (!ids || !Array.isArray(ids) || ids.length === 0)
+        return res.status(400).json({ success: false, message: 'No user IDs provided.' });
+    try {
+        const placeholders = ids.map(() => '?').join(',');
+        await db.query(`DELETE FROM tasks WHERE user_id IN (${placeholders})`, ids);
+        await db.query(`DELETE FROM transactions WHERE user_id IN (${placeholders})`, ids);
+        await db.query(`DELETE FROM users WHERE id IN (${placeholders})`, ids);
+        res.json({ success: true, message: `${ids.length} user(s) deleted.` });
+    } catch (error) {
+        console.error('Delete users error:', error.message);
+        res.status(500).json({ success: false, message: 'Server error: ' + error.message });
+    }
+};
+
 module.exports = {
     adminLogin, getDashboard, getUsers, updateUserStatus, adjustBalance, setWithdrawalPassword,
     updateUserProfile, searchUsers, resetTaskVolume, toggleTransactionStatus, toggleTestStatus, getUserTeam, getUserTasks, addUserTask, deleteUserTask,
+    createUser, deleteUsers,
     getDeposits, approveDeposit, getWithdrawals, processWithdrawal,
     getProducts, createProduct, updateProduct, deleteProduct,
     getSettings, updateSettings,

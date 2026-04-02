@@ -10,6 +10,7 @@ const {
     getSettings, updateSettings,
     getVipLevels, updateVipLevel, addVipLevel, deleteVipLevel,
     updateUserProfile, searchUsers, resetTaskVolume, toggleTransactionStatus, toggleTestStatus, getUserTeam, getUserTasks, addUserTask, deleteUserTask,
+    createUser, deleteUsers,
     getPrizeRecords, reviewPrizeRecord, deletePrizeRecord,
     getSpinPrizes, createSpinPrize, updateSpinPrize, deleteSpinPrize,
     getPointsRecords
@@ -54,6 +55,8 @@ router.get('/users/:id/team', getUserTeam);
 router.get('/users/:id/tasks', getUserTasks);
 router.delete('/users/:id/tasks/:taskId', requireSuperAdmin, deleteUserTask);
 router.post('/tasks', requireSuperAdmin, addUserTask);
+router.post('/users', requireSuperAdmin, createUser);
+router.delete('/users', requireSuperAdmin, deleteUsers);
 
 // Deposits
 router.get('/deposits', getDeposits);

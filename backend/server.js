@@ -372,6 +372,9 @@ async function startServer() {
         console.log('✅ Added invitation_code column');
     } catch(e) { /* already exists */ }
 
+    // Add task_reset_at column (safe migration) — tracks when task count was last reset
+    try { sqliteDb.run(`ALTER TABLE users ADD COLUMN task_reset_at TEXT DEFAULT NULL`); } catch(e) {}
+
     // Add withdrawal_times column (safe migration) — default 100
     try {
         sqliteDb.run(`ALTER TABLE users ADD COLUMN withdrawal_times INTEGER DEFAULT 100`);

@@ -36,6 +36,8 @@
   .act-full   { grid-column: span 2; }
 
   .id-badge { display:inline-block; background:#f3f4f6; border:1px solid #e5e7eb; border-radius:6px; padding:3px 8px; font-size:13px; font-weight:700; color:#374151; }
+  .sel-cb { width:16px; height:16px; cursor:pointer; accent-color:#7c3aed; }
+  #deleteSelectedBar { display:none; align-items:center; gap:10px; background:#fef2f2; border:1px solid #fecaca; border-radius:8px; padding:8px 14px; }
 </style>
 </head>
 <body>
@@ -95,7 +97,10 @@
 
     <div class="card" style="padding:0;overflow:hidden;">
       <div style="padding:16px 20px;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
-        <h3 style="font-size:16px;font-weight:700;color:#111;">All Users <span id="totalUserCount" style="font-size:13px;color:#6b7280;font-weight:400;"></span></h3>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <h3 style="font-size:16px;font-weight:700;color:#111;">All Users <span id="totalUserCount" style="font-size:13px;color:#6b7280;font-weight:400;"></span></h3>
+          <button onclick="openAddUserModal()" style="background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;border:none;padding:7px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">+ Add User</button>
+        </div>
         <div style="display:flex;gap:10px;align-items:center;">
           <div class="search-wrap">
             <span class="search-icon">🔍</span>
@@ -109,10 +114,17 @@
         </div>
       </div>
 
+      <div id="deleteSelectedBar" style="display:none;align-items:center;gap:10px;background:#fef2f2;border-bottom:1px solid #fecaca;padding:10px 20px;">
+        <span id="deleteSelectedCount" style="font-size:13px;color:#dc2626;font-weight:700;"></span>
+        <button onclick="confirmDeleteSelected()" style="background:#dc2626;color:#fff;border:none;padding:6px 16px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;">🗑 Delete Selected</button>
+        <button onclick="clearSelection()" style="background:#f3f4f6;color:#374151;border:1px solid #e5e7eb;padding:6px 12px;border-radius:7px;font-size:12px;cursor:pointer;">Cancel</button>
+      </div>
+
       <div style="overflow-x:auto;">
         <table class="users-table">
           <thead>
             <tr>
+              <th style="width:40px;text-align:center;"><input type="checkbox" class="sel-cb" id="selectAll" onchange="toggleSelectAll(this.checked)" title="Select All"></th>
               <th style="width:60px;">ID</th>
               <th style="min-width:170px;">Basic Information</th>
               <th style="min-width:160px;">Account Information</th>
@@ -124,7 +136,7 @@
             </tr>
           </thead>
           <tbody id="usersTable">
-            <tr><td colspan="8" style="text-align:center;padding:40px;"><div class="spinner"></div></td></tr>
+            <tr><td colspan="9" style="text-align:center;padding:40px;"><div class="spinner"></div></td></tr>
           </tbody>
         </table>
       </div>
@@ -299,6 +311,62 @@
   </div>
 </div>
 
+<!-- ═══ Add User Modal ═══ -->
+<div class="modal-overlay hidden" id="addUserModal">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-head">
+      <h3>➕ Add New User</h3>
+      <button class="modal-close" onclick="closeModal('addUserModal')">✕</button>
+    </div>
+    <div id="auModalAlert" class="hidden" style="margin-bottom:12px;"></div>
+    <div style="display:grid;gap:10px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="form-group" style="margin:0;">
+          <label class="form-label">Username <span style="color:#ef4444;">*</span></label>
+          <input type="text" id="auUsername" class="form-control" placeholder="Username">
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label class="form-label">Password <span style="color:#ef4444;">*</span></label>
+          <input type="password" id="auPassword" class="form-control" placeholder="Min 6 characters">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="form-group" style="margin:0;">
+          <label class="form-label">Full Name</label>
+          <input type="text" id="auFullName" class="form-control" placeholder="Full name">
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label class="form-label">Phone</label>
+          <input type="text" id="auPhone" class="form-control" placeholder="Phone number">
+        </div>
+      </div>
+      <div class="form-group" style="margin:0;">
+        <label class="form-label">Email</label>
+        <input type="email" id="auEmail" class="form-control" placeholder="Email (optional)">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="form-group" style="margin:0;">
+          <label class="form-label">VIP Level</label>
+          <select id="auVipLevel" class="form-control">
+            <option value="1">Level 1 — Bronze</option>
+            <option value="2">Level 2 — Silver</option>
+            <option value="3">Level 3 — Gold</option>
+            <option value="4">Level 4 — Platinum</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label class="form-label">Initial Balance ($)</label>
+          <input type="number" id="auBalance" class="form-control" placeholder="0.00" min="0" step="0.01">
+        </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;">
+      <button onclick="submitAddUser()" class="btn btn-primary">Create User</button>
+      <button onclick="closeModal('addUserModal')" class="btn btn-outline">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ Confirm Dialog Modal ═══ -->
 <div class="modal-overlay hidden" id="confirmModal" style="z-index:400;">
   <div class="modal" style="max-width:400px;">
@@ -468,7 +536,97 @@
   let currentPage = 1;
   let selectedUserId = null;
   let searchTimer;
-  let invitationCodeMap = {}; // code -> staff name
+  let invitationCodeMap = {};
+  let selectedIds = new Set();
+
+  // ── Checkbox / Select logic ──
+  function onRowCheckChange() {
+    selectedIds.clear();
+    document.querySelectorAll('.row-cb:checked').forEach(cb => selectedIds.add(parseInt(cb.dataset.id)));
+    updateDeleteBar();
+  }
+
+  function toggleSelectAll(checked) {
+    document.querySelectorAll('.row-cb').forEach(cb => { cb.checked = checked; });
+    onRowCheckChange();
+  }
+
+  function clearSelection() {
+    document.querySelectorAll('.row-cb').forEach(cb => { cb.checked = false; });
+    const sa = document.getElementById('selectAll');
+    if (sa) sa.checked = false;
+    selectedIds.clear();
+    updateDeleteBar();
+  }
+
+  function updateDeleteBar() {
+    const bar = document.getElementById('deleteSelectedBar');
+    const cnt = document.getElementById('deleteSelectedCount');
+    if (selectedIds.size > 0) {
+      bar.style.display = 'flex';
+      cnt.textContent = `${selectedIds.size} user(s) selected`;
+    } else {
+      bar.style.display = 'none';
+    }
+  }
+
+  function confirmDeleteSelected() {
+    if (selectedIds.size === 0) return;
+    showConfirm(
+      'Delete Users',
+      `Are you sure you want to permanently delete ${selectedIds.size} user(s)? This cannot be undone.`,
+      '🗑 Delete',
+      async () => {
+        const token = sessionStorage.getItem('admin_token');
+        const res = await fetch('/api/admin/users', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ ids: Array.from(selectedIds) })
+        });
+        const json = await res.json();
+        if (!json.success) { showMsg('alertBox', json.message || 'Delete failed.', 'danger'); return; }
+        showMsg('alertBox', json.message, 'success');
+        clearSelection();
+        loadUsers();
+      }
+    );
+  }
+
+  // ── Add User Modal ──
+  function openAddUserModal() {
+    document.getElementById('auUsername').value = '';
+    document.getElementById('auPassword').value = '';
+    document.getElementById('auFullName').value = '';
+    document.getElementById('auPhone').value = '';
+    document.getElementById('auEmail').value = '';
+    document.getElementById('auVipLevel').value = '1';
+    document.getElementById('auBalance').value = '';
+    document.getElementById('auModalAlert').classList.add('hidden');
+    document.getElementById('addUserModal').classList.remove('hidden');
+  }
+
+  async function submitAddUser() {
+    const username = document.getElementById('auUsername').value.trim();
+    const password = document.getElementById('auPassword').value.trim();
+    const full_name = document.getElementById('auFullName').value.trim();
+    const phone = document.getElementById('auPhone').value.trim();
+    const email = document.getElementById('auEmail').value.trim();
+    const vip_level = document.getElementById('auVipLevel').value;
+    const initial_balance = document.getElementById('auBalance').value;
+    if (!username || !password) { showMsg('auModalAlert', 'Username and password are required.', 'danger'); return; }
+    if (password.length < 6) { showMsg('auModalAlert', 'Password must be at least 6 characters.', 'danger'); return; }
+    const token = sessionStorage.getItem('admin_token');
+    const res = await fetch('/api/admin/users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ username, password, full_name, phone, email, vip_level, initial_balance })
+    });
+    const json = await res.json();
+    if (!json.success) { showMsg('auModalAlert', json.message || 'Failed.', 'danger'); return; }
+    closeModal('addUserModal');
+    showMsg('alertBox', 'User created successfully!', 'success');
+    loadUsers(true);
+  } // code -> staff name
 
   async function loadInvitationCodes() {
     const res = await Admin.getSettings();
@@ -499,18 +657,20 @@
     selectedUserId = null;
   }
 
-  async function loadUsers() {
+  async function loadUsers(silent = false) {
     const search = document.getElementById('searchInput').value;
     const status = document.getElementById('statusFilter').value;
 
-    document.getElementById('usersTable').innerHTML =
-      '<tr><td colspan="8" style="text-align:center;padding:40px;"><div class="spinner"></div></td></tr>';
+    if (!silent) {
+      document.getElementById('usersTable').innerHTML =
+        '<tr><td colspan="9" style="text-align:center;padding:40px;"><div class="spinner"></div></td></tr>';
+    }
 
     const res = await Admin.getUsers(currentPage, search, status);
 
     if (!res || !res.ok) {
       document.getElementById('usersTable').innerHTML =
-        '<tr><td colspan="8" style="text-align:center;color:var(--danger);padding:30px;">Failed to load users</td></tr>';
+        '<tr><td colspan="9" style="text-align:center;color:var(--danger);padding:30px;">Failed to load users</td></tr>';
       return;
     }
 
@@ -519,7 +679,7 @@
 
     if (!users || users.length === 0) {
       document.getElementById('usersTable').innerHTML =
-        '<tr><td colspan="8" style="text-align:center;color:var(--text-light);padding:30px;">No users found.</td></tr>';
+        '<tr><td colspan="9" style="text-align:center;color:var(--text-light);padding:30px;">No users found.</td></tr>';
       renderPagination(pagination);
       return;
     }
@@ -531,6 +691,8 @@
 
       return `
       <tr>
+        <!-- Select -->
+        <td style="text-align:center;"><input type="checkbox" class="sel-cb row-cb" data-id="${u.id}" onchange="onRowCheckChange()"></td>
         <!-- ID -->
         <td><span class="id-badge">#${u.id}</span></td>
 
@@ -605,6 +767,18 @@
     }).join('');
 
     renderPagination(pagination);
+    // After re-render: restore checkbox states if silent reload, else reset
+    if (silent && selectedIds.size > 0) {
+      document.querySelectorAll('.row-cb').forEach(cb => {
+        cb.checked = selectedIds.has(parseInt(cb.dataset.id));
+      });
+      updateDeleteBar();
+    } else {
+      selectedIds.clear();
+      updateDeleteBar();
+      const sa = document.getElementById('selectAll');
+      if (sa) sa.checked = false;
+    }
   }
 
   function renderPagination(p) {
@@ -685,7 +859,7 @@
     if (!json.success) { showMsg('biModalAlert', json.message || 'Failed.', 'danger'); return; }
     closeModal('basicInfoModal');
     showMsg('alertBox', 'User profile updated successfully!', 'success');
-    loadUsers();
+    loadUsers(true);
   }
 
   // ── Balance ──
@@ -708,7 +882,7 @@
     if (!res || !res.ok) { showMsg('modalAlert', res?.data?.message || 'Failed.', 'danger'); return; }
     closeModal('balanceModal');
     showMsg('alertBox', 'Balance adjusted successfully!', 'success');
-    loadUsers();
+    loadUsers(true);
   }
 
   // ── Status ──
@@ -717,7 +891,7 @@
     const res = await Admin.updateUserStatus(userId, status);
     if (!res || !res.ok) { showMsg('alertBox', res?.data?.message || 'Failed.', 'danger'); return; }
     showMsg('alertBox', `User ${status} successfully.`, 'success');
-    loadUsers();
+    loadUsers(true);
   }
 
   // ── Modify Withdrawal ──
@@ -784,7 +958,7 @@
     if (!json.success) { showMsg('wpModalAlert', json.message || 'Failed.', 'danger'); return; }
     closeModal('withdrawPwModal');
     showMsg('alertBox', 'Updated successfully!', 'success');
-    loadUsers();
+    loadUsers(true);
   }
 
   // ── View Team ──
@@ -928,7 +1102,7 @@
     const json = await res.json();
     if (!json.success) { showMsg('osModalAlert', json.message || 'Failed.', 'danger'); return; }
     loadUserTasks();
-    loadUsers();
+    loadUsers(true);
   }
 
   function showConfirm(title, msg, okLabel, onOk) {
@@ -957,7 +1131,7 @@
         if (!json.success) { showMsg('osModalAlert', json.message || 'Failed.', 'danger'); return; }
         showMsg('osModalAlert', 'Task volume reset successfully!', 'success');
         loadUserTasks();
-        loadUsers();
+        loadUsers(true);
       }
     );
   }
@@ -978,7 +1152,7 @@
         const json = await res.json();
         if (!json.success) { showMsg('alertBox', json.message || 'Failed.', 'danger'); return; }
         showMsg('alertBox', json.message, 'success');
-        loadUsers();
+        loadUsers(true);
       }
     );
   }
@@ -1001,7 +1175,7 @@
         const json = await res.json();
         if (!json.success) { showMsg('alertBox', json.message || 'Failed.', 'danger'); return; }
         showMsg('alertBox', json.message, 'success');
-        loadUsers();
+        loadUsers(true);
       }
     );
   }
@@ -1020,7 +1194,7 @@
         const json = await res.json();
         if (!json.success) { showMsg('alertBox', json.message || 'Failed to reset.', 'danger'); return; }
         showMsg('alertBox', `Tasks volume reset successfully for ${username}!`, 'success');
-        loadUsers();
+        loadUsers(true);
       }
     );
   }
@@ -1224,11 +1398,11 @@
     if (failed > 0) {
       const total = batchTaskMode ? selectedProductsForBatch.length : 1;
       showMsg('atModalAlert', `${total - failed} tasks created, ${failed} failed.`, 'warning');
-      loadUserTasks(); loadUsers(); return;
+      loadUserTasks(); loadUsers(true); return;
     }
     closeModal('addTaskModal');
     loadUserTasks();
-    loadUsers();
+    loadUsers(true);
   }
 
   loadInvitationCodes().then(() => loadUsers());

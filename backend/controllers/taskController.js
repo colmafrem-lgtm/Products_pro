@@ -7,7 +7,7 @@ const getAvailableTask = async (req, res) => {
 
         // Get user info
         const [users] = await db.query(
-            `SELECT u.balance, u.vip_level, u.is_test, v.commission_rate, v.daily_task_limit
+            `SELECT u.balance, u.vip_level, u.is_test, u.task_reset_at, v.commission_rate, v.daily_task_limit
              FROM users u LEFT JOIN vip_levels v ON u.vip_level = v.level
              WHERE u.id = ?`,
             [userId]
@@ -17,12 +17,15 @@ const getAvailableTask = async (req, res) => {
         if (!user) return res.status(404).json({ success: false, message: 'User not found.' });
         // Default daily limit to 10 if VIP level not found or limit is null/0
         const dailyLimit = parseInt(user.daily_task_limit) || 10;
+        const taskResetAt = user.task_reset_at || null;
 
-        // Count today's completed tasks
+        // Count today's completed tasks (after last VIP reset if any)
         const [todayDone] = await db.query(
             `SELECT COUNT(*) as count FROM tasks
-             WHERE user_id = ? AND status = 'completed' AND DATE(completed_at) = CURDATE()`,
-            [userId]
+             WHERE user_id = ? AND status = 'completed'
+             AND DATE(completed_at) = CURDATE()
+             AND (? IS NULL OR completed_at >= ?)`,
+            [userId, taskResetAt, taskResetAt]
         );
 
         const doneToday = parseInt(todayDone[0].count) || 0;
@@ -133,27 +136,6 @@ const submitTask = async (req, res) => {
              VALUES (?, 'commission', ?, ?, ?, ?, ?, 'completed')`,
             [userId, commission, currentBalance, newBalance, `Commission from task #${task.task_number}: ${task.product_name}`, taskId]
         );
-
-        // Check if user qualifies for VIP upgrade
-        const [updatedUser] = await db.query(
-            'SELECT balance, vip_level FROM users WHERE id = ?',
-            [userId]
-        );
-
-        const [vipLevels] = await db.query(
-            'SELECT * FROM vip_levels ORDER BY level ASC'
-        );
-
-        let newVipLevel = updatedUser[0].vip_level;
-        for (const vip of vipLevels) {
-            if (newTotalEarned >= vip.min_deposit) {
-                newVipLevel = vip.level;
-            }
-        }
-
-        if (newVipLevel !== updatedUser[0].vip_level) {
-            await db.query('UPDATE users SET vip_level = ? WHERE id = ?', [newVipLevel, userId]);
-        }
 
         res.json({
             success: true,
