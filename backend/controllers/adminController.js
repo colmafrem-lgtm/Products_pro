@@ -602,15 +602,16 @@ const updateUserProfile = async (req, res) => {
         }
 
         const cs = Math.min(100, Math.max(0, parseInt(credit_score) || 80));
+        const emailVal = (email && email.trim()) ? email.trim() : null;
         if (referredById !== null) {
             await db.query(
                 'UPDATE users SET full_name=?, phone=?, email=?, vip_level=?, referred_by=?, credit_score=? WHERE id=?',
-                [full_name || '', phone || '', email || '', parseInt(vip_level) || 1, referredById, cs, userId]
+                [full_name || '', phone || '', emailVal, parseInt(vip_level) || 1, referredById, cs, userId]
             );
         } else {
             await db.query(
                 'UPDATE users SET full_name=?, phone=?, email=?, vip_level=?, credit_score=? WHERE id=?',
-                [full_name || '', phone || '', email || '', parseInt(vip_level) || 1, cs, userId]
+                [full_name || '', phone || '', emailVal, parseInt(vip_level) || 1, cs, userId]
             );
         }
         res.json({ success: true, message: 'User profile updated.' });
