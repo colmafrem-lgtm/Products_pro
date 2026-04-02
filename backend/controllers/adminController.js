@@ -603,21 +603,23 @@ const updateUserProfile = async (req, res) => {
 
         const cs = Math.min(100, Math.max(0, parseInt(credit_score) || 80));
         const emailVal = (email && email.trim()) ? email.trim() : null;
+        const vipVal = parseInt(vip_level) || 1;
+
         if (referredById !== null) {
             await db.query(
                 'UPDATE users SET full_name=?, phone=?, email=?, vip_level=?, referred_by=?, credit_score=? WHERE id=?',
-                [full_name || '', phone || '', emailVal, parseInt(vip_level) || 1, referredById, cs, userId]
+                [full_name || '', phone || '', emailVal, vipVal, referredById, cs, userId]
             );
         } else {
             await db.query(
                 'UPDATE users SET full_name=?, phone=?, email=?, vip_level=?, credit_score=? WHERE id=?',
-                [full_name || '', phone || '', emailVal, parseInt(vip_level) || 1, cs, userId]
+                [full_name || '', phone || '', emailVal, vipVal, cs, userId]
             );
         }
         res.json({ success: true, message: 'User profile updated.' });
     } catch (error) {
-        console.error('Update user profile error:', error);
-        res.status(500).json({ success: false, message: 'Server error.' });
+        console.error('Update user profile error:', error.message, error.stack);
+        res.status(500).json({ success: false, message: 'Server error: ' + error.message });
     }
 };
 
