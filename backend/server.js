@@ -237,7 +237,7 @@ async function startServer() {
             ['admin','admin@investpro.com', adminHash,'superadmin']);
 
         // Seed settings
-        [['site_name','InvestPro','Website name'],
+        [['site_name','SyncralinkUS','Website name'],
          ['min_deposit','10','Min deposit $'],
          ['min_withdrawal','20','Min withdrawal $'],
          ['withdrawal_fee','2','Withdrawal fee %'],
@@ -985,7 +985,7 @@ async function startServer() {
     });
 
     app.get('/api/health', (req, res) => {
-        res.json({ success: true, message: 'InvestPro API running!', timestamp: new Date() });
+        res.json({ success: true, message: 'SyncralinkUS API running!', timestamp: new Date() });
     });
 
     app.use((err, req, res, next) => {
@@ -996,7 +996,7 @@ async function startServer() {
     // ─── Start ────────────────────────────────────────────────────────────────
     app.listen(PORT, () => {
         console.log('\n========================================');
-        console.log(`  🚀 InvestPro is RUNNING!`);
+        console.log(`  🚀 SyncralinkUS is RUNNING!`);
         console.log('========================================');
         console.log(`  🌐 Website  : http://localhost:${PORT}`);
         console.log(`  🔐 Admin    : http://localhost:${PORT}/admin`);

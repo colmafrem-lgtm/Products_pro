@@ -9,7 +9,7 @@ const path = require('path');
 const DB_FILE = path.join(__dirname, '../database/investpro.db');
 
 async function init() {
-    console.log('🔧 Initializing InvestPro database...\n');
+    console.log('🔧 Initializing SyncralinkUS database...\n');
 
     const SQL = await initSqlJs();
 
@@ -203,7 +203,7 @@ async function init() {
     const settCount = rows('SELECT COUNT(*) as c FROM settings')[0].c;
     if (settCount === 0) {
         [
-            ['site_name',        'InvestPro',             'Website name'],
+            ['site_name',        'SyncralinkUS',             'Website name'],
             ['site_logo',        '',                      'Logo URL'],
             ['min_deposit',      '10',                    'Min deposit $'],
             ['min_withdrawal',   '20',                    'Min withdrawal $'],
