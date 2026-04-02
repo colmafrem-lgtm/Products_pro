@@ -204,7 +204,7 @@
   .showcase-track {
     display: flex;
     gap: 12px;
-    animation: showcase-scroll 22s linear infinite;
+    animation: showcase-scroll 50s linear infinite;
     width: max-content;
   }
   .showcase-track:hover { animation-play-state: paused; }
@@ -232,10 +232,6 @@
   .product-thumb .pt-name {
     font-size: 12px; font-weight: 700; color: var(--dark);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .product-thumb .pt-price {
-    font-size: 13px; font-weight: 800; color: var(--primary);
-    margin-top: 3px;
   }
   .product-thumb .pt-tag {
     font-size: 9px; font-weight: 700; color: var(--text-light);
@@ -637,7 +633,6 @@
              onerror="this.style.background='linear-gradient(135deg,#EDE9FE,#FCE7F3)';this.removeAttribute('src');">
         <div class="pt-body">
           <div class="pt-name">${p.name}</div>
-          <div class="pt-price">$${parseFloat(p.price).toFixed(2)}</div>
           <div class="pt-tag">${p.category || 'Product'}</div>
         </div>
       </div>
