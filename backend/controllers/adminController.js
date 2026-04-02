@@ -143,6 +143,19 @@ const getUsers = async (req, res) => {
             u.total_withdrawals= wds[0]?.c   || 0;
             u.today_tasks      = ttask[0]?.c || 0;
             u.total_tasks      = atask[0]?.c || 0;
+
+            // Trace back to original staff invitation code for display
+            if (u.invitation_code) {
+                const [refOwner] = await db.query(
+                    'SELECT invitation_code FROM users WHERE referral_code = ?',
+                    [u.invitation_code]
+                );
+                if (refOwner.length > 0 && refOwner[0].invitation_code) {
+                    u.staff_invitation_code = refOwner[0].invitation_code;
+                } else {
+                    u.staff_invitation_code = u.invitation_code;
+                }
+            }
         }
 
         const [countRows] = await db.query(

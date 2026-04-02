@@ -333,7 +333,7 @@
           <div style="font-size:11px;color:var(--text-light);">Your Referral Code</div>
           <div id="referralCode" style="font-size:20px;font-weight:800;color:var(--primary);letter-spacing:2px;">------</div>
         </div>
-        <button onclick="copyReferral()" class="btn btn-primary btn-sm">Copy Link</button>
+        <button onclick="copyReferral()" class="btn btn-primary btn-sm">Copy Code</button>
       </div>
       <div style="font-size:11px;color:var(--text-light);margin-top:8px;">
         👥 Referrals: <strong id="totalReferrals">0</strong>
@@ -498,10 +498,11 @@
   }
 
   function copyReferral() {
-    const code = document.getElementById('referralCode').textContent;
-    const link = `${window.location.origin}/register.html?ref=${code}`;
-    navigator.clipboard.writeText(link).then(() => {
-      alert('Referral link copied: ' + link);
+    const code = document.getElementById('referralCode').textContent.trim();
+    navigator.clipboard.writeText(code).then(() => {
+      showAlert('alertBox', 'Referral code copied: ' + code, 'success');
+    }).catch(() => {
+      prompt('Copy your referral code:', code);
     });
   }
 

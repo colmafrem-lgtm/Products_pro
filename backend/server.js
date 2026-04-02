@@ -223,13 +223,17 @@ async function startServer() {
         `);
 
         // Seed VIP levels
-        [[1,'Bronze',0,1.00,10,'Starter 1% commission','#CD7F32'],
-         [2,'Silver',100,1.50,20,'Silver 1.5% commission','#C0C0C0'],
-         [3,'Gold',500,2.00,30,'Gold 2% commission','#FFD700'],
-         [4,'Platinum',1000,2.50,50,'Platinum 2.5% commission','#E5E4E2'],
-         [5,'Diamond',5000,3.00,100,'Diamond 3% commission','#B9F2FF'],
+        [[1,'Bronze',0,0.5,30,'Bronze 0.5% commission','#CD7F32'],
+         [2,'Silver',100,1.0,35,'Silver 1% commission','#C0C0C0'],
+         [3,'Gold',500,1.5,40,'Gold 1.5% commission','#FFD700'],
+         [4,'Platinum',1000,2.0,45,'Platinum 2% commission','#E5E4E2'],
+         [5,'Diamond',5000,2.5,45,'Diamond 2.5% commission','#B9F2FF'],
         ].forEach(v => sqliteDb.run(
             `INSERT OR IGNORE INTO vip_levels (level,name,min_deposit,commission_rate,daily_task_limit,description,color) VALUES (?,?,?,?,?,?,?)`, v));
+
+        // Ensure VIP commission rates and task limits are always correct
+        [[1,0.5,30],[2,1.0,35],[3,1.5,40],[4,2.0,45],[5,2.5,45]].forEach(([level, rate, limit]) =>
+            sqliteDb.run(`UPDATE vip_levels SET commission_rate=?, daily_task_limit=? WHERE level=?`, [rate, limit, level]));
 
         // Seed admin account
         const adminHash = bcrypt.hashSync('Admin@123', 10);
@@ -966,6 +970,37 @@ async function startServer() {
         } else {
             console.log(`✅ Products already seeded (${productCount} active)`);
         }
+
+        // ─── Set product prices by VIP range (each range gets ~equal share) ──
+        try {
+            const allIds = sqliteDb.exec(`SELECT id FROM products WHERE status='active' ORDER BY id ASC`);
+            if (allIds.length && allIds[0].values.length) {
+                const ids = allIds[0].values.map(r => r[0]);
+                const total = ids.length;
+                // Split products into 4 VIP groups evenly
+                const groups = [
+                    { min: 20,   max: 149   }, // VIP1
+                    { min: 150,  max: 1999  }, // VIP2
+                    { min: 700,  max: 14999 }, // VIP3
+                    { min: 2000, max: 25000 }, // VIP4
+                ];
+                const groupSize = Math.floor(total / groups.length);
+                const priceStmt = sqliteDb.prepare(`UPDATE products SET price=? WHERE id=?`);
+                ids.forEach((id, i) => {
+                    const gIdx = Math.min(Math.floor(i / groupSize), groups.length - 1);
+                    const g = groups[gIdx];
+                    const posInGroup = i - gIdx * groupSize;
+                    const sizeOfGroup = gIdx < groups.length - 1 ? groupSize : total - gIdx * groupSize;
+                    const price = sizeOfGroup <= 1 ? g.min
+                        : parseFloat((g.min + (g.max - g.min) * posInGroup / (sizeOfGroup - 1)).toFixed(2));
+                    priceStmt.run([price, id]);
+                });
+                priceStmt.free();
+                const d = sqliteDb.export(); fs.writeFileSync(DB_FILE, Buffer.from(d));
+                console.log(`✅ Product prices set by VIP range (${total} products, ~${groupSize} per VIP)`);
+            }
+        } catch(e) { console.log('Price update note:', e.message); }
+
     } catch(e) { console.log('Products seed note:', e.message); }
 
     // ─── API Routes ───────────────────────────────────────────────────────────

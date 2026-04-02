@@ -46,9 +46,12 @@ const register = async (req, res) => {
             return res.status(409).json({ success: false, message: 'Username or email already exists.' });
         }
 
-        // Validate invitation code against staff list
+        // Validate invitation code — check staff codes OR user referral codes
         let invitationStaffName = null;
+        let referredByUserId = null;
+
         if (invitation_code) {
+            // 1. Check staff invitation codes
             const [invRows] = await db.query(
                 "SELECT setting_value FROM settings WHERE setting_key = 'invitation_codes'"
             );
@@ -58,6 +61,18 @@ const register = async (req, res) => {
                     const match = codes.find(c => c.code === invitation_code);
                     if (match) invitationStaffName = match.name;
                 } catch(e) {}
+            }
+
+            // 2. If not staff code, check user referral codes
+            if (!invitationStaffName) {
+                const [refUser] = await db.query(
+                    'SELECT id, username FROM users WHERE referral_code = ?',
+                    [invitation_code]
+                );
+                if (refUser.length > 0) {
+                    referredByUserId = refUser[0].id;
+                    invitationStaffName = refUser[0].username;
+                }
             }
         }
 
@@ -71,17 +86,18 @@ const register = async (req, res) => {
         // Generate unique referral code for new user
         const newReferralCode = generateReferralCode(username);
 
-        // Insert user
+        // Insert user — store referred_by as the referrer's user ID if from user referral
         const [result] = await db.query(
             `INSERT INTO users (username, email, password, full_name, phone, referral_code, referred_by, invitation_code, withdrawal_password)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [username, emailToStore, hashedPassword, full_name || '', phone || '', newReferralCode, null, invitation_code, withdrawal_password]
+            [username, emailToStore, hashedPassword, full_name || '', phone || '', newReferralCode, referredByUserId, invitation_code, withdrawal_password]
         );
 
-        // Give welcome bonus to new user for using valid invitation code
+        const newUserId = result.insertId;
+
+        // Give welcome bonus to new user
         const settings = await getSettings();
         const bonus = parseFloat(settings.referral_bonus || 5);
-        const newUserId = result.insertId;
         if (bonus > 0) {
             await db.query('UPDATE users SET balance = balance + ? WHERE id = ?', [bonus, newUserId]);
             await db.query(

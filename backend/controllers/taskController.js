@@ -23,7 +23,7 @@ const getAvailableTask = async (req, res) => {
         const [todayDone] = await db.query(
             `SELECT COUNT(*) as count FROM tasks
              WHERE user_id = ? AND status = 'completed'
-             AND DATE(completed_at) = CURDATE()
+             AND DATE(completed_at) = date('now')
              AND (? IS NULL OR completed_at >= ?)`,
             [userId, taskResetAt, taskResetAt]
         );
@@ -69,17 +69,32 @@ const getAvailableTask = async (req, res) => {
         // Auto-assign task if user has balance >= 50
         const userBalance = parseFloat(user.balance) || 0;
         if (userBalance >= 50) {
-            // Pick a random active product not used by this user today
-            const [products] = await db.query(
-                `SELECT p.* FROM products p
-                 WHERE p.status = 'active'
-                 AND p.id NOT IN (
-                     SELECT product_id FROM tasks
-                     WHERE user_id = ? AND DATE(created_at) = CURDATE()
-                 )
-                 ORDER BY RAND() LIMIT 1`,
+            // Price range per VIP level
+            const vipPriceRange = {
+                1: { min: 20,   max: 150   },
+                2: { min: 150,  max: 2000  },
+                3: { min: 700,  max: 15000 },
+                4: { min: 2000, max: 25000 },
+            };
+            const vipLevel = parseInt(user.vip_level) || 1;
+            const range = vipPriceRange[vipLevel] || vipPriceRange[1];
+
+            // Get today's already-used product IDs
+            const [usedRows] = await db.query(
+                `SELECT product_id FROM tasks WHERE user_id = ? AND date(created_at) = date('now')`,
                 [userId]
             );
+            const usedIds = usedRows.map(r => r.product_id);
+
+            let productQuery = `SELECT * FROM products WHERE status='active' AND price >= ? AND price <= ?`;
+            const productParams = [range.min, range.max];
+            if (usedIds.length > 0) {
+                productQuery += ` AND id NOT IN (${usedIds.map(() => '?').join(',')})`;
+                productParams.push(...usedIds);
+            }
+            productQuery += ` ORDER BY RANDOM() LIMIT 1`;
+
+            const [products] = await db.query(productQuery, productParams);
 
             if (products.length > 0) {
                 const product = products[0];
@@ -88,7 +103,7 @@ const getAvailableTask = async (req, res) => {
 
                 const [result] = await db.query(
                     `INSERT INTO tasks (user_id, product_id, task_number, product_price, commission_amount, status, created_at)
-                     VALUES (?, ?, ?, ?, ?, 'pending', NOW())`,
+                     VALUES (?, ?, ?, ?, ?, 'pending', datetime('now'))`,
                     [userId, product.id, doneToday + 1, product.price, commissionAmount]
                 );
 
@@ -166,7 +181,7 @@ const submitTask = async (req, res) => {
 
         // Update task status
         await db.query(
-            `UPDATE tasks SET status = 'completed', submitted_at = NOW(), completed_at = NOW() WHERE id = ?`,
+            `UPDATE tasks SET status = 'completed', submitted_at = datetime('now'), completed_at = datetime('now') WHERE id = ?`,
             [taskId]
         );
 
