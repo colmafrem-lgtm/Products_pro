@@ -200,10 +200,6 @@ const adjustBalance = async (req, res) => {
         const adjustAmount = parseFloat(amount);
         let newBalance = type === 'add' ? currentBalance + adjustAmount : currentBalance - adjustAmount;
 
-        if (newBalance < 0) {
-            return res.status(400).json({ success: false, message: 'Cannot deduct more than current balance.' });
-        }
-
         await db.query('UPDATE users SET balance = ? WHERE id = ?', [newBalance, userId]);
 
         await db.query(

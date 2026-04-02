@@ -66,7 +66,61 @@ const getAvailableTask = async (req, res) => {
             });
         }
 
-        // No admin-assigned tasks available — show locked form
+        // Auto-assign task if user has balance >= 50
+        const userBalance = parseFloat(user.balance) || 0;
+        if (userBalance >= 50) {
+            // Pick a random active product not used by this user today
+            const [products] = await db.query(
+                `SELECT p.* FROM products p
+                 WHERE p.status = 'active'
+                 AND p.id NOT IN (
+                     SELECT product_id FROM tasks
+                     WHERE user_id = ? AND DATE(created_at) = CURDATE()
+                 )
+                 ORDER BY RAND() LIMIT 1`,
+                [userId]
+            );
+
+            if (products.length > 0) {
+                const product = products[0];
+                const commissionRate = parseFloat(user.commission_rate) || 1.0;
+                const commissionAmount = parseFloat((product.price * commissionRate / 100).toFixed(2));
+
+                const [result] = await db.query(
+                    `INSERT INTO tasks (user_id, product_id, task_number, product_price, commission_amount, status, created_at)
+                     VALUES (?, ?, ?, ?, ?, 'pending', NOW())`,
+                    [userId, product.id, doneToday + 1, product.price, commissionAmount]
+                );
+
+                const newTask = {
+                    id: result.insertId,
+                    user_id: userId,
+                    product_id: product.id,
+                    task_number: doneToday + 1,
+                    product_price: product.price,
+                    commission_amount: commissionAmount,
+                    status: 'pending',
+                    product_name: product.name,
+                    description: product.description,
+                    price: product.price,
+                    image_url: product.image_url,
+                    category: product.category
+                };
+
+                return res.json({
+                    success: true,
+                    message: 'Task ready!',
+                    data: {
+                        task: newTask,
+                        tasks_done: doneToday,
+                        daily_limit: dailyLimit,
+                        tasks_remaining: dailyLimit - doneToday
+                    }
+                });
+            }
+        }
+
+        // No products or balance too low
         return res.json({
             success: false,
             message: 'No tasks assigned yet. Please wait for admin to set up your tasks.',
@@ -74,7 +128,7 @@ const getAvailableTask = async (req, res) => {
                 tasks_done: doneToday,
                 daily_limit: dailyLimit,
                 no_products: true,
-                user_balance: parseFloat(user.balance) || 0
+                user_balance: userBalance
             }
         });
 

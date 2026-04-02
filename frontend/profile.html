@@ -294,7 +294,7 @@
       </div>
       <div class="ph-stat">
         <div class="ph-stat-val" id="phTasks">-</div>
-        <div class="ph-stat-lbl">Tasks Done</div>
+        <div class="ph-stat-lbl">Invitation rewards<br>for the day</div>
       </div>
     </div>
   </div>
@@ -363,7 +363,7 @@
         <span class="menu-text">Change Password</span>
         <span class="menu-arrow">›</span>
       </a>
-      <a href="tasks.html" class="menu-item">
+      <a href="task-history.html" class="menu-item">
         <span class="menu-icon">📋</span>
         <span class="menu-text">Task History</span>
         <span class="menu-arrow">›</span>
@@ -460,13 +460,9 @@
     document.getElementById('vipLabel').textContent =
       `${p.vip_name || 'VIP ' + p.vip_level} · ${p.commission_rate}% Commission`;
 
-    // Hero stat strip
-    const tasks = await Tasks.getHistory(1);
-    const totalDone = tasks?.data?.data?.pagination?.total || 0;
-
     document.getElementById('phBalance').textContent  = formatMoney(p.balance);
     document.getElementById('phEarned').textContent   = formatMoney(p.total_earned);
-    document.getElementById('phTasks').textContent    = totalDone;
+    document.getElementById('phTasks').textContent    = formatMoney(0);
   }
 
   function openEditProfile() {

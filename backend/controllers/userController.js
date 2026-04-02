@@ -99,6 +99,7 @@ const getDashboard = async (req, res) => {
                 total_tasks_done: totalTasks[0].count,
                 pending_tasks: pendingTasks[0].count,
                 tasks_remaining: user.daily_task_limit - todayTasks[0].count,
+                today_invitation_reward: 0,
                 recent_transactions: recentTxns
             }
         });

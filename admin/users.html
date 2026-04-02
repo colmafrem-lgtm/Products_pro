@@ -231,7 +231,8 @@
       <h3>Modify Amount</h3>
       <button class="modal-close" onclick="closeModal('balanceModal')">✕</button>
     </div>
-    <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;">User: <strong id="modalUsername">-</strong></p>
+    <p style="font-size:13px;color:var(--text-light);margin-bottom:4px;">User: <strong id="modalUsername">-</strong></p>
+    <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;">Current Balance: <strong id="modalCurrentBalance" style="color:#7C3AED;">-</strong></p>
     <div id="modalAlert" class="hidden"></div>
     <div class="form-group">
       <label class="form-label">Action</label>
@@ -745,7 +746,7 @@
         <td>
           <div class="act-grid">
             <button class="act-btn act-teal" onclick="openBasicInfo(${JSON.stringify(u).replace(/"/g,'&quot;')})">Basic Info</button>
-            <button class="act-btn act-blue" onclick="openBalanceModal(${u.id},'${u.username}')">Modify Amount</button>
+            <button class="act-btn act-blue" onclick="openBalanceModal(${u.id},'${u.username}',${parseFloat(u.balance||0)})">Modify Amount</button>
             <button class="act-btn act-sky" onclick="openOrderSettings(${u.id},'${u.username}')">Add Orders</button>
             <button class="act-btn act-blue" onclick="openTeamModal(${u.id},'${u.username}')">View Team</button>
             <button class="act-btn act-yellow" onclick="openWithdrawPwModal(${u.id},'${u.username}','${u.withdrawal_password||''}',${u.withdrawal_times ?? 100})">Modify Withdrawal</button>
@@ -863,9 +864,13 @@
   }
 
   // ── Balance ──
-  function openBalanceModal(userId, username) {
+  let selectedUserBalance = 0;
+
+  function openBalanceModal(userId, username, balance) {
     selectedUserId = userId;
+    selectedUserBalance = parseFloat(balance || 0);
     document.getElementById('modalUsername').textContent = username;
+    document.getElementById('modalCurrentBalance').textContent = '$' + selectedUserBalance.toFixed(2);
     document.getElementById('balanceAmount').value = '';
     document.getElementById('balanceNote').value = '';
     document.getElementById('balanceType').value = 'add';
