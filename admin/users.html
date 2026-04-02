@@ -43,7 +43,7 @@
 <aside class="sidebar">
   <div class="sidebar-logo">
     <div class="sidebar-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-    <div><div>InvestPro</div><span>Admin Panel</span></div>
+    <div><div>SyncralinkUS</div><span>Admin Panel</span></div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-group-label">Main</div>
@@ -673,7 +673,6 @@
     const vip_level = document.getElementById('biVipLevel').value;
     const referred_by  = document.getElementById('biReferredBy').value.trim();
     const credit_score = document.getElementById('biCreditScoreNum').value;
-    if (!email) { showMsg('biModalAlert', 'Email is required.', 'danger'); return; }
     const token = sessionStorage.getItem('admin_token');
     const body = { full_name, phone, email, vip_level, credit_score };
     if (referred_by) body.referred_by = referred_by;
