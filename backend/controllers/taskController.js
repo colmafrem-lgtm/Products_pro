@@ -261,6 +261,7 @@ const submitTask = async (req, res) => {
         });
 
         // Referral bonus: give 20% of commission earned to referrer (account 1)
+        console.log(`[REFERRAL DEBUG] user=${userId} referred_by=${userCheck[0].referred_by} is_test=${isTestUser}`);
         if (!isTestUser) {
             const referrerId = userCheck[0].referred_by;
             if (referrerId) {
