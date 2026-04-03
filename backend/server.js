@@ -282,13 +282,7 @@ async function startServer() {
         ].forEach(s => sqliteDb.run(
             `INSERT OR IGNORE INTO settings (setting_key,setting_value,description) VALUES (?,?,?)`, s));
 
-        // Force-set contact links — always overwrite to ensure correct values on every deploy
-        [['support_telegram','https://t.me/CodefinityCS','Telegram handle'],
-         ['telegram_link','https://t.me/CodefinityCS','Telegram link for deposit page'],
-         ['whatsapp_link','https://wa.me/12352178513','WhatsApp link for deposit page'],
-        ].forEach(s => sqliteDb.run(
-            `INSERT INTO settings (setting_key,setting_value,description) VALUES (?,?,?)
-             ON CONFLICT(setting_key) DO UPDATE SET setting_value = excluded.setting_value`, s));
+        // Contact links seeded above with INSERT OR IGNORE — admin changes are preserved
 
         // Seed spin prizes (columns: name, prize_type, amount, weight, color)
         [['Better Luck Next Time','none',0,40,'#9CA3AF'],
