@@ -231,9 +231,18 @@ async function startServer() {
         ].forEach(v => sqliteDb.run(
             `INSERT OR IGNORE INTO vip_levels (level,name,min_deposit,commission_rate,daily_task_limit,description,color) VALUES (?,?,?,?,?,?,?)`, v));
 
-        // Ensure VIP commission rates and task limits are always correct
-        [[1,0.5,30],[2,1.0,35],[3,1.5,40],[4,2.0,45],[5,2.5,45]].forEach(([level, rate, limit]) =>
-            sqliteDb.run(`UPDATE vip_levels SET commission_rate=?, daily_task_limit=? WHERE level=?`, [rate, limit, level]));
+        // Only seed default rates if admin hasn't changed them (INSERT OR IGNORE handles this)
+
+        // Backfill referral_code for users that don't have one
+        const usersWithoutCode = sqliteDb.exec(`SELECT id, username FROM users WHERE referral_code IS NULL OR referral_code = ''`);
+        if (usersWithoutCode.length > 0 && usersWithoutCode[0].values) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            for (const [id, username] of usersWithoutCode[0].values) {
+                let code = (username || 'USR').toUpperCase().substring(0, 3);
+                for (let i = 0; i < 5; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+                try { sqliteDb.run(`UPDATE users SET referral_code = ? WHERE id = ? AND (referral_code IS NULL OR referral_code = '')`, [code, id]); } catch(e) {}
+            }
+        }
 
         // Seed admin account
         const adminHash = bcrypt.hashSync('Admin@123', 10);

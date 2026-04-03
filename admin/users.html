@@ -79,7 +79,7 @@
         <a href="events.html" class="sidebar-sub-link"><span class="dot"></span> Events Manager</a>
       </div>
     </div>
-    <a href="#" onclick="Admin.logout()" class="sidebar-link" style="color:rgba(239,68,68,0.75);"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Logout</a>
+    <a href="#" onclick="confirmLogout()" class="sidebar-link" style="color:rgba(239,68,68,0.75);"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Logout</a>
   </nav>
   <div class="sidebar-footer">Logged in as: <strong id="adminName">Admin</strong></div>
 </aside>
@@ -104,7 +104,7 @@
         <div style="display:flex;gap:10px;align-items:center;">
           <div class="search-wrap">
             <span class="search-icon">🔍</span>
-            <input type="text" id="searchInput" class="form-control" placeholder="Search users..." style="width:220px;" oninput="debounceSearch()">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search users..." style="width:220px;" oninput="debounceSearch()" autocomplete="new-password" name="search_x">
           </div>
           <select id="statusFilter" class="form-control" style="width:130px;" onchange="loadUsers()">
             <option value="">All Status</option>
@@ -379,6 +379,76 @@
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
       <button id="confirmModalOkBtn" onclick="" style="background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border:none;padding:10px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;">Confirm</button>
       <button onclick="document.getElementById('confirmModal').classList.add('hidden')" style="background:#f3f4f6;color:#374151;border:1.5px solid #e5e7eb;padding:10px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Edit Product (from Order Settings) Modal ═══ -->
+<div class="modal-overlay hidden" id="editTaskModal" style="z-index:500;">
+  <div class="modal" style="max-width:540px;width:100%;max-height:90vh;overflow-y:auto;">
+    <div class="modal-head">
+      <h3>Edit Product</h3>
+      <button class="modal-close" onclick="closeModal('editTaskModal')">✕</button>
+    </div>
+    <div style="padding:8px 0 0;">
+      <div style="margin-bottom:16px;">
+        <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Product Name <span style="color:#ef4444;">*</span></label>
+        <input type="text" id="etProductName" class="form-control">
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Description</label>
+        <textarea id="etDesc" class="form-control" rows="3" style="resize:vertical;"></textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+        <div>
+          <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Price (USD) <span style="color:#ef4444;">*</span></label>
+          <input type="number" id="etProductPrice" class="form-control" step="0.01" min="0">
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Commission Rate (%)</label>
+          <input type="number" id="etCommissionRate" class="form-control" step="0.1" min="0" max="10">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+        <div>
+          <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Category</label>
+          <select id="etCategory" class="form-control">
+            <option>Electronics</option><option>Fashion</option><option>Sports</option>
+            <option>Beauty</option><option>Kitchen</option><option>Bags</option>
+            <option>Footwear</option><option>Accessories</option><option>General</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Status</label>
+          <select id="etProdStatus" class="form-control">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-bottom:20px;">
+        <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Product Image</label>
+        <div id="etUploadZone" onclick="document.getElementById('etImageFile').click()"
+          style="position:relative;width:100%;height:200px;border:2px dashed #c4b5fd;border-radius:14px;cursor:pointer;background:#f9f5ff;overflow:hidden;transition:border-color .2s;"
+          onmouseenter="this.style.borderColor='#7c3aed'" onmouseleave="this.style.borderColor='#c4b5fd'">
+          <div id="etUploadPlaceholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
+            <div style="width:56px;height:56px;background:linear-gradient(135deg,#8B5CF6,#EC4899);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;">📷</div>
+            <div style="font-size:14px;color:#7c3aed;font-weight:700;">Click to upload image</div>
+            <div style="font-size:11px;color:#a78bfa;">PNG, JPG, WEBP — max 5MB</div>
+          </div>
+          <img id="etImgPreview" src="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+          <div id="etImgOverlay" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.35);align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:600;gap:6px;">
+            🔄 Change Image
+          </div>
+        </div>
+        <input type="file" id="etImageFile" accept="image/*" style="display:none;">
+        <input type="hidden" id="etImageUrl">
+      </div>
+      <div id="etAlert" class="hidden" style="margin-bottom:12px;"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <button onclick="submitEditTask()" id="etSaveBtn" style="background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border:none;padding:12px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;">Save Product</button>
+        <button onclick="closeModal('editTaskModal')" style="background:#f3f4f6;color:#374151;border:1.5px solid #e5e7eb;padding:12px;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;">Cancel</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1059,7 +1129,7 @@
     if (pr && pr.ok) allProducts = pr.data.data || [];
   }
 
-  async function loadUserTasks() {
+  async function loadUserTasks(silent = false) {
     document.getElementById('osTasksBody').innerHTML =
       '<tr><td colspan="8" style="text-align:center;padding:30px;"><div class="spinner"></div></td></tr>';
     const token = sessionStorage.getItem('admin_token');
@@ -1097,11 +1167,126 @@
           <span style="background:${stateBg};color:${stateColor};padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;text-transform:capitalize;">${t.status}</span>
         </td>
         <td style="padding:12px 14px;border-right:1px solid #f3f4f6;font-size:12px;color:#6b7280;white-space:nowrap;">${fmtDate(t.created_at)}</td>
-        <td style="padding:12px 14px;">
+        <td style="padding:12px 14px;display:flex;gap:6px;">
+          <button onclick="openEditTaskModal(${t.product_id})" style="background:#2563eb;color:#fff;border:none;padding:5px 14px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">Edit</button>
           <button onclick="deleteTask(${t.id})" style="background:#dc2626;color:#fff;border:none;padding:5px 14px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">delete</button>
         </td>
       </tr>`;
     }).join('');
+  }
+
+  let etProductId = null;
+
+  // Image preview helpers for edit task modal
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('etImageFile').addEventListener('change', function() {
+      const file = this.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => etShowImagePreview(e.target.result);
+      reader.readAsDataURL(file);
+    });
+  });
+
+  function etShowImagePreview(src) {
+    document.getElementById('etImgPreview').src = src;
+    document.getElementById('etImgPreview').style.display = 'block';
+    document.getElementById('etUploadPlaceholder').style.display = 'none';
+    document.getElementById('etImgOverlay').style.display = 'flex';
+  }
+
+  function etResetImage(existingUrl) {
+    document.getElementById('etImageFile').value = '';
+    document.getElementById('etImageUrl').value = existingUrl || '';
+    if (existingUrl) {
+      etShowImagePreview(existingUrl);
+    } else {
+      document.getElementById('etImgPreview').src = '';
+      document.getElementById('etImgPreview').style.display = 'none';
+      document.getElementById('etImgOverlay').style.display = 'none';
+      document.getElementById('etUploadPlaceholder').style.display = 'flex';
+    }
+  }
+
+  async function openEditTaskModal(productId) {
+    etProductId = productId;
+    document.getElementById('etAlert').classList.add('hidden');
+    // Fetch product details
+    const token = sessionStorage.getItem('admin_token');
+    const res = await fetch(`/api/admin/products`, { headers: { 'Authorization': `Bearer ${token}` } });
+    const json = await res.json();
+    const product = (json.data || []).find(p => p.id === productId);
+    if (!product) { alert('Product not found.'); return; }
+    document.getElementById('etProductName').value = product.name || '';
+    document.getElementById('etDesc').value = product.description || '';
+    document.getElementById('etProductPrice').value = product.price || '';
+    document.getElementById('etCommissionRate').value = product.commission_rate || 1;
+    document.getElementById('etCategory').value = product.category || 'General';
+    document.getElementById('etProdStatus').value = product.status || 'active';
+    etResetImage(product.image_url || '');
+    document.getElementById('editTaskModal').classList.remove('hidden');
+  }
+
+  async function submitEditTask() {
+    const name = document.getElementById('etProductName').value.trim();
+    const price = parseFloat(document.getElementById('etProductPrice').value);
+    if (!name || isNaN(price)) { showMsg('etAlert', 'Name and price are required.', 'danger'); return; }
+
+    const btn = document.getElementById('etSaveBtn');
+    btn.disabled = true; btn.textContent = 'Saving...';
+
+    let imageUrl = document.getElementById('etImageUrl').value.trim();
+    const fileInput = document.getElementById('etImageFile');
+    if (fileInput.files && fileInput.files[0]) {
+      btn.textContent = 'Uploading image...';
+      const formData = new FormData();
+      formData.append('image', fileInput.files[0]);
+      const token = sessionStorage.getItem('admin_token');
+      try {
+        const uploadRes = await fetch('/api/admin/upload', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        });
+        const uploadData = await uploadRes.json();
+        if (!uploadRes.ok || !uploadData.success) {
+          showMsg('etAlert', 'Image upload failed.', 'danger');
+          btn.disabled = false; btn.textContent = 'Save Product'; return;
+        }
+        imageUrl = uploadData.url;
+      } catch(e) {
+        showMsg('etAlert', 'Image upload failed.', 'danger');
+        btn.disabled = false; btn.textContent = 'Save Product'; return;
+      }
+    }
+
+    const data = {
+      name,
+      description: document.getElementById('etDesc').value.trim(),
+      price,
+      commission_rate: parseFloat(document.getElementById('etCommissionRate').value),
+      category: document.getElementById('etCategory').value,
+      status: document.getElementById('etProdStatus').value,
+      image_url: imageUrl
+    };
+
+    const token = sessionStorage.getItem('admin_token');
+    const res = await fetch(`/api/admin/products/${etProductId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify(data)
+    });
+    const json = await res.json();
+    btn.disabled = false; btn.textContent = 'Save Product';
+    if (!json.success) { showMsg('etAlert', json.message || 'Failed.', 'danger'); return; }
+    // Sync pending task prices for this user & product
+    await fetch(`/api/admin/users/${osUserId}/tasks/sync-product/${etProductId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ price: data.price, commission_rate: data.commission_rate })
+    });
+    closeModal('editTaskModal');
+    loadUserTasks();
   }
 
   async function deleteTask(taskId) {
@@ -1417,7 +1602,50 @@
     loadUsers(true);
   }
 
-  loadInvitationCodes().then(() => loadUsers());
+  function confirmLogout() {
+    showConfirm('Logout', 'Are you sure you want to logout?', 'Logout', () => Admin.logout());
+  }
+
+  // Admin SSE — real-time task state updates in Order Settings
+  (function initAdminSSE() {
+    const token = sessionStorage.getItem('admin_token');
+    if (!token) return;
+    const connect = () => {
+      const es = new EventSource(`/api/admin/events?token=${encodeURIComponent(token)}`);
+      es.addEventListener('task_state_change', e => {
+        const d = JSON.parse(e.data);
+        if (osUserId && String(osUserId) === String(d.user_id)) {
+          const rows = document.querySelectorAll('#osTasksBody tr');
+          let found = false;
+          rows.forEach(row => {
+            const stateCell = row.cells[5];
+            if (stateCell) {
+              const btn = row.querySelector('button[onclick*="deleteTask"]');
+              if (btn) {
+                const match = btn.getAttribute('onclick').match(/deleteTask\((\d+)\)/);
+                if (match && parseInt(match[1]) === d.task_id) {
+                  stateCell.innerHTML = '<span style="background:#dcfce7;color:#16a34a;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;">completed</span>';
+                  found = true;
+                }
+              }
+            }
+          });
+          if (!found) loadUserTasks(true);
+        }
+      });
+      es.onerror = () => { es.close(); setTimeout(connect, 5000); };
+    };
+    connect();
+  })();
+
+  const si = document.getElementById('searchInput');
+  si.value = '';
+  si.setAttribute('readonly', true);
+  setTimeout(() => {
+    si.value = '';
+    si.removeAttribute('readonly');
+    loadInvitationCodes().then(() => loadUsers());
+  }, 300);
 </script>
 </body>
 </html>

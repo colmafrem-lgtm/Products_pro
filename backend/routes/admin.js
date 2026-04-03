@@ -3,13 +3,14 @@ const router = express.Router();
 const path = require('path');
 const multer = require('multer');
 const { authenticateAdmin, requireSuperAdmin } = require('../middleware/auth');
+const { addAdminClient, removeAdminClient } = require('../utils/sse');
 const {
     adminLogin, getDashboard, getUsers, updateUserStatus, adjustBalance, setWithdrawalPassword,
     getDeposits, approveDeposit, getWithdrawals, processWithdrawal,
     getProducts, createProduct, updateProduct, deleteProduct,
     getSettings, updateSettings,
     getVipLevels, updateVipLevel, addVipLevel, deleteVipLevel,
-    updateUserProfile, searchUsers, resetTaskVolume, toggleTransactionStatus, toggleTestStatus, getUserTeam, getUserTasks, addUserTask, deleteUserTask,
+    updateUserProfile, searchUsers, resetTaskVolume, toggleTransactionStatus, toggleTestStatus, getUserTeam, getUserTasks, addUserTask, updateUserTask, syncTasksByProduct, deleteUserTask,
     createUser, deleteUsers,
     getPrizeRecords, reviewPrizeRecord, deletePrizeRecord,
     getSpinPrizes, createSpinPrize, updateSpinPrize, deleteSpinPrize,
@@ -35,6 +36,18 @@ const upload = multer({
 // Public
 router.post('/login', adminLogin);
 
+// Admin SSE — real-time events for admin panel
+router.get('/events', authenticateAdmin, (req, res) => {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no');
+    res.flushHeaders();
+    res.write('event: connected\ndata: {}\n\n');
+    addAdminClient(res);
+    req.on('close', () => removeAdminClient(res));
+});
+
 // Protected - all routes below require admin auth
 router.use(authenticateAdmin);
 
@@ -53,6 +66,8 @@ router.put('/users/:id/transaction-status', requireSuperAdmin, toggleTransaction
 router.put('/users/:id/test-status', requireSuperAdmin, toggleTestStatus);
 router.get('/users/:id/team', getUserTeam);
 router.get('/users/:id/tasks', getUserTasks);
+router.put('/users/:id/tasks/sync-product/:productId', requireSuperAdmin, syncTasksByProduct);
+router.put('/users/:id/tasks/:taskId', requireSuperAdmin, updateUserTask);
 router.delete('/users/:id/tasks/:taskId', requireSuperAdmin, deleteUserTask);
 router.post('/tasks', requireSuperAdmin, addUserTask);
 router.post('/users', requireSuperAdmin, createUser);

@@ -41,18 +41,46 @@
   .summary-card .sc-value { font-size: 22px; font-weight: 900; color: var(--primary); }
   .summary-card .sc-label { font-size: 11px; color: var(--text-light); margin-top: 3px; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
 
-  .history-list { padding: 12px 16px 100px; }
+  /* Tabs */
+  .tab-bar {
+    display: flex;
+    background: var(--white);
+    border-bottom: 2px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .tab-item {
+    flex: 1;
+    padding: 12px 0;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-light);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: all .2s;
+  }
+  .tab-item.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+  }
+
+  .history-list { padding: 12px 16px 30px; }
 
   .history-item {
     background: var(--white);
     border-radius: var(--radius);
     box-shadow: var(--card-shadow);
     margin-bottom: 12px;
+    padding: 12px;
+    border: 1px solid var(--border);
+  }
+  .hi-top {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px;
-    border: 1px solid var(--border);
   }
   .hi-img {
     width: 56px; height: 56px;
@@ -67,17 +95,32 @@
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .hi-date { font-size: 11px; color: var(--text-light); margin-top: 2px; }
-  .hi-stars { font-size: 12px; margin-top: 4px; }
+  .hi-meta { font-size: 11px; color: var(--text-light); margin-top: 2px; }
   .hi-right { text-align: right; flex-shrink: 0; }
   .hi-commission { font-size: 15px; font-weight: 800; color: var(--success); }
+  .hi-commission.pending-comm { color: var(--primary); }
   .hi-badge {
     display: inline-block;
-    background: rgba(16,185,129,0.1);
-    color: var(--success);
     font-size: 10px; font-weight: 700;
     padding: 2px 8px; border-radius: 50px;
     margin-top: 4px; text-transform: uppercase; letter-spacing: .4px;
   }
+  .badge-completed { background: rgba(16,185,129,0.1); color: var(--success); }
+  .badge-pending { background: rgba(245,158,11,0.12); color: #d97706; }
+
+  .submit-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .submit-btn:disabled { opacity: .6; cursor: not-allowed; }
 
   .empty-state {
     text-align: center;
@@ -89,17 +132,10 @@
   .empty-state p { font-size: 13px; line-height: 1.6; }
 
   .load-more-btn {
-    display: block;
-    width: 100%;
-    padding: 14px;
-    background: var(--gradient-soft);
-    border: 1.5px solid var(--primary);
-    border-radius: var(--radius);
-    color: var(--primary);
-    font-size: 14px; font-weight: 700;
-    cursor: pointer;
-    text-align: center;
-    margin-top: 8px;
+    display: block; width: 100%; padding: 14px;
+    background: var(--gradient-soft); border: 1.5px solid var(--primary);
+    border-radius: var(--radius); color: var(--primary);
+    font-size: 14px; font-weight: 700; cursor: pointer; text-align: center; margin-top: 8px;
   }
   .skeleton {
     background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
@@ -112,12 +148,8 @@
 </head>
 <body>
 <div class="desktop-layout">
-<!-- Desktop Sidebar -->
 <aside class="desktop-sidebar" id="dsSidebar">
-  <div class="ds-logo">
-    <div class="ds-logo-icon">⚡</div>
-    <span>SyncralinkUS</span>
-  </div>
+  <div class="ds-logo"><div class="ds-logo-icon">⚡</div><span>SyncralinkUS</span></div>
   <nav class="ds-nav">
     <a href="dashboard.html" class="ds-nav-item"><span>🏠</span> Home</a>
     <a href="tasks.html" class="ds-nav-item"><span>✅</span> Tasks</a>
@@ -127,13 +159,11 @@
 </aside>
 
 <div class="mobile-app">
-  <!-- Header -->
   <div class="page-header">
     <a href="profile.html" class="back-btn">←</a>
     <h1>Task History</h1>
   </div>
 
-  <!-- Summary -->
   <div class="history-summary">
     <div class="summary-card">
       <div class="sc-value" id="totalTasks">—</div>
@@ -145,33 +175,52 @@
     </div>
   </div>
 
-  <!-- List -->
-  <div class="history-list" id="historyList">
-    <div class="history-item"><div class="skeleton hi-img"></div><div class="hi-body"><div class="skeleton" style="height:14px;width:70%;border-radius:6px;margin-bottom:6px;"></div><div class="skeleton" style="height:11px;width:45%;border-radius:6px;"></div></div><div class="hi-right"><div class="skeleton" style="height:15px;width:50px;border-radius:6px;margin-bottom:6px;"></div></div></div>
-    <div class="history-item"><div class="skeleton hi-img"></div><div class="hi-body"><div class="skeleton" style="height:14px;width:70%;border-radius:6px;margin-bottom:6px;"></div><div class="skeleton" style="height:11px;width:45%;border-radius:6px;"></div></div><div class="hi-right"><div class="skeleton" style="height:15px;width:50px;border-radius:6px;margin-bottom:6px;"></div></div></div>
-    <div class="history-item"><div class="skeleton hi-img"></div><div class="hi-body"><div class="skeleton" style="height:14px;width:70%;border-radius:6px;margin-bottom:6px;"></div><div class="skeleton" style="height:11px;width:45%;border-radius:6px;"></div></div><div class="hi-right"><div class="skeleton" style="height:15px;width:50px;border-radius:6px;margin-bottom:6px;"></div></div></div>
+  <!-- Tabs -->
+  <div class="tab-bar">
+    <div class="tab-item active" onclick="switchTab('all')">All</div>
+    <div class="tab-item" onclick="switchTab('pending')">Pending</div>
+    <div class="tab-item" onclick="switchTab('completed')">Completed</div>
   </div>
 
-  <!-- Bottom Nav -->
-  <nav class="bottom-nav">
-    <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span>Home</span></a>
-    <a href="tasks.html" class="nav-item"><span class="nav-icon">✅</span><span>Tasks</span></a>
-    <a href="#" class="nav-item nav-add"><span>＋</span></a>
-    <a href="wallet.html" class="nav-item"><span class="nav-icon">👛</span><span>Wallet</span></a>
-    <a href="profile.html" class="nav-item active"><span class="nav-icon">👤</span><span>Profile</span></a>
-  </nav>
+  <div class="history-list" id="historyList">
+    <div class="history-item"><div class="hi-top"><div class="skeleton hi-img"></div><div class="hi-body"><div class="skeleton" style="height:14px;width:70%;border-radius:6px;margin-bottom:6px;"></div><div class="skeleton" style="height:11px;width:45%;border-radius:6px;"></div></div></div></div>
+    <div class="history-item"><div class="hi-top"><div class="skeleton hi-img"></div><div class="hi-body"><div class="skeleton" style="height:14px;width:70%;border-radius:6px;margin-bottom:6px;"></div><div class="skeleton" style="height:11px;width:45%;border-radius:6px;"></div></div></div></div>
+  </div>
 </div>
+</div>
+
+<!-- Insufficient Balance Modal -->
+<div id="insufficientModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;border-radius:20px;padding:32px 24px;max-width:360px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+    <div style="width:64px;height:64px;background:#FEE2E2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px;">⚠️</div>
+    <h3 style="color:#DC2626;font-size:18px;font-weight:800;margin-bottom:6px;">Insufficient Balance</h3>
+    <p style="color:#6b7280;font-size:13px;margin-bottom:20px;">Your balance is not enough to complete this task. Please deposit to continue.</p>
+    <div style="background:#FEF2F2;border-radius:12px;padding:16px;margin-bottom:20px;text-align:left;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+        <span style="font-size:13px;color:#6b7280;">Product Price</span>
+        <strong id="ibProductPrice" style="color:#DC2626;"></strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+        <span style="font-size:13px;color:#6b7280;">Your Balance</span>
+        <strong id="ibCurrentBalance" style="color:#111;"></strong>
+      </div>
+      <div style="border-top:1px solid #FECACA;padding-top:10px;display:flex;justify-content:space-between;">
+        <span style="font-size:13px;font-weight:700;color:#DC2626;">Amount Needed</span>
+        <strong id="ibAmountNeeded" style="color:#DC2626;font-size:15px;"></strong>
+      </div>
+    </div>
+    <a href="wallet.html" style="display:block;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;padding:13px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;margin-bottom:10px;">💳 Deposit Now</a>
+    <button onclick="document.getElementById('insufficientModal').style.display='none'" style="width:100%;background:#f3f4f6;color:#374151;border:none;padding:13px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;">Close</button>
+  </div>
 </div>
 
 <script src="js/api.js"></script>
 <script>
   let currentPage = 1;
   let totalPages = 1;
-  let totalEarned = 0;
+  let currentTab = 'all';
 
-  function formatMoney(v) {
-    return '$' + parseFloat(v || 0).toFixed(2);
-  }
+  function formatMoney(v) { return '$' + parseFloat(v || 0).toFixed(2); }
 
   function formatDate(dateStr) {
     const d = new Date(dateStr);
@@ -179,92 +228,135 @@
            ' ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
   }
 
-  function renderStars(rating) {
-    if (!rating) return '';
-    const stars = '⭐'.repeat(rating) + '☆'.repeat(5 - rating);
-    return `<div class="hi-stars">${stars}</div>`;
+  function switchTab(tab) {
+    currentTab = tab;
+    currentPage = 1;
+    document.querySelectorAll('.tab-item').forEach((el, i) => {
+      el.classList.toggle('active', ['all','pending','completed'][i] === tab);
+    });
+    loadHistory(1);
   }
 
   function renderItems(tasks) {
     if (!tasks.length) return '';
-    return tasks.map(t => `
-      <div class="history-item">
-        <img class="hi-img"
-             src="${t.image_url || ''}"
-             alt="${t.product_name || 'Product'}"
-             onerror="this.style.background='linear-gradient(135deg,#EDE9FE,#FCE7F3)';this.removeAttribute('src');">
-        <div class="hi-body">
-          <div class="hi-name">${t.product_name || 'Product'}</div>
-          <div class="hi-date">📅 ${formatDate(t.created_at)}</div>
-          ${renderStars(t.rating)}
-        </div>
-        <div class="hi-right">
-          <div class="hi-commission">+${formatMoney(t.commission_amount)}</div>
-          <div class="hi-badge">Completed</div>
-        </div>
-      </div>
-    `).join('');
+    return tasks.map(t => {
+      const isPending = t.status === 'pending';
+      const badge = isPending
+        ? `<div class="hi-badge badge-pending">Pending</div>`
+        : `<div class="hi-badge badge-completed">Completed</div>`;
+      const commission = isPending
+        ? `<div class="hi-commission pending-comm">+${formatMoney(t.commission_amount)}</div>`
+        : `<div class="hi-commission">+${formatMoney(t.commission_amount)}</div>`;
+      const submitBtn = isPending
+        ? `<button class="submit-btn" onclick="submitFromHistory(${t.id}, this)">Submit Now</button>`
+        : '';
+      return `
+        <div class="history-item" id="task-row-${t.id}">
+          <div class="hi-top">
+            <img class="hi-img" src="${t.image_url || ''}" alt="${t.product_name || ''}"
+                 onerror="this.style.background='linear-gradient(135deg,#EDE9FE,#FCE7F3)';this.removeAttribute('src');">
+            <div class="hi-body">
+              <div class="hi-name">${t.product_name || 'Product'}</div>
+              <div class="hi-date">📅 ${formatDate(t.created_at)}</div>
+              <div class="hi-meta">Total amount: <strong>${formatMoney(t.product_price)}</strong></div>
+            </div>
+            <div class="hi-right">
+              ${commission}
+              ${badge}
+            </div>
+          </div>
+          ${submitBtn}
+        </div>`;
+    }).join('');
+  }
+
+  async function submitFromHistory(taskId, btn) {
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+    const res = await Tasks.submit(taskId);
+    if (!res || !res.ok) {
+      if (res?.data?.insufficient_balance) {
+        const d = res.data.data;
+        document.getElementById('ibProductPrice').textContent = '$' + d.product_price;
+        document.getElementById('ibCurrentBalance').textContent = '$' + d.current_balance;
+        document.getElementById('ibAmountNeeded').textContent = '$' + d.amount_needed;
+        document.getElementById('insufficientModal').style.display = 'flex';
+        btn.disabled = false;
+        btn.textContent = 'Submit Now';
+        return;
+      }
+      btn.disabled = false;
+      btn.textContent = 'Submit Now';
+      alert(res?.data?.message || 'Failed to submit.');
+      return;
+    }
+    // Success — update row to completed
+    const row = document.getElementById(`task-row-${taskId}`);
+    if (row) {
+      row.querySelector('.hi-commission').className = 'hi-commission';
+      row.querySelector('.hi-badge').className = 'hi-badge badge-completed';
+      row.querySelector('.hi-badge').textContent = 'Completed';
+      const submitBtnEl = row.querySelector('.submit-btn');
+      if (submitBtnEl) submitBtnEl.remove();
+    }
+    // Update total earned display
+    loadSummary();
+  }
+
+  async function loadSummary() {
+    const res = await Tasks.getHistory(1, 999);
+    if (!res || !res.ok) return;
+    const tasks = res.data.data.tasks || [];
+    const completed = tasks.filter(t => t.status === 'completed');
+    document.getElementById('totalTasks').textContent = res.data.data.pagination?.total || tasks.length;
+    const earned = completed.reduce((s, t) => s + parseFloat(t.commission_amount || 0), 0);
+    document.getElementById('totalEarned').textContent = formatMoney(earned);
   }
 
   async function loadHistory(page = 1) {
+    const list = document.getElementById('historyList');
+    if (page === 1) {
+      list.innerHTML = `<div class="history-item"><div class="hi-top"><div class="skeleton hi-img"></div><div class="hi-body"><div class="skeleton" style="height:14px;width:70%;border-radius:6px;margin-bottom:6px;"></div><div class="skeleton" style="height:11px;width:45%;border-radius:6px;"></div></div></div></div>`;
+    }
     try {
-      const res = await Tasks.getHistory(page);
-      if (!res || !res.ok) throw new Error('Failed');
-      const data = res.data.data;
-      const tasks = data.tasks || [];
-      totalPages = data.pagination?.pages || 1;
-
-      // sum total earned
-      tasks.forEach(t => { totalEarned += parseFloat(t.commission_amount || 0); });
-
-      // update summary
-      document.getElementById('totalTasks').textContent = data.pagination?.total || tasks.length;
-      document.getElementById('totalEarned').textContent = formatMoney(totalEarned);
-
-      const list = document.getElementById('historyList');
+      const statusParam = currentTab === 'all' ? '' : currentTab;
+      const url = `/api/tasks/history?page=${page}&limit=20${statusParam ? '&status=' + statusParam : ''}`;
+      const token = localStorage.getItem('token');
+      const r = await fetch(url, { headers: { 'Authorization': 'Bearer ' + token } });
+      const data = await r.json();
+      if (!data.success) throw new Error('Failed');
+      const tasks = data.data.tasks || [];
+      totalPages = data.data.pagination?.pages || 1;
 
       if (page === 1) {
+        document.getElementById('totalTasks').textContent = data.data.pagination?.total || tasks.length;
+        // Calculate earned from completed tasks only
+        const res2 = await fetch(`/api/tasks/history?page=1&limit=999&status=completed`, { headers: { 'Authorization': 'Bearer ' + token } });
+        const d2 = await res2.json();
+        const earned = (d2.data?.tasks || []).reduce((s, t) => s + parseFloat(t.commission_amount || 0), 0);
+        document.getElementById('totalEarned').textContent = formatMoney(earned);
+
         if (!tasks.length) {
-          list.innerHTML = `
-            <div class="empty-state">
-              <div class="es-icon">📋</div>
-              <h3>No Task History Yet</h3>
-              <p>Complete tasks to see your history here.</p>
-              <a href="tasks.html" class="btn btn-primary mt-16" style="display:inline-flex;">Go to Tasks</a>
-            </div>`;
+          list.innerHTML = `<div class="empty-state"><div class="es-icon">📋</div><h3>No tasks here</h3><p>No ${currentTab === 'all' ? '' : currentTab + ' '}tasks found.</p></div>`;
           return;
         }
         list.innerHTML = renderItems(tasks);
       } else {
-        // remove load more btn before appending
         const oldBtn = document.getElementById('loadMoreBtn');
         if (oldBtn) oldBtn.remove();
         list.insertAdjacentHTML('beforeend', renderItems(tasks));
       }
 
-      // show load more if more pages
       if (page < totalPages) {
-        list.insertAdjacentHTML('beforeend', `
-          <button id="loadMoreBtn" class="load-more-btn" onclick="loadMore()">Load More</button>`);
+        list.insertAdjacentHTML('beforeend', `<button id="loadMoreBtn" class="load-more-btn" onclick="loadMore()">Load More</button>`);
       }
-
-    } catch (err) {
-      console.error(err);
-      document.getElementById('historyList').innerHTML = `
-        <div class="empty-state">
-          <div class="es-icon">⚠️</div>
-          <h3>Failed to load history</h3>
-          <p>Please try again later.</p>
-        </div>`;
+    } catch(err) {
+      list.innerHTML = `<div class="empty-state"><div class="es-icon">⚠️</div><h3>Failed to load</h3><p>Please try again.</p></div>`;
     }
   }
 
-  function loadMore() {
-    currentPage++;
-    loadHistory(currentPage);
-  }
+  function loadMore() { currentPage++; loadHistory(currentPage); }
 
-  // init
   loadHistory(1);
 </script>
 </body>

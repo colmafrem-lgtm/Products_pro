@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../config/db');
+const { sendToUser } = require('../utils/sse');
 require('dotenv').config();
 
 // POST /api/admin/login
@@ -206,7 +207,7 @@ const adjustBalance = async (req, res) => {
     }
 
     try {
-        const [users] = await db.query('SELECT balance FROM users WHERE id = ?', [userId]);
+        const [users] = await db.query('SELECT balance, username, referred_by FROM users WHERE id = ?', [userId]);
         if (users.length === 0) return res.status(404).json({ success: false, message: 'User not found.' });
 
         const currentBalance = parseFloat(users[0].balance);
@@ -223,6 +224,39 @@ const adjustBalance = async (req, res) => {
         );
 
         res.json({ success: true, message: `Balance ${type === 'add' ? 'added' : 'deducted'} successfully.`, data: { new_balance: newBalance } });
+
+        sendToUser(userId, 'balance_update', { balance: newBalance });
+
+        // Referral bonus: when admin ADDS balance, give 20% to referrer
+        if (type === 'add') {
+            const referrerId = users[0].referred_by;
+            const depositorName = users[0].username;
+            if (referrerId) {
+                const bonusAmount = parseFloat((adjustAmount * 0.20).toFixed(2));
+                const [referrerRows] = await db.query('SELECT id, username, balance FROM users WHERE id = ?', [referrerId]);
+                if (referrerRows.length > 0) {
+                    const referrer = referrerRows[0];
+                    const referrerOldBalance = parseFloat(referrer.balance);
+                    const referrerNewBalance = parseFloat((referrerOldBalance + bonusAmount).toFixed(2));
+
+                    await db.query('UPDATE users SET balance = ? WHERE id = ?', [referrerNewBalance, referrerId]);
+
+                    await db.query(
+                        `INSERT INTO transactions (user_id, type, amount, balance_before, balance_after, description, status)
+                         VALUES (?, 'referral_bonus', ?, ?, ?, ?, 'completed')`,
+                        [referrerId, bonusAmount, referrerOldBalance, referrerNewBalance,
+                         `Referral bonus 20% from ${depositorName}'s deposit $${adjustAmount.toFixed(2)}`]
+                    );
+
+                    sendToUser(referrerId, 'referral_bonus', {
+                        bonus: bonusAmount.toFixed(2),
+                        new_balance: referrerNewBalance.toFixed(2),
+                        from_user: depositorName,
+                        deposit_amount: adjustAmount.toFixed(2)
+                    });
+                }
+            }
+        }
 
     } catch (error) {
         res.status(500).json({ success: false, message: 'Server error.' });
@@ -311,7 +345,50 @@ const approveDeposit = async (req, res) => {
             );
         }
 
+        // Referral bonus: 20% of deposit amount to referrer
+        if (action === 'approve') {
+            const depositAmount = parseFloat(deposit.amount);
+            const [depositor] = await db.query('SELECT referred_by, username FROM users WHERE id = ?', [deposit.user_id]);
+            const referrerId = depositor[0]?.referred_by;
+            const depositorName = depositor[0]?.username;
+
+            if (referrerId) {
+                const bonusAmount = parseFloat((depositAmount * 0.20).toFixed(2));
+                const [referrerRows] = await db.query('SELECT id, username, balance FROM users WHERE id = ?', [referrerId]);
+                if (referrerRows.length > 0) {
+                    const referrer = referrerRows[0];
+                    const referrerNewBalance = parseFloat(referrer.balance) + bonusAmount;
+
+                    await db.query('UPDATE users SET balance = ? WHERE id = ?', [referrerNewBalance, referrerId]);
+
+                    // Log referral bonus transaction
+                    await db.query(
+                        `INSERT INTO transactions (user_id, type, amount, balance_before, balance_after, description, reference_id, status)
+                         VALUES (?, 'referral_bonus', ?, ?, ?, ?, ?, 'completed')`,
+                        [referrerId, bonusAmount, parseFloat(referrer.balance), referrerNewBalance,
+                         `Referral bonus 20% from ${depositorName}'s deposit $${depositAmount.toFixed(2)}`, deposit.user_id]
+                    );
+
+                    // Notify referrer via SSE
+                    sendToUser(referrerId, 'referral_bonus', {
+                        bonus: bonusAmount.toFixed(2),
+                        new_balance: referrerNewBalance.toFixed(2),
+                        from_user: depositorName,
+                        deposit_amount: depositAmount.toFixed(2)
+                    });
+                }
+            }
+        }
+
         res.json({ success: true, message: `Deposit ${action}d successfully.` });
+
+        if (action === 'approve') {
+            const [updatedUser] = await db.query('SELECT balance FROM users WHERE id = ?', [deposit.user_id]);
+            sendToUser(deposit.user_id, 'deposit_approved', {
+                balance: updatedUser[0].balance,
+                amount: parseFloat(deposit.amount)
+            });
+        }
 
     } catch (error) {
         res.status(500).json({ success: false, message: 'Server error.' });
@@ -395,6 +472,8 @@ const processWithdrawal = async (req, res) => {
         }
 
         res.json({ success: true, message: `Withdrawal ${action}d successfully.` });
+
+        sendToUser(withdrawal.user_id, 'withdrawal_update', { status: newStatus });
 
     } catch (error) {
         res.status(500).json({ success: false, message: 'Server error.' });
@@ -573,6 +652,42 @@ const addUserTask = async (req, res) => {
         res.status(201).json({ success: true, message: 'Task added.' });
     } catch (error) {
         console.error('Add task error:', error);
+        res.status(500).json({ success: false, message: 'Server error.' });
+    }
+};
+
+// PUT /api/admin/users/:id/tasks/sync-product/:productId — sync pending task prices after product edit
+const syncTasksByProduct = async (req, res) => {
+    const { id: userId, productId } = req.params;
+    const { price, commission_rate } = req.body;
+    try {
+        const newPrice = parseFloat(price);
+        const newCommission = Math.max(0.01, parseFloat((newPrice * parseFloat(commission_rate) / 100).toFixed(2)));
+        await db.query(
+            `UPDATE tasks SET product_price = ?, commission_amount = ? WHERE user_id = ? AND product_id = ? AND status = 'pending'`,
+            [newPrice, newCommission, userId, productId]
+        );
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Sync tasks error:', error);
+        res.status(500).json({ success: false, message: 'Server error.' });
+    }
+};
+
+// PUT /api/admin/users/:id/tasks/:taskId — edit a task
+const updateUserTask = async (req, res) => {
+    const { id: userId, taskId } = req.params;
+    const { product_price, commission_amount, status } = req.body;
+    try {
+        const [rows] = await db.query('SELECT id FROM tasks WHERE id = ? AND user_id = ?', [taskId, userId]);
+        if (rows.length === 0) return res.status(404).json({ success: false, message: 'Task not found.' });
+        await db.query(
+            `UPDATE tasks SET product_price = ?, commission_amount = ?, status = ? WHERE id = ?`,
+            [parseFloat(product_price), parseFloat(commission_amount), status, taskId]
+        );
+        res.json({ success: true, message: 'Task updated.' });
+    } catch (error) {
+        console.error('Update task error:', error);
         res.status(500).json({ success: false, message: 'Server error.' });
     }
 };
@@ -1058,7 +1173,7 @@ const deleteUsers = async (req, res) => {
 
 module.exports = {
     adminLogin, getDashboard, getUsers, updateUserStatus, adjustBalance, setWithdrawalPassword,
-    updateUserProfile, searchUsers, resetTaskVolume, toggleTransactionStatus, toggleTestStatus, getUserTeam, getUserTasks, addUserTask, deleteUserTask,
+    updateUserProfile, searchUsers, resetTaskVolume, toggleTransactionStatus, toggleTestStatus, getUserTeam, getUserTasks, addUserTask, updateUserTask, syncTasksByProduct, deleteUserTask,
     createUser, deleteUsers,
     getDeposits, approveDeposit, getWithdrawals, processWithdrawal,
     getProducts, createProduct, updateProduct, deleteProduct,

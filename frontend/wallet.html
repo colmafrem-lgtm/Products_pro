@@ -412,8 +412,34 @@
 
 <script src="js/api.js"></script>
 <script src="js/transitions.js"></script>
+<script src="js/realtime.js"></script>
 <script>
   requireAuth();
+
+  // Real-time updates via SSE
+  initRealtime({
+    onBalanceUpdate: function(d) {
+      currentBalance = parseFloat(d.balance);
+      const wb = document.getElementById('walletBalance');
+      if (wb) wb.textContent = formatMoney(d.balance);
+      const db = document.getElementById('dtBalance');
+      if (db) db.textContent = 'Balance: $' + currentBalance.toFixed(2);
+    },
+    onDepositApproved: function(d) {
+      currentBalance = parseFloat(d.balance);
+      const wb = document.getElementById('walletBalance');
+      if (wb) wb.textContent = formatMoney(d.balance);
+      const db = document.getElementById('dtBalance');
+      if (db) db.textContent = 'Balance: $' + currentBalance.toFixed(2);
+      // Reload transaction list to show the new deposit
+      if (typeof loadTransactions === 'function') loadTransactions();
+    },
+    onWithdrawalUpdate: function(d) {
+      // Reload transaction list to reflect updated withdrawal status
+      if (typeof loadTransactions === 'function') loadTransactions();
+    }
+  });
+
   let allTransactions = [];
 
   let vipMinWithdrawal = 10;

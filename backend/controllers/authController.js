@@ -63,11 +63,11 @@ const register = async (req, res) => {
                 } catch(e) {}
             }
 
-            // 2. If not staff code, check user referral codes
+            // 2. If not staff code, check user referral codes (case-insensitive)
             if (!invitationStaffName) {
                 const [refUser] = await db.query(
-                    'SELECT id, username FROM users WHERE referral_code = ?',
-                    [invitation_code]
+                    'SELECT id, username FROM users WHERE UPPER(referral_code) = UPPER(?)',
+                    [invitation_code.trim()]
                 );
                 if (refUser.length > 0) {
                     referredByUserId = refUser[0].id;

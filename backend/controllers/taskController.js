@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const { sendToUser, sendToAdmins } = require('../utils/sse');
 
 // GET /api/tasks/available  — get next task for user
 const getAvailableTask = async (req, res) => {
@@ -66,7 +67,7 @@ const getAvailableTask = async (req, res) => {
             });
         }
 
-        // Auto-assign task if user has balance >= 50
+        // Auto-assign ALL remaining tasks at once if user has balance >= 50
         const userBalance = parseFloat(user.balance) || 0;
         if (userBalance >= 50) {
             // Price range per VIP level
@@ -79,54 +80,49 @@ const getAvailableTask = async (req, res) => {
             const vipLevel = parseInt(user.vip_level) || 1;
             const range = vipPriceRange[vipLevel] || vipPriceRange[1];
 
-            // Get today's already-used product IDs
-            const [usedRows] = await db.query(
-                `SELECT product_id FROM tasks WHERE user_id = ? AND date(created_at) = date('now')`,
-                [userId]
+            // Get all eligible products (price <= balance, in VIP range)
+            const [allProducts] = await db.query(
+                `SELECT * FROM products WHERE status='active' AND price >= ? AND price <= ? ORDER BY RANDOM()`,
+                [range.min, userBalance]
             );
-            const usedIds = usedRows.map(r => r.product_id);
 
-            let productQuery = `SELECT * FROM products WHERE status='active' AND price >= ? AND price <= ?`;
-            const productParams = [range.min, range.max];
-            if (usedIds.length > 0) {
-                productQuery += ` AND id NOT IN (${usedIds.map(() => '?').join(',')})`;
-                productParams.push(...usedIds);
+            if (allProducts.length === 0) {
+                return res.json({
+                    success: false,
+                    message: 'No tasks assigned yet. Please wait for admin to set up your tasks.',
+                    data: { tasks_done: doneToday, daily_limit: dailyLimit, no_products: true, user_balance: userBalance }
+                });
             }
-            productQuery += ` ORDER BY RANDOM() LIMIT 1`;
 
-            const [products] = await db.query(productQuery, productParams);
+            const commissionRate = parseFloat(user.commission_rate) || 0.5;
+            const tasksToGenerate = dailyLimit - doneToday;
 
-            if (products.length > 0) {
-                const product = products[0];
-                const commissionRate = parseFloat(user.commission_rate) || 1.0;
-                const commissionAmount = parseFloat((product.price * commissionRate / 100).toFixed(2));
-
-                const [result] = await db.query(
+            // Generate all remaining tasks at once so admin can see them all upfront
+            for (let i = 0; i < tasksToGenerate; i++) {
+                const product = allProducts[i % allProducts.length]; // cycle if not enough unique products
+                const commissionAmount = Math.max(0.01, parseFloat((product.price * commissionRate / 100).toFixed(2)));
+                await db.query(
                     `INSERT INTO tasks (user_id, product_id, task_number, product_price, commission_amount, status, created_at)
                      VALUES (?, ?, ?, ?, ?, 'pending', datetime('now'))`,
-                    [userId, product.id, doneToday + 1, product.price, commissionAmount]
+                    [userId, product.id, doneToday + i + 1, product.price, commissionAmount]
                 );
+            }
 
-                const newTask = {
-                    id: result.insertId,
-                    user_id: userId,
-                    product_id: product.id,
-                    task_number: doneToday + 1,
-                    product_price: product.price,
-                    commission_amount: commissionAmount,
-                    status: 'pending',
-                    product_name: product.name,
-                    description: product.description,
-                    price: product.price,
-                    image_url: product.image_url,
-                    category: product.category
-                };
+            // Return the first pending task
+            const [newPending] = await db.query(
+                `SELECT t.*, p.name as product_name, p.description, p.price, p.image_url, p.category
+                 FROM tasks t JOIN products p ON t.product_id = p.id
+                 WHERE t.user_id = ? AND t.status = 'pending'
+                 ORDER BY t.task_number ASC LIMIT 1`,
+                [userId]
+            );
 
+            if (newPending.length > 0) {
                 return res.json({
                     success: true,
                     message: 'Task ready!',
                     data: {
-                        task: newTask,
+                        task: newPending[0],
                         tasks_done: doneToday,
                         daily_limit: dailyLimit,
                         tasks_remaining: dailyLimit - doneToday
@@ -177,7 +173,36 @@ const submitTask = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Task already completed or cancelled.' });
         }
 
-        const commission = parseFloat(task.commission_amount);
+        // Get current user info + VIP commission rate
+        const [userCheck] = await db.query(
+            `SELECT u.balance, u.total_earned, u.is_test, v.commission_rate
+             FROM users u LEFT JOIN vip_levels v ON u.vip_level = v.level
+             WHERE u.id = ?`, [userId]
+        );
+        const currentBalanceCheck = parseFloat(userCheck[0].balance);
+        const productPrice = parseFloat(task.product_price);
+
+        // Check user balance >= product price
+        if (currentBalanceCheck < productPrice) {
+            const needed = (productPrice - currentBalanceCheck).toFixed(2);
+            return res.status(400).json({
+                success: false,
+                insufficient_balance: true,
+                message: `Insufficient balance`,
+                data: {
+                    product_price: productPrice.toFixed(2),
+                    current_balance: currentBalanceCheck.toFixed(2),
+                    amount_needed: needed
+                }
+            });
+        }
+
+        // Always recalculate commission from current VIP rate (not stored value)
+        const vipRate = parseFloat(userCheck[0].commission_rate) || 0.5;
+        const commission = Math.max(0.01, parseFloat((productPrice * vipRate / 100).toFixed(2)));
+
+        // Update task with recalculated commission
+        await db.query(`UPDATE tasks SET commission_amount = ? WHERE id = ?`, [commission, taskId]);
 
         // Update task status
         await db.query(
@@ -185,14 +210,13 @@ const submitTask = async (req, res) => {
             [taskId]
         );
 
-        // Get user info (check is_test)
-        const [userRows] = await db.query('SELECT balance, total_earned, is_test FROM users WHERE id = ?', [userId]);
-        const currentBalance = parseFloat(userRows[0].balance);
-        const isTestUser = userRows[0].is_test;
+        // Use already-fetched user data
+        const currentBalance = currentBalanceCheck;
+        const isTestUser = userCheck[0].is_test;
 
         // Test users: do NOT update real balance or total_earned
         const newBalance = isTestUser ? currentBalance : currentBalance + commission;
-        const newTotalEarned = isTestUser ? parseFloat(userRows[0].total_earned) : parseFloat(userRows[0].total_earned) + commission;
+        const newTotalEarned = isTestUser ? parseFloat(userCheck[0].total_earned) : parseFloat(userCheck[0].total_earned) + commission;
 
         await db.query(
             'UPDATE users SET balance = ?, total_earned = ? WHERE id = ?',
@@ -206,6 +230,13 @@ const submitTask = async (req, res) => {
             [userId, commission, currentBalance, newBalance, `Commission from task #${task.task_number}: ${task.product_name}`, taskId]
         );
 
+        // Count tasks done today for SSE payload
+        const [doneTodayRows] = await db.query(
+            `SELECT COUNT(*) as count FROM tasks WHERE user_id = ? AND status = 'completed' AND DATE(completed_at) = date('now')`,
+            [userId]
+        );
+        const tasksDone = parseInt(doneTodayRows[0].count) || 0;
+
         res.json({
             success: true,
             message: `Task completed! You earned $${commission.toFixed(2)}`,
@@ -214,6 +245,19 @@ const submitTask = async (req, res) => {
                 new_balance: newBalance.toFixed(2),
                 task_number: task.task_number
             }
+        });
+
+        sendToUser(userId, 'task_completed', {
+            commission: commission.toFixed(2),
+            new_balance: newBalance.toFixed(2),
+            tasks_done: tasksDone
+        });
+
+        // Notify admin panel — update task state in Order Settings live
+        sendToAdmins('task_state_change', {
+            user_id: userId,
+            task_id: parseInt(taskId),
+            status: 'completed'
         });
 
     } catch (error) {
@@ -228,19 +272,24 @@ const getTaskHistory = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 20;
         const offset = (page - 1) * limit;
+        const status = req.query.status || '';
+
+        const statusClause = status ? ` AND status = ?` : '';
+        const params = status ? [req.user.id, status, limit, offset] : [req.user.id, limit, offset];
+        const countParams = status ? [req.user.id, status] : [req.user.id];
 
         const [tasks] = await db.query(
-            `SELECT t.*, p.name as product_name, p.image_url
+            `SELECT t.*, p.name as product_name, p.image_url, p.price as current_price
              FROM tasks t JOIN products p ON t.product_id = p.id
-             WHERE t.user_id = ?
+             WHERE t.user_id = ?${statusClause}
              ORDER BY t.created_at DESC
              LIMIT ? OFFSET ?`,
-            [req.user.id, limit, offset]
+            params
         );
 
         const [countResult] = await db.query(
-            'SELECT COUNT(*) as total FROM tasks WHERE user_id = ?',
-            [req.user.id]
+            `SELECT COUNT(*) as total FROM tasks WHERE user_id = ?${statusClause}`,
+            countParams
         );
 
         res.json({

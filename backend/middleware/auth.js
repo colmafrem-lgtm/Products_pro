@@ -4,7 +4,11 @@ require('dotenv').config();
 // Middleware: Verify user JWT token
 const authenticateUser = (req, res, next) => {
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+    // Allow token via query param only for SSE endpoint (EventSource cannot send headers)
+    let token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+    if (!token && req.path.endsWith('/events') && req.query.token) {
+        token = req.query.token;
+    }
 
     if (!token) {
         return res.status(401).json({ success: false, message: 'Access denied. No token provided.' });
@@ -22,7 +26,10 @@ const authenticateUser = (req, res, next) => {
 // Middleware: Verify admin JWT token
 const authenticateAdmin = (req, res, next) => {
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+    let token = authHeader && authHeader.split(' ')[1];
+    if (!token && req.path.endsWith('/events') && req.query.token) {
+        token = req.query.token;
+    }
 
     if (!token) {
         return res.status(401).json({ success: false, message: 'Admin access denied. No token provided.' });

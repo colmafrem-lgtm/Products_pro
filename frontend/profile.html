@@ -429,8 +429,26 @@
 
 <script src="js/api.js"></script>
 <script src="js/transitions.js"></script>
+<script src="js/realtime.js"></script>
 <script>
   requireAuth();
+
+  // Real-time updates via SSE
+  initRealtime({
+    onBalanceUpdate: function(d) {
+      const db = document.getElementById('dtBalance');
+      if (db) db.textContent = 'Balance: $' + parseFloat(d.balance).toFixed(2);
+      const pb = document.getElementById('phBalance');
+      if (pb) pb.textContent = '$' + parseFloat(d.balance).toFixed(2);
+    },
+    onDepositApproved: function(d) {
+      const db = document.getElementById('dtBalance');
+      if (db) db.textContent = 'Balance: $' + parseFloat(d.balance).toFixed(2);
+      const pb = document.getElementById('phBalance');
+      if (pb) pb.textContent = '$' + parseFloat(d.balance).toFixed(2);
+    }
+  });
+
   let profileData = null;
 
   async function loadProfile() {
