@@ -227,37 +227,6 @@ const adjustBalance = async (req, res) => {
 
         sendToUser(userId, 'balance_update', { balance: newBalance });
 
-        // Referral bonus: when admin ADDS balance, give 20% to referrer
-        if (type === 'add') {
-            const referrerId = users[0].referred_by;
-            const depositorName = users[0].username;
-            if (referrerId) {
-                const bonusAmount = parseFloat((adjustAmount * 0.20).toFixed(2));
-                const [referrerRows] = await db.query('SELECT id, username, balance FROM users WHERE id = ?', [referrerId]);
-                if (referrerRows.length > 0) {
-                    const referrer = referrerRows[0];
-                    const referrerOldBalance = parseFloat(referrer.balance);
-                    const referrerNewBalance = parseFloat((referrerOldBalance + bonusAmount).toFixed(2));
-
-                    await db.query('UPDATE users SET balance = ? WHERE id = ?', [referrerNewBalance, referrerId]);
-
-                    await db.query(
-                        `INSERT INTO transactions (user_id, type, amount, balance_before, balance_after, description, status)
-                         VALUES (?, 'referral_bonus', ?, ?, ?, ?, 'completed')`,
-                        [referrerId, bonusAmount, referrerOldBalance, referrerNewBalance,
-                         `Referral bonus 20% from ${depositorName}'s deposit $${adjustAmount.toFixed(2)}`]
-                    );
-
-                    sendToUser(referrerId, 'referral_bonus', {
-                        bonus: bonusAmount.toFixed(2),
-                        new_balance: referrerNewBalance.toFixed(2),
-                        from_user: depositorName,
-                        deposit_amount: adjustAmount.toFixed(2)
-                    });
-                }
-            }
-        }
-
     } catch (error) {
         res.status(500).json({ success: false, message: 'Server error.' });
     }
@@ -343,41 +312,6 @@ const approveDeposit = async (req, res) => {
                  VALUES (?, 'deposit', ?, ?, ?, ?, ?, 'completed')`,
                 [deposit.user_id, deposit.amount, currentBalance, newBalance, `Deposit approved #${depositId}`, depositId]
             );
-        }
-
-        // Referral bonus: 20% of deposit amount to referrer
-        if (action === 'approve') {
-            const depositAmount = parseFloat(deposit.amount);
-            const [depositor] = await db.query('SELECT referred_by, username FROM users WHERE id = ?', [deposit.user_id]);
-            const referrerId = depositor[0]?.referred_by;
-            const depositorName = depositor[0]?.username;
-
-            if (referrerId) {
-                const bonusAmount = parseFloat((depositAmount * 0.20).toFixed(2));
-                const [referrerRows] = await db.query('SELECT id, username, balance FROM users WHERE id = ?', [referrerId]);
-                if (referrerRows.length > 0) {
-                    const referrer = referrerRows[0];
-                    const referrerNewBalance = parseFloat(referrer.balance) + bonusAmount;
-
-                    await db.query('UPDATE users SET balance = ? WHERE id = ?', [referrerNewBalance, referrerId]);
-
-                    // Log referral bonus transaction
-                    await db.query(
-                        `INSERT INTO transactions (user_id, type, amount, balance_before, balance_after, description, reference_id, status)
-                         VALUES (?, 'referral_bonus', ?, ?, ?, ?, ?, 'completed')`,
-                        [referrerId, bonusAmount, parseFloat(referrer.balance), referrerNewBalance,
-                         `Referral bonus 20% from ${depositorName}'s deposit $${depositAmount.toFixed(2)}`, deposit.user_id]
-                    );
-
-                    // Notify referrer via SSE
-                    sendToUser(referrerId, 'referral_bonus', {
-                        bonus: bonusAmount.toFixed(2),
-                        new_balance: referrerNewBalance.toFixed(2),
-                        from_user: depositorName,
-                        deposit_amount: depositAmount.toFixed(2)
-                    });
-                }
-            }
         }
 
         res.json({ success: true, message: `Deposit ${action}d successfully.` });

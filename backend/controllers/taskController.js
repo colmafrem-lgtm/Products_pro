@@ -180,9 +180,9 @@ const submitTask = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Task already completed or cancelled.' });
         }
 
-        // Get current user info + VIP commission rate
+        // Get current user info + VIP commission rate + referrer
         const [userCheck] = await db.query(
-            `SELECT u.balance, u.total_earned, u.is_test, v.commission_rate
+            `SELECT u.balance, u.total_earned, u.is_test, u.referred_by, u.username, v.commission_rate
              FROM users u LEFT JOIN vip_levels v ON u.vip_level = v.level
              WHERE u.id = ?`, [userId]
         );
@@ -259,6 +259,37 @@ const submitTask = async (req, res) => {
             new_balance: newBalance.toFixed(2),
             tasks_done: tasksDone
         });
+
+        // Referral bonus: give 20% of commission earned to referrer (account 1)
+        if (!isTestUser) {
+            const referrerId = userCheck[0].referred_by;
+            if (referrerId) {
+                const bonusAmount = parseFloat((commission * 0.20).toFixed(2));
+                if (bonusAmount > 0) {
+                    const [referrerRows] = await db.query('SELECT id, username, balance FROM users WHERE id = ?', [referrerId]);
+                    if (referrerRows.length > 0) {
+                        const referrer = referrerRows[0];
+                        const referrerOldBalance = parseFloat(referrer.balance);
+                        const referrerNewBalance = parseFloat((referrerOldBalance + bonusAmount).toFixed(2));
+
+                        await db.query('UPDATE users SET balance = ?, total_earned = total_earned + ? WHERE id = ?', [referrerNewBalance, bonusAmount, referrerId]);
+                        await db.query(
+                            `INSERT INTO transactions (user_id, type, amount, balance_before, balance_after, description, status)
+                             VALUES (?, 'referral_bonus', ?, ?, ?, ?, 'completed')`,
+                            [referrerId, bonusAmount, referrerOldBalance, referrerNewBalance,
+                             `Referral bonus 20% from ${userCheck[0].username}'s task commission $${commission.toFixed(2)}`]
+                        );
+
+                        sendToUser(referrerId, 'referral_bonus', {
+                            bonus: bonusAmount.toFixed(2),
+                            new_balance: referrerNewBalance.toFixed(2),
+                            from_user: userCheck[0].username,
+                            commission_amount: commission.toFixed(2)
+                        });
+                    }
+                }
+            }
+        }
 
         // Notify admin panel — update task state in Order Settings live
         sendToAdmins('task_state_change', {

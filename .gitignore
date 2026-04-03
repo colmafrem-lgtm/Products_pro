@@ -2,6 +2,7 @@ backend/node_modules/
 backend/.env
 *.db-shm
 *.db-wal
+database/*.db
 
 # Claude files
 .claude/
