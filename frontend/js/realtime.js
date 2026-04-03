@@ -10,7 +10,7 @@ function showReferralBonusToast(d) {
       <div style="font-size:28px;flex-shrink:0;">🎉</div>
       <div>
         <div style="font-size:14px;font-weight:800;color:#111;margin-bottom:3px;">Referral Bonus Received!</div>
-        <div style="font-size:13px;color:#374151;">You got <strong style="color:#7c3aed;">+$${d.bonus}</strong> (20%) from <strong>${d.from_user}</strong>'s deposit</div>
+        <div style="font-size:13px;color:#374151;">You got <strong style="color:#7c3aed;">+$${d.bonus}</strong> (20%) from <strong>${d.from_user}</strong>'s task earning</div>
         <div style="font-size:12px;color:#6b7280;margin-top:2px;">New Balance: <strong>$${d.new_balance}</strong></div>
       </div>
       <button onclick="document.getElementById('referralBonusToast').remove()" style="background:none;border:none;font-size:18px;color:#9ca3af;cursor:pointer;flex-shrink:0;padding:0;line-height:1;">✕</button>
