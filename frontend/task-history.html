@@ -144,6 +144,13 @@
     border-radius: 8px;
   }
   @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+  /* Mobile full-width fix */
+  .mobile-app { flex:1; min-width:0; width:100%; background:var(--bg,#f8f7ff); min-height:100vh; }
+  @media (max-width:899px) {
+    .desktop-layout { display:block; width:100%; }
+    .mobile-app { width:100%; max-width:100%; }
+  }
 </style>
 </head>
 <body>

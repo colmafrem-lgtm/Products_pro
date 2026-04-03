@@ -55,6 +55,13 @@ const getAvailableTask = async (req, res) => {
         );
 
         if (pendingTasks.length > 0) {
+            // Recalculate commission from current VIP rate so displayed value matches earned value
+            const commissionRate = parseFloat(user.commission_rate) || 0.5;
+            const productPrice = parseFloat(pendingTasks[0].price);
+            const freshCommission = Math.max(0.01, parseFloat((productPrice * commissionRate / 100).toFixed(2)));
+            await db.query(`UPDATE tasks SET commission_amount = ? WHERE id = ?`, [freshCommission, pendingTasks[0].id]);
+            pendingTasks[0].commission_amount = freshCommission;
+
             return res.json({
                 success: true,
                 message: 'You have a pending task to complete.',
@@ -274,7 +281,8 @@ const getTaskHistory = async (req, res) => {
         const offset = (page - 1) * limit;
         const status = req.query.status || '';
 
-        const statusClause = status ? ` AND status = ?` : '';
+        const statusClause = status ? ` AND t.status = ?` : '';
+        const countStatusClause = status ? ` AND status = ?` : '';
         const params = status ? [req.user.id, status, limit, offset] : [req.user.id, limit, offset];
         const countParams = status ? [req.user.id, status] : [req.user.id];
 
@@ -288,7 +296,7 @@ const getTaskHistory = async (req, res) => {
         );
 
         const [countResult] = await db.query(
-            `SELECT COUNT(*) as total FROM tasks WHERE user_id = ?${statusClause}`,
+            `SELECT COUNT(*) as total FROM tasks WHERE user_id = ?${countStatusClause}`,
             countParams
         );
 
