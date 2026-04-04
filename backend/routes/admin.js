@@ -62,6 +62,19 @@ router.put('/users/:id/balance', requireSuperAdmin, adjustBalance);
 router.put('/users/:id/withdrawal-password', requireSuperAdmin, setWithdrawalPassword);
 router.put('/users/:id/profile', requireSuperAdmin, updateUserProfile);
 router.put('/users/:id/reset-tasks', requireSuperAdmin, resetTaskVolume);
+router.put('/users/:id/reset-password', authenticateAdmin, async (req, res) => {
+    const { password } = req.body;
+    if (!password || password.length < 6) return res.status(400).json({ success: false, message: 'Password must be at least 6 characters.' });
+    try {
+        const bcrypt = require('bcryptjs');
+        const hashed = await bcrypt.hash(password, 10);
+        const db = require('../config/db');
+        await db.query('UPDATE users SET password = ? WHERE id = ?', [hashed, req.params.id]);
+        res.json({ success: true, message: 'Password reset successfully.' });
+    } catch(e) {
+        res.status(500).json({ success: false, message: 'Server error.' });
+    }
+});
 router.put('/users/:id/transaction-status', requireSuperAdmin, toggleTransactionStatus);
 router.put('/users/:id/test-status', requireSuperAdmin, toggleTestStatus);
 router.get('/users/:id/team', getUserTeam);

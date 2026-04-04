@@ -148,6 +148,32 @@
   </div>
 </div>
 
+<!-- ═══ Password Reset Modal ═══ -->
+<div class="modal-overlay hidden" id="passwordModal">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-head">
+      <h3>🔑 Reset Password</h3>
+      <button class="modal-close" onclick="closeModal('passwordModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;">Set a new login password for <strong id="pwUsername"></strong></p>
+      <input type="hidden" id="pwUserId">
+      <div class="form-group">
+        <label class="form-label">New Password</label>
+        <input type="password" id="pwNewPassword" class="form-control" placeholder="Enter new password (min 6 chars)">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirm Password</label>
+        <input type="password" id="pwConfirmPassword" class="form-control" placeholder="Confirm new password">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="closeModal('passwordModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitPasswordReset()">Set Password</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ Basic Info Modal ═══ -->
 <div class="modal-overlay hidden" id="basicInfoModal">
   <div class="modal" style="max-width:500px;">
@@ -841,6 +867,7 @@
               ${u.is_test ? '✓ Is Test User' : 'Set as Test'}
             </button>
             <button class="act-btn act-red" onclick="resetTasks(${u.id},'${u.username}')">Reset Tasks Volume</button>
+            <button class="act-btn" onclick="openPasswordModal(${u.id},'${u.username}')" style="background:#7c3aed;color:#fff;">Password</button>
           </div>
         </td>
       </tr>`;
@@ -1377,6 +1404,32 @@
         loadUsers(true);
       }
     );
+  }
+
+  function openPasswordModal(userId, username) {
+    document.getElementById('pwUserId').value = userId;
+    document.getElementById('pwUsername').textContent = username;
+    document.getElementById('pwNewPassword').value = '';
+    document.getElementById('pwConfirmPassword').value = '';
+    openModal('passwordModal');
+  }
+
+  async function submitPasswordReset() {
+    const userId = document.getElementById('pwUserId').value;
+    const newPw = document.getElementById('pwNewPassword').value.trim();
+    const confirmPw = document.getElementById('pwConfirmPassword').value.trim();
+    if (!newPw || newPw.length < 6) { alert('Password must be at least 6 characters.'); return; }
+    if (newPw !== confirmPw) { alert('Passwords do not match.'); return; }
+    const token = sessionStorage.getItem('admin_token');
+    const res = await fetch(`/api/admin/users/${userId}/reset-password`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ password: newPw })
+    });
+    const json = await res.json();
+    if (!json.success) { alert(json.message || 'Failed to reset password.'); return; }
+    closeModal('passwordModal');
+    showMsg('alertBox', 'Password reset successfully!', 'success');
   }
 
   function resetTasks(userId, username) {
