@@ -21,66 +21,25 @@ app.use('/admin',    express.static(path.join(__dirname, '../admin')));
 app.use('/',         express.static(path.join(__dirname, '../frontend')));
 
 async function startServer() {
-    // Load sql.js + open DB
     const SQL = await initSqlJs();
-    // Auto-create DB directory if needed (Railway volume mount)
+
+    // Ensure DB directory exists (Railway volume mount)
     const dbDir = path.dirname(DB_FILE);
     if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir, { recursive: true });
 
-    // Recovery: find the best DB (most users) among ALL candidate directories
-    console.log(`🗄️  DB_FILE target: ${DB_FILE}`);
-    const dbNames = ['investpro.db','investpro_v1.db','investpro_v2.db','investpro_v3.db','investpro_v4.db','investpro_backup.db'];
-    // Always scan both the configured dir AND /data/ (Railway volume default)
-    const scanDirs = [...new Set([dbDir, '/data', '/tmp/investpro', path.join(__dirname, '../database')])];
-    let bestFile = null;
-    let bestUserCount = -1;
-    for (const scanDir of scanDirs) {
-        if (!fs.existsSync(scanDir)) continue;
-        // Also scan any .db files in directory (not just predefined names)
-        let dirFiles = [];
-        try { dirFiles = fs.readdirSync(scanDir).filter(f => f.endsWith('.db')); } catch(e) {}
-        const toCheck = [...new Set([...dbNames, ...dirFiles])];
-        for (const name of toCheck) {
-            const candidate = path.join(scanDir, name);
-            if (!fs.existsSync(candidate)) continue;
-            try {
-                const SQL2 = await initSqlJs();
-                const tmpDb = new SQL2.Database(fs.readFileSync(candidate));
-                const result = tmpDb.exec(`SELECT COUNT(*) as c FROM users`);
-                const count = result[0]?.values[0][0] || 0;
-                tmpDb.close();
-                console.log(`📂 Found ${candidate}: ${count} users`);
-                if (count > bestUserCount) { bestUserCount = count; bestFile = candidate; }
-            } catch(e) { /* not a valid db */ }
-        }
-    }
-    if (bestFile && bestUserCount > 0) {
-        if (bestFile !== DB_FILE) {
-            console.log(`♻️  Recovering DB from ${bestFile} (${bestUserCount} users) → ${DB_FILE}`);
-            fs.mkdirSync(path.dirname(DB_FILE), { recursive: true });
-            fs.copyFileSync(bestFile, DB_FILE);
-        } else {
-            console.log(`✅ Using existing DB at ${DB_FILE} (${bestUserCount} users)`);
-        }
-    } else if (!fs.existsSync(DB_FILE)) {
-        console.log('🆕 No existing DB found — will create fresh');
-    }
+    console.log(`🗄️  Loading DB from: ${DB_FILE}`);
 
     const isNewDb = !fs.existsSync(DB_FILE);
+    if (isNewDb) {
+        console.log('🆕 No existing DB found — creating fresh database');
+    } else {
+        console.log(`✅ Existing DB found — loading (data preserved)`);
+    }
+
     const sqliteDb = isNewDb
         ? new SQL.Database()
         : new SQL.Database(fs.readFileSync(DB_FILE));
     sqliteDb.run('PRAGMA foreign_keys = ON');
-
-    // Save backup to /data/ immediately after loading (protects against future volume issues)
-    try {
-        const backupDir = '/data';
-        if (fs.existsSync(backupDir) || dbDir === backupDir) {
-            if (!fs.existsSync(backupDir)) fs.mkdirSync(backupDir, { recursive: true });
-            const backupPath = path.join(backupDir, 'investpro_backup.db');
-            if (fs.existsSync(DB_FILE)) fs.copyFileSync(DB_FILE, backupPath);
-        }
-    } catch(e) { /* /data may not be available locally */ }
 
     const db = require('./config/db');
     db._init(sqliteDb);
@@ -300,6 +259,20 @@ async function startServer() {
         fs.writeFileSync(DB_FILE, Buffer.from(data));
         console.log('✅ Fresh schema + admin seeded! Login: admin / Admin@123');
     }
+
+    // ─── Fix old default values on existing DB (runs every startup, safe) ───────
+    try {
+        // Always ensure correct site name
+        sqliteDb.run(`INSERT OR REPLACE INTO settings (setting_key, setting_value, description) VALUES ('site_name', 'SyncralinkUS', 'Website name')`);
+        sqliteDb.run(`INSERT OR REPLACE INTO settings (setting_key, setting_value, description) VALUES ('support_email', 'support@syncralinkus.com', 'Support email')`);
+        sqliteDb.run(`INSERT OR REPLACE INTO settings (setting_key, setting_value, description) VALUES ('support_telegram', 'https://t.me/CodefinityCS', 'Telegram handle')`);
+        sqliteDb.run(`INSERT OR REPLACE INTO settings (setting_key, setting_value, description) VALUES ('telegram_link', 'https://t.me/CodefinityCS', 'Telegram link for deposit page')`);
+        sqliteDb.run(`INSERT OR REPLACE INTO settings (setting_key, setting_value, description) VALUES ('whatsapp_link', 'https://wa.me/12352178513', 'WhatsApp link for deposit page')`);
+
+
+        const dbData = sqliteDb.export(); fs.writeFileSync(DB_FILE, Buffer.from(dbData));
+        console.log('✅ Site name and contact links verified');
+    } catch(e) { console.log('Settings fix note:', e.message); }
 
     // Seed event settings if they don't exist (safe for existing DBs)
     const eventSeeds = [
@@ -974,35 +947,7 @@ async function startServer() {
             console.log(`✅ Products already seeded (${productCount} active)`);
         }
 
-        // ─── Set product prices by VIP range (each range gets ~equal share) ──
-        try {
-            const allIds = sqliteDb.exec(`SELECT id FROM products WHERE status='active' ORDER BY id ASC`);
-            if (allIds.length && allIds[0].values.length) {
-                const ids = allIds[0].values.map(r => r[0]);
-                const total = ids.length;
-                // Split products into 4 VIP groups evenly
-                const groups = [
-                    { min: 20,   max: 149   }, // VIP1
-                    { min: 150,  max: 1999  }, // VIP2
-                    { min: 700,  max: 14999 }, // VIP3
-                    { min: 2000, max: 25000 }, // VIP4
-                ];
-                const groupSize = Math.floor(total / groups.length);
-                const priceStmt = sqliteDb.prepare(`UPDATE products SET price=? WHERE id=?`);
-                ids.forEach((id, i) => {
-                    const gIdx = Math.min(Math.floor(i / groupSize), groups.length - 1);
-                    const g = groups[gIdx];
-                    const posInGroup = i - gIdx * groupSize;
-                    const sizeOfGroup = gIdx < groups.length - 1 ? groupSize : total - gIdx * groupSize;
-                    const price = sizeOfGroup <= 1 ? g.min
-                        : parseFloat((g.min + (g.max - g.min) * posInGroup / (sizeOfGroup - 1)).toFixed(2));
-                    priceStmt.run([price, id]);
-                });
-                priceStmt.free();
-                const d = sqliteDb.export(); fs.writeFileSync(DB_FILE, Buffer.from(d));
-                console.log(`✅ Product prices set by VIP range (${total} products, ~${groupSize} per VIP)`);
-            }
-        } catch(e) { console.log('Price update note:', e.message); }
+        // Product prices are set by admin — do not overwrite on startup
 
     } catch(e) { console.log('Products seed note:', e.message); }
 
