@@ -755,6 +755,10 @@
     searchTimer = setTimeout(() => { currentPage = 1; loadUsers(); }, 400);
   }
 
+  function openModal(id) {
+    document.getElementById(id).classList.remove('hidden');
+  }
+
   function closeModal(id) {
     document.getElementById(id).classList.add('hidden');
     selectedUserId = null;

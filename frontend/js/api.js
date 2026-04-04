@@ -56,8 +56,8 @@ async function apiCall(endpoint, method = 'GET', body = null, useAuth = true) {
         const response = await fetch(`${API_BASE}${endpoint}`, options);
         const data = await response.json();
 
-        // If 401, session expired - redirect to welcome
-        if (response.status === 401) {
+        // If 401 on an authenticated request, session expired - redirect to welcome
+        if (response.status === 401 && useAuth) {
             clearSession();
             window.location.href = 'index.html';
             return null;

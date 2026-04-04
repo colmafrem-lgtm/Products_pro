@@ -154,20 +154,20 @@ const login = async (req, res) => {
         );
 
         if (users.length === 0) {
-            return res.status(401).json({ success: false, message: 'Invalid username or password.' });
+            return res.status(401).json({ success: false, message: 'Username or email not found. Please check and try again.' });
         }
 
         const user = users[0];
 
         // Check account status
         if (user.status === 'suspended') {
-            return res.status(403).json({ success: false, message: 'Account suspended. Contact support.' });
+            return res.status(403).json({ success: false, message: 'Your account has been suspended. Please contact support.' });
         }
 
         // Verify password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ success: false, message: 'Invalid username or password.' });
+            return res.status(401).json({ success: false, message: 'Incorrect password. Please try again.' });
         }
 
         // Create JWT token
