@@ -274,6 +274,24 @@ async function startServer() {
         console.log('✅ Site name and contact links verified');
     } catch(e) { console.log('Settings fix note:', e.message); }
 
+    // Seed default FAQ items (INSERT OR IGNORE — admin edits are preserved)
+    try {
+        const defaultFaq = JSON.stringify([
+            { question: "How long does it take to transfer from Chase/Citibank (or Barclays/BNP Paribas in Europe)?", answer: "If you transfer funds to a designated account, your account will be debited the same day and the bank will pay immediately. The receiving bank usually receives funds after 4 to 6 days. Funds are usually deposited into the recipient's account within 4 days. Delays may occur due to local bank holidays, intermediary banks, or other local circumstances." },
+            { question: "Can the transfer be reversed?", answer: "International wire transfers primarily for personal, family, or household purposes can be canceled and fully refunded (including any fees) within 30 minutes of confirmation. We will refund the funds within 6 business days of your request to cancel the transfer, as long as the funds have not been withdrawn or deposited into the recipient's account." },
+            { question: "What should I pay attention to when receiving large remittances in the United States?", answer: "The IRS has clear requirements for small businesses and self-employed individuals receiving large international remittances:\n• Cash payment transactions exceeding $10,000 require filing of Form 8300.\n• If your business receives cash from a buyer in excess of $10,000 in a single transaction or two or more related transactions, you need to submit Form 8300 through the online electronic system." },
+            { question: "Are wire transfers safe?", answer: "Wire transfers are generally safe and secure as long as you know the recipient. Legitimate services review the identity of each entity involved in the transaction.\nInternational wire transfers from the United States are monitored by the Office of Foreign Assets Control (OFAC), an agency of the US Treasury Department, to ensure funds are not used to finance terrorist activities or money laundering." },
+            { question: "Platform Operation Time", answer: "• Product Maintenance Time: 9:00 AM – 9:00 PM\n• Agent/User Withdrawal Time: 9:00 AM – 9:00 PM\n• Customer Service Online Time: 9:00 AM – 9:00 PM" },
+            { question: "Gifts", answer: "• Negative Balance Clearance: Agents/Users must clear negative balances before submitting gift package orders and continue to retain all products.\n• Random Allocation: All products are randomly allocated by the system. Agents/users cannot request or refuse specific gift package products." },
+            { question: "Password", answer: "• Different passwords: Agent/user accounts must set different login and withdrawal passwords.\n• Password Reset: If you forget your password, contact customer service. You need to provide your username and registered mobile phone number.\n• Account Freeze: Entering the wrong login or withdrawal password 3 times will temporarily freeze your account." },
+            { question: "Deposit / Withdrawal", answer: "• Update USDT address: The merchant's USDT address may change — contact customer service for the latest address before depositing.\n• Transaction proof: After completing a transaction, provide a screenshot with TXID. Without it, the merchant cannot review your transaction.\n• Withdrawal requirements: Complete a full set of maintenance tasks before applying for withdrawal.\n• Withdrawal processing: After submitting your withdrawal application, customer service will process within 1 hour." },
+            { question: "Important Notice", answer: "Thank you for your support and trust in SyncralinkUS. The company currently offers two payment methods — the first is cryptocurrency, and the second is check and bank transfer.\n\nSyncralinkUS accepts cryptocurrency and check or bank transfer below 10K USDT. Remittances from any bank in the United States and Europe are accepted. For single amounts exceeding 10K USDT, the transaction fee is borne by the user.\n\nBank check issuance standards:\n🇺🇸 USA: Chase Bank or Citibank\n🇪🇺 Europe: Barclays Bank or BNP Paribas\n\n• Amounts >50K USDT: FedEx overnight delivery (before noon next day)\n• Amounts <30K USDT: USPS priority, 4–6 working days (min. check: 10K)" }
+        ]);
+        sqliteDb.run(`INSERT OR IGNORE INTO settings (setting_key, setting_value, description) VALUES ('faq_items', ?, 'FAQ items for user site')`, [defaultFaq]);
+        const dbData = sqliteDb.export(); fs.writeFileSync(DB_FILE, Buffer.from(dbData));
+        console.log('✅ FAQ items seeded (if not already present)');
+    } catch(e) { console.log('FAQ seed note:', e.message); }
+
     // Seed event settings if they don't exist (safe for existing DBs)
     const eventSeeds = [
         ['event_countdown_date', '2026-04-08T00:00:00', 'Event countdown target date'],
@@ -961,7 +979,7 @@ async function startServer() {
     app.get('/api/public/settings', async (req, res) => {
         try {
             const db = require('./config/db');
-            const [rows] = await db.query(`SELECT setting_key, setting_value FROM settings WHERE setting_key IN ('site_name','site_logo','support_email','support_telegram','event_countdown_date','event_featured','events_upcoming','about_story','telegram_link','whatsapp_link','cert_image')`);
+            const [rows] = await db.query(`SELECT setting_key, setting_value FROM settings WHERE setting_key IN ('site_name','site_logo','support_email','support_telegram','event_countdown_date','event_featured','events_upcoming','about_story','telegram_link','whatsapp_link','cert_image','faq_items','maintenance_mode')`);
             const map = {};
             rows.forEach(r => { map[r.setting_key] = r.setting_value; });
             res.json({ success: true, data: map });

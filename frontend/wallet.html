@@ -81,6 +81,7 @@
   }
   .pin-btn:active { background: rgba(139,92,246,0.4) !important; }
 </style>
+<script src="js/maintenance.js"></script>
 </head>
 <body><div class="desktop-layout">
 <!-- Desktop Sidebar -->
@@ -617,7 +618,7 @@
       return;
     }
 
-    showAlert('alertBox', 'Withdrawal request submitted! Will be processed within 24 hours.', 'success');
+    showAlert('alertBox', 'Withdrawal request submitted! Will be processed within 10-15 minutes.', 'success');
     document.getElementById('withdrawForm').reset();
     loadWallet();
   }
@@ -680,9 +681,7 @@
       return;
     }
 
-    const preview = document.getElementById('depositAmtPreview');
-    document.getElementById('depositAmtVal').textContent = `${amount.toLocaleString()} USDT`;
-    preview.style.display = 'block';
+    document.getElementById('depositAmtPreview').style.display = 'none';
 
     const msg = encodeURIComponent(`Hello, I want to deposit ${amount.toLocaleString()} USDT. Please assist me.`);
 

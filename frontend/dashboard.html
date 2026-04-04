@@ -428,6 +428,7 @@
   .invest-quick-btn { flex:1;padding:6px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);font-size:12px;font-weight:700;color:var(--primary);cursor:pointer;transition:all .15s; }
   .invest-quick-btn:hover { background:var(--gradient-soft);border-color:var(--primary); }
 </style>
+<script src="js/maintenance.js"></script>
 </head>
 <body><div class="desktop-layout">
 <!-- Desktop Sidebar -->
@@ -1332,173 +1333,13 @@
       </div>
       <button onclick="closeFAQ()" style="width:32px;height:32px;border-radius:50%;border:none;background:#F3F4F6;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#6B7280;font-size:18px;line-height:1;">&times;</button>
     </div>
-    <!-- Scrollable Content -->
+    <!-- Scrollable Content — fully dynamic from admin FAQ Settings -->
     <div style="overflow-y:auto;padding:20px;flex:1;-webkit-overflow-scrolling:touch;">
-      <div style="font-size:13px;color:#374151;line-height:1.75;">
-
-        <!-- Notice -->
-        <div style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);border-radius:14px;padding:16px;margin-bottom:20px;border-left:4px solid #F59E0B;">
-          <div style="font-size:13px;font-weight:800;color:#92400E;margin-bottom:8px;">Important Notice from SINGULAR WORK BENCH INC</div>
-          <p style="margin:0 0 8px;">Thank you for your support and trust in SINGULAR WORK BENCH INC. The company currently offers two payment methods — the first is cryptocurrency, and the second is check and bank transfer.</p>
-          <p style="margin:0 0 8px;">SINGULAR WORK BENCH INC accepts cryptocurrency and check or bank transfer below <strong>10K USDT</strong>. Remittances from any bank in the United States and Europe are accepted. For single amounts exceeding <strong>10K USDT</strong>, the transaction fee is borne by the user.</p>
-          <p style="margin:0 0 8px;font-weight:700;">SINGULAR WORK BENCH INC bank check issuance standards:</p>
-          <ul style="margin:0 0 8px;padding-left:18px;">
-            <li>🇺🇸 USA: Chase Bank or Citibank</li>
-            <li>🇪🇺 Europe: Barclays Bank or BNP Paribas</li>
-          </ul>
-          <p style="margin:0 0 6px;">• Amounts <strong>&gt;50K USDT</strong>: FedEx overnight delivery (before noon next day)</p>
-          <p style="margin:0 0 6px;">• Amounts <strong>&lt;30K USDT</strong>: USPS priority, 4–6 working days (min. check: 10K)</p>
-          <p style="margin:0 0 8px;font-style:italic;color:#78350F;">Note: Please provide a detailed address when remitting. Contact customer service to confirm your information before sending funds.</p>
-          <p style="margin:0;">For funds less than <strong>10K USDT</strong>, the company handles all cryptocurrency transactions. Please prepare the corresponding cryptocurrency wallet. Users can sell cryptocurrency on exchanges. USD and USDT/USDC prices are the same; transaction fees are borne by the user.</p>
+      <div id="faqDynamicItems" style="font-size:13px;color:#374151;line-height:1.75;">
+        <div style="text-align:center;padding:32px;color:#9ca3af;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:36px;height:36px;display:block;margin:0 auto 10px;"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Loading...
         </div>
-
-        <div style="font-size:14px;font-weight:800;color:#1F2937;margin-bottom:14px;">FAQs for Targeted Media Transfers</div>
-
-        <!-- Q1 -->
-        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid #8B5CF6;">
-          <div style="font-size:13px;font-weight:800;color:#7C3AED;margin-bottom:8px;">1. How long does it take to transfer from Chase/Citibank (or Barclays/BNP Paribas in Europe)?</div>
-          <p style="margin:0;">If you transfer funds to a designated account, your account will be debited the same day and the bank will pay immediately. The receiving bank usually receives funds after <strong>4 to 6 days</strong>. Funds are usually deposited into the recipient's account within 4 days. Delays may occur due to local bank holidays, intermediary banks, or other local circumstances. Note: some countries have been designated as slow payment countries.</p>
-        </div>
-
-        <!-- Q2 -->
-        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid #8B5CF6;">
-          <div style="font-size:13px;font-weight:800;color:#7C3AED;margin-bottom:8px;">2. Can the transfer be reversed?</div>
-          <p style="margin:0;">International wire transfers primarily for personal, family, or household purposes can be canceled and fully refunded (including any fees) within <strong>30 minutes</strong> of confirmation. We will refund the funds within <strong>6 business days</strong> of your request to cancel the transfer, as long as the funds have not been withdrawn or deposited into the recipient's account.</p>
-        </div>
-
-        <!-- Q3 -->
-        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid #8B5CF6;">
-          <div style="font-size:13px;font-weight:800;color:#7C3AED;margin-bottom:8px;">3. What should I pay attention to when receiving large remittances in the United States?</div>
-          <p style="margin:0 0 8px;">The IRS has clear requirements for small businesses and self-employed individuals receiving large international remittances:</p>
-          <p style="margin:0 0 6px;">• Cash payment transactions exceeding <strong>$10,000</strong> require filing of <strong>Form 8300</strong>.</p>
-          <p style="margin:0;">• If your business receives cash from a buyer in excess of $10,000 in a single transaction or two or more related transactions, you need to submit Form 8300 through the online electronic system.</p>
-        </div>
-
-        <!-- Q4 -->
-        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid #8B5CF6;">
-          <div style="font-size:13px;font-weight:800;color:#7C3AED;margin-bottom:8px;">4. Are wire transfers safe?</div>
-          <p style="margin:0 0 8px;">Wire transfers are generally safe and secure as long as you know the recipient. Legitimate services review the identity of each entity involved in the transaction.</p>
-          <p style="margin:0 0 8px;">International wire transfers from the United States are monitored by the <strong>Office of Foreign Assets Control (OFAC)</strong>, an agency of the US Treasury Department, to ensure funds are not used to finance terrorist activities or money laundering.</p>
-          <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(139,92,246,0.15);">
-            <div style="font-size:12px;font-weight:700;color:#7C3AED;margin-bottom:6px;">Notes on bank wire transfers:</div>
-            <p style="margin:0 0 5px;">• Wire transfers are sent electronically through a global network of banks or money transfer agencies.</p>
-            <p style="margin:0 0 5px;">• You must pay the wire at the time the remitting bank sends it and provide the recipient's name, bank account number, and transfer amount.</p>
-            <p style="margin:0 0 5px;">• Most wire transfers can take up to <strong>two business days</strong> to be processed.</p>
-            <p style="margin:0;">• International wire payments are monitored by OFAC to ensure funds are not sent to terrorist organizations or used for money laundering.</p>
-          </div>
-        </div>
-
-        <!-- Q5 -->
-        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid #8B5CF6;">
-          <div style="font-size:13px;font-weight:800;color:#7C3AED;margin-bottom:8px;">5. Platform Operation Time</div>
-          <p style="margin:0 0 5px;">• Product Maintenance Time: <strong>9:00 AM – 9:00 PM</strong></p>
-          <p style="margin:0 0 5px;">• Agent/User Withdrawal Time: <strong>9:00 AM – 9:00 PM</strong></p>
-          <p style="margin:0;">• Customer Service Online Time: <strong>9:00 AM – 9:00 PM</strong></p>
-        </div>
-
-        <!-- Q6 -->
-        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid #8B5CF6;">
-          <div style="font-size:13px;font-weight:800;color:#7C3AED;margin-bottom:8px;">6. Gifts</div>
-          <p style="margin:0 0 6px;">• <strong>Negative Balance Clearance:</strong> Agents/Users must clear negative balances before submitting gift package orders and continue to retain all products.</p>
-          <p style="margin:0;">• <strong>Random Allocation:</strong> All products are randomly allocated by the system. Agents/users cannot request or refuse specific gift package products. All agents/users have the same chance to obtain gift packages during maintenance tasks.</p>
-        </div>
-
-        <!-- Q7 -->
-        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid #8B5CF6;">
-          <div style="font-size:13px;font-weight:800;color:#7C3AED;margin-bottom:8px;">7. Password</div>
-          <p style="margin:0 0 6px;">• <strong>Different passwords:</strong> Agent/user accounts must set different login and withdrawal passwords.</p>
-          <p style="margin:0 0 6px;">• <strong>Password Reset:</strong> If you forget your password, contact customer service. You need to provide your username and registered mobile phone number (must match your WhatsApp number).</p>
-          <p style="margin:0;">• <strong>Account Freeze:</strong> Entering the wrong login or withdrawal password <strong>3 times</strong> will temporarily freeze your account.</p>
-        </div>
-
-        <!-- Q8 -->
-        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid #8B5CF6;">
-          <div style="font-size:13px;font-weight:800;color:#7C3AED;margin-bottom:8px;">8. Deposit / Withdrawal</div>
-          <p style="margin:0 0 6px;">• <strong>Update USDT address:</strong> The merchant's USDT address may change — contact customer service for the latest address before depositing.</p>
-          <p style="margin:0 0 6px;">• <strong>Merchant wallet:</strong> Merchants receive large amounts daily; it is normal for the USDT address to change. Apply for a new address from customer service.</p>
-          <p style="margin:0 0 6px;">• <strong>Transaction proof:</strong> After completing a transaction, provide a screenshot with TXID. Without it, the merchant cannot review your transaction.</p>
-          <p style="margin:0 0 6px;">• <strong>Withdrawal requirements:</strong> Complete a full set of maintenance tasks before applying for withdrawal. Complete <strong>55 tasks</strong> to withdraw all funds.</p>
-          <p style="margin:0;">• <strong>Withdrawal processing:</strong> After submitting your withdrawal application, customer service will notify the merchant to process a full refund within <strong>1 hour</strong>. If not received, contact customer service immediately.</p>
-        </div>
-
-        <!-- Q9 -->
-        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid #8B5CF6;">
-          <div style="font-size:13px;font-weight:800;color:#7C3AED;margin-bottom:10px;">9. Agent/User Levels</div>
-          <p style="margin:0 0 8px;font-size:12px;color:#6B7280;">Your employee level is based on the amount deposited before starting each maintenance job.</p>
-          <div style="overflow-x:auto;">
-            <table style="width:100%;border-collapse:collapse;font-size:12px;">
-              <thead>
-                <tr style="background:rgba(139,92,246,0.1);">
-                  <th style="padding:8px;text-align:left;color:#7C3AED;font-weight:700;border-radius:8px 0 0 0;">Level</th>
-                  <th style="padding:8px;text-align:center;color:#7C3AED;font-weight:700;">Items</th>
-                  <th style="padding:8px;text-align:center;color:#7C3AED;font-weight:700;">Return</th>
-                  <th style="padding:8px;text-align:center;color:#7C3AED;font-weight:700;border-radius:0 8px 0 0;">Base Salary</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style="border-top:1px solid rgba(139,92,246,0.1);">
-                  <td style="padding:8px;font-weight:700;color:#374151;">Junior</td>
-                  <td style="padding:8px;text-align:center;color:#374151;">40</td>
-                  <td style="padding:8px;text-align:center;color:#374151;">0.4%</td>
-                  <td style="padding:8px;text-align:center;color:#374151;">100 USDT</td>
-                </tr>
-                <tr style="border-top:1px solid rgba(139,92,246,0.1);background:rgba(139,92,246,0.04);">
-                  <td style="padding:8px;font-weight:700;color:#374151;">Mid-Level</td>
-                  <td style="padding:8px;text-align:center;color:#374151;">45</td>
-                  <td style="padding:8px;text-align:center;color:#374151;">0.6%</td>
-                  <td style="padding:8px;text-align:center;color:#374151;">200 USDT</td>
-                </tr>
-                <tr style="border-top:1px solid rgba(139,92,246,0.1);">
-                  <td style="padding:8px;font-weight:700;color:#374151;">Senior</td>
-                  <td style="padding:8px;text-align:center;color:#374151;">50</td>
-                  <td style="padding:8px;text-align:center;color:#374151;">0.8%</td>
-                  <td style="padding:8px;text-align:center;color:#374151;">300 USDT</td>
-                </tr>
-                <tr style="border-top:1px solid rgba(139,92,246,0.1);background:rgba(139,92,246,0.04);">
-                  <td style="padding:8px;font-weight:700;color:#7C3AED;">Mentor</td>
-                  <td style="padding:8px;text-align:center;color:#7C3AED;">55</td>
-                  <td style="padding:8px;text-align:center;color:#7C3AED;">1%</td>
-                  <td style="padding:8px;text-align:center;color:#7C3AED;">400 USDT</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Q10 -->
-        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid #8B5CF6;">
-          <div style="font-size:13px;font-weight:800;color:#7C3AED;margin-bottom:8px;">10. Withdrawal Limits</div>
-          <p style="margin:0 0 8px;">For withdrawals of <strong>10,000 USDT or more</strong>, contact our online customer service for assistance.</p>
-          <div style="overflow-x:auto;">
-            <table style="width:100%;border-collapse:collapse;font-size:12px;">
-              <thead>
-                <tr style="background:rgba(139,92,246,0.1);">
-                  <th style="padding:8px;text-align:left;color:#7C3AED;font-weight:700;">Level</th>
-                  <th style="padding:8px;text-align:center;color:#7C3AED;font-weight:700;">Max Withdrawal</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style="border-top:1px solid rgba(139,92,246,0.1);">
-                  <td style="padding:8px;font-weight:700;color:#374151;">Junior</td>
-                  <td style="padding:8px;text-align:center;color:#374151;">1,000 USDT</td>
-                </tr>
-                <tr style="border-top:1px solid rgba(139,92,246,0.1);background:rgba(139,92,246,0.04);">
-                  <td style="padding:8px;font-weight:700;color:#374151;">Mid-Level</td>
-                  <td style="padding:8px;text-align:center;color:#374151;">5,000 USDT</td>
-                </tr>
-                <tr style="border-top:1px solid rgba(139,92,246,0.1);">
-                  <td style="padding:8px;font-weight:700;color:#374151;">Senior</td>
-                  <td style="padding:8px;text-align:center;color:#374151;">8,000 USDT</td>
-                </tr>
-                <tr style="border-top:1px solid rgba(139,92,246,0.1);background:rgba(139,92,246,0.04);">
-                  <td style="padding:8px;font-weight:700;color:#7C3AED;">Mentor</td>
-                  <td style="padding:8px;text-align:center;color:#7C3AED;">Unlimited</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
       </div>
     </div>
     <!-- Footer Button -->
@@ -1513,11 +1354,36 @@
     const m = document.getElementById('faqModal');
     m.style.display = 'flex';
     document.body.style.overflow = 'hidden';
+    loadFaqContent();
   }
   function closeFAQ() {
     const m = document.getElementById('faqModal');
     m.style.display = 'none';
     document.body.style.overflow = '';
+  }
+  async function loadFaqContent() {
+    const container = document.getElementById('faqDynamicItems');
+    if (!container) return;
+    try {
+      const res = await fetch('/api/public/settings?t=' + Date.now(), { cache: 'no-store' });
+      const data = await res.json();
+      const items = data.success && data.data.faq_items ? JSON.parse(data.data.faq_items || '[]') : [];
+      if (!items.length) {
+        container.innerHTML = `<div style="text-align:center;padding:32px;color:#9ca3af;">No FAQ available yet.</div>`;
+        return;
+      }
+      container.innerHTML = items.map((item, i) => `
+        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid #8B5CF6;">
+          <div style="font-size:13px;font-weight:800;color:#7C3AED;margin-bottom:8px;">${i+1}. ${escapeHtml(item.question)}</div>
+          <p style="margin:0;font-size:13px;color:#374151;line-height:1.75;white-space:pre-wrap;">${escapeHtml(item.answer)}</p>
+        </div>
+      `).join('');
+    } catch(e) {
+      container.innerHTML = `<div style="text-align:center;padding:32px;color:#9ca3af;">Failed to load FAQ.</div>`;
+    }
+  }
+  function escapeHtml(str) {
+    return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 </script>
 

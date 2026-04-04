@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ Settings - Admin Panel</title>
+<link rel="stylesheet" href="css/admin.css">
+<style>
+  .faq-list { display: flex; flex-direction: column; gap: 14px; }
+  .faq-card {
+    background: #fff; border-radius: 12px; border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05); overflow: hidden;
+  }
+  .faq-card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; background: #f9fafb; border-bottom: 1px solid #e5e7eb;
+    gap: 12px;
+  }
+  .faq-card-num {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: linear-gradient(135deg,#8B5CF6,#EC4899);
+    color: #fff; font-size: 13px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .faq-card-title { font-size: 14px; font-weight: 700; color: #1e1b4b; flex: 1; }
+  .faq-card-actions { display: flex; gap: 6px; }
+  .btn-edit { background: #ede9fe; color: #7c3aed; border: none; border-radius: 6px; padding: 5px 12px; font-size: 12px; font-weight: 700; cursor: pointer; }
+  .btn-edit:hover { background: #ddd6fe; }
+  .btn-del { background: #fee2e2; color: #dc2626; border: none; border-radius: 6px; padding: 5px 12px; font-size: 12px; font-weight: 700; cursor: pointer; }
+  .btn-del:hover { background: #fecaca; }
+  .faq-card-body { padding: 14px 16px; font-size: 13px; color: #4b5563; line-height: 1.7; white-space: pre-wrap; }
+  .add-faq-btn {
+    display: flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg,#8B5CF6,#EC4899);
+    color: #fff; border: none; border-radius: 10px;
+    padding: 10px 20px; font-size: 14px; font-weight: 700;
+    cursor: pointer; margin-bottom: 20px;
+  }
+  .add-faq-btn:hover { opacity: 0.9; }
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45); z-index: 9999;
+    align-items: center; justify-content: center;
+  }
+  .modal-box {
+    background: #fff; border-radius: 16px; padding: 28px;
+    width: calc(100% - 40px); max-width: 580px; max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal-title { font-size: 17px; font-weight: 800; color: #1e1b4b; margin-bottom: 20px; }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 6px; }
+  .form-group input, .form-group textarea {
+    width: 100%; padding: 10px 12px; border: 1px solid #d1d5db;
+    border-radius: 8px; font-size: 13px; color: #111;
+    box-sizing: border-box; font-family: inherit;
+  }
+  .form-group textarea { resize: vertical; min-height: 120px; }
+  .form-group input:focus, .form-group textarea:focus {
+    outline: none; border-color: #8B5CF6;
+    box-shadow: 0 0 0 3px rgba(139,92,246,0.15);
+  }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+  .btn-cancel { background: #f3f4f6; color: #374151; border: none; border-radius: 8px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .btn-save { background: linear-gradient(135deg,#8B5CF6,#EC4899); color: #fff; border: none; border-radius: 8px; padding: 10px 24px; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .save-all-btn {
+    background: linear-gradient(135deg,#8B5CF6,#EC4899);
+    color: #fff; border: none; border-radius: 10px;
+    padding: 11px 28px; font-size: 14px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; gap: 8px;
+  }
+  .save-all-btn:hover { opacity: 0.9; }
+  .empty-state {
+    text-align: center; padding: 48px 24px; color: #9ca3af;
+  }
+  .empty-state svg { margin-bottom: 12px; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <div><div>SyncralinkUS</div><span>Admin Panel</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">Main</div>
+    <a href="dashboard.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Dashboard</a>
+    <div class="nav-group-label">Manage</div>
+    <div class="sidebar-dropdown open" id="usersDropdown">
+      <div class="sidebar-link sidebar-dropdown-toggle" onclick="toggleDropdown('usersDropdown')">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+        Users
+        <span class="chevron"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+      </div>
+      <div class="sidebar-dropdown-menu">
+        <a href="users.html" class="sidebar-sub-link"><span class="dot"></span> Member List</a>
+        <a href="prize-records.html" class="sidebar-sub-link"><span class="dot"></span> Prize Records</a>
+        <a href="vip-levels.html" class="sidebar-sub-link"><span class="dot"></span> VIP Levels</a>
+        <a href="points-records.html" class="sidebar-sub-link"><span class="dot"></span> Points Records</a>
+      </div>
+    </div>
+    <a href="products.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span> Products</a>
+    <a href="deposits.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span> Deposits</a>
+    <a href="withdrawals.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span> Withdrawals</a>
+    <div class="nav-group-label">System</div>
+    <a href="spin-prizes.html" class="sidebar-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></span> Spin Prizes</a>
+    <div class="sidebar-dropdown open" id="settingsDropdown">
+      <div class="sidebar-link sidebar-dropdown-toggle" onclick="toggleDropdown('settingsDropdown')">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span> Settings
+        <span class="chevron"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+      </div>
+      <div class="sidebar-dropdown-menu">
+        <a href="settings.html" class="sidebar-sub-link"><span class="dot"></span> Site Settings</a>
+        <a href="events.html" class="sidebar-sub-link"><span class="dot"></span> Events Manager</a>
+        <a href="faq.html" class="sidebar-sub-link active"><span class="dot"></span> FAQ Settings</a>
+      </div>
+    </div>
+    <a href="#" onclick="Admin.logout()" class="sidebar-link" style="color:rgba(239,68,68,0.75);"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Logout</a>
+  </nav>
+  <div class="sidebar-footer">Logged in as: <strong id="adminName">Admin</strong></div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">FAQ Settings</div>
+    <div class="topbar-right">
+      <button class="btn btn-primary" onclick="saveAll()">💾 Save All FAQ</button>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div id="alertBox" class="hidden"></div>
+
+    <div class="card">
+      <div class="card-head" style="display:flex;align-items:center;justify-content:space-between;">
+        <h3>❓ FAQ Items</h3>
+        <button class="btn btn-primary" onclick="openModal()">+ Add FAQ</button>
+      </div>
+      <div class="card-body">
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;">Add questions and answers that will appear in the FAQ section for users.</p>
+        <div id="faqList" class="faq-list">
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5" style="width:48px;height:48px;display:block;margin:0 auto 12px;"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <div style="font-size:14px;font-weight:600;color:#6b7280;">No FAQ items yet</div>
+            <div style="font-size:12px;margin-top:4px;color:#9ca3af;">Click "+ Add FAQ" to create your first question</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div id="faqModal" class="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <div class="modal-title" id="modalTitle">Add FAQ Item</div>
+    <input type="hidden" id="editIndex" value="-1">
+    <div class="form-group">
+      <label class="form-label">Question</label>
+      <input type="text" id="faqQuestion" class="form-control" placeholder="e.g. How do I deposit funds?">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Answer</label>
+      <textarea id="faqAnswer" class="form-control" rows="5" placeholder="Type the answer here..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveFaqItem()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/admin.js"></script>
+<script>
+  let faqItems = [];
+
+  async function loadFaq() {
+    try {
+      const res = await fetch('/api/public/settings');
+      const data = await res.json();
+      if (data.success && data.data && data.data.faq_items) {
+        try { faqItems = JSON.parse(data.data.faq_items); } catch(e) { faqItems = []; }
+      }
+      renderList();
+    } catch(e) { console.error('loadFaq error:', e); renderList(); }
+  }
+
+  function renderList() {
+    const list = document.getElementById('faqList');
+    if (!faqItems.length) {
+      list.innerHTML = `<div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5" style="width:48px;height:48px;display:block;margin:0 auto 12px;"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <div style="font-size:14px;font-weight:600;">No FAQ items yet</div>
+        <div style="font-size:12px;margin-top:4px;">Click "Add FAQ" to create your first question</div>
+      </div>`;
+      return;
+    }
+    list.innerHTML = faqItems.map((item, i) => `
+      <div class="faq-card">
+        <div class="faq-card-header">
+          <div class="faq-card-num">${i + 1}</div>
+          <div class="faq-card-title">${escHtml(item.question)}</div>
+          <div class="faq-card-actions">
+            <button class="btn-edit" onclick="editItem(${i})">Edit</button>
+            <button class="btn-del" onclick="deleteItem(${i})">Delete</button>
+          </div>
+        </div>
+        <div class="faq-card-body">${escHtml(item.answer)}</div>
+      </div>
+    `).join('');
+  }
+
+  function escHtml(str) {
+    return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function openModal(index = -1) {
+    document.getElementById('editIndex').value = index;
+    document.getElementById('modalTitle').textContent = index === -1 ? 'Add FAQ Item' : 'Edit FAQ Item';
+    document.getElementById('faqQuestion').value = index === -1 ? '' : faqItems[index].question;
+    document.getElementById('faqAnswer').value = index === -1 ? '' : faqItems[index].answer;
+    document.getElementById('faqModal').style.display = 'flex';
+  }
+
+  function closeModal() {
+    document.getElementById('faqModal').style.display = 'none';
+  }
+
+  function editItem(i) { openModal(i); }
+
+  function deleteItem(i) {
+    if (!confirm('Delete this FAQ item?')) return;
+    faqItems.splice(i, 1);
+    renderList();
+  }
+
+  function saveFaqItem() {
+    const q = document.getElementById('faqQuestion').value.trim();
+    const a = document.getElementById('faqAnswer').value.trim();
+    if (!q || !a) { alert('Please fill in both question and answer.'); return; }
+    const idx = parseInt(document.getElementById('editIndex').value);
+    if (idx === -1) {
+      faqItems.push({ question: q, answer: a });
+    } else {
+      faqItems[idx] = { question: q, answer: a };
+    }
+    renderList();
+    closeModal();
+  }
+
+  async function saveAll() {
+    try {
+      const token = sessionStorage.getItem('admin_token');
+      const res = await fetch('/api/admin/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ settings: [{ key: 'faq_items', value: JSON.stringify(faqItems) }] })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert('FAQ saved successfully!');
+      } else {
+        alert('Error saving FAQ: ' + data.message);
+      }
+    } catch(e) {
+      alert('Network error. Please try again.');
+    }
+  }
+
+  loadFaq();
+</script>
+</body>
+</html>
