@@ -260,19 +260,7 @@ async function startServer() {
         console.log('✅ Fresh schema + admin seeded! Login: admin / Admin@123');
     }
 
-    // ─── Fix old default values on existing DB (runs every startup, safe) ───────
-    try {
-        // Always ensure correct site name
-        sqliteDb.run(`INSERT OR REPLACE INTO settings (setting_key, setting_value, description) VALUES ('site_name', 'SyncralinkUS', 'Website name')`);
-        sqliteDb.run(`INSERT OR REPLACE INTO settings (setting_key, setting_value, description) VALUES ('support_email', 'support@syncralinkus.com', 'Support email')`);
-        sqliteDb.run(`INSERT OR REPLACE INTO settings (setting_key, setting_value, description) VALUES ('support_telegram', 'https://t.me/CodefinityCS', 'Telegram handle')`);
-        sqliteDb.run(`INSERT OR REPLACE INTO settings (setting_key, setting_value, description) VALUES ('telegram_link', 'https://t.me/CodefinityCS', 'Telegram link for deposit page')`);
-        sqliteDb.run(`INSERT OR REPLACE INTO settings (setting_key, setting_value, description) VALUES ('whatsapp_link', 'https://wa.me/12352178513', 'WhatsApp link for deposit page')`);
-
-
-        const dbData = sqliteDb.export(); fs.writeFileSync(DB_FILE, Buffer.from(dbData));
-        console.log('✅ Site name and contact links verified');
-    } catch(e) { console.log('Settings fix note:', e.message); }
+    // NOTE: All settings use INSERT OR IGNORE above — admin changes in DB are always preserved on deploy.
 
     // Seed default FAQ items (INSERT OR IGNORE — admin edits are preserved)
     try {
