@@ -3,7 +3,7 @@ const initSqlJs = require('sql.js');
 const fs = require('fs');
 const path = require('path');
 
-const DB_FILE = path.join(__dirname, '../../database/investpro.db');
+const DB_FILE = process.env.DB_PATH || path.join(__dirname, '../../database/investpro.db');
 
 let sqliteDb = null; // will be set after init
 
