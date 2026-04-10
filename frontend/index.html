@@ -356,7 +356,7 @@
     <div class="blob-2"></div>
 
     <div class="left-content">
-      <div class="brand-logo">Syncralink<span>US</span></div>
+      <div class="brand-logo" id="brandLogo">Syncralink<span>US</span></div>
 
       <div class="welcome-label">Commission Platform</div>
       <h1 class="welcome-title">Welcome<br>Back.</h1>
@@ -499,6 +499,19 @@
   }
 
   loadProducts();
+
+  // Load site name from admin settings
+  (async function loadSiteName() {
+    try {
+      const res = await fetch('/api/public/settings');
+      const json = await res.json();
+      const name = json.data?.site_name;
+      if (name) {
+        document.getElementById('brandLogo').textContent = name;
+        document.title = name + ' - Earn While You Shop';
+      }
+    } catch (e) { /* keep default */ }
+  })();
 </script>
 <script src="js/transitions.js"></script>
 </body>
