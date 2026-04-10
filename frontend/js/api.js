@@ -4,6 +4,20 @@
 
 const API_BASE = '/api';
 
+// Load site name from admin settings and apply to all [data-site-name] elements
+(async function applySiteName() {
+    try {
+        const res = await fetch('/api/public/settings');
+        const json = await res.json();
+        const name = json.data?.site_name;
+        if (!name) return;
+        // Update all marked elements
+        document.querySelectorAll('[data-site-name]').forEach(el => el.textContent = name);
+        // Update page title
+        if (document.title) document.title = document.title.replace('SyncralinkUS', name);
+    } catch(e) {}
+})();
+
 // Get token from localStorage
 function getToken() {
     return localStorage.getItem('token');
