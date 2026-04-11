@@ -4,18 +4,28 @@
 
 const API_BASE = '/api';
 
-// Load site name from admin settings and apply to all [data-site-name] elements
-(async function applySiteName() {
-    try {
-        const res = await fetch('/api/public/settings');
-        const json = await res.json();
-        const name = json.data?.site_name;
+// Load site name — apply cached value instantly (no flash), then refresh from API
+(function applySiteName() {
+    function applyName(name) {
         if (!name) return;
-        // Update all marked elements
         document.querySelectorAll('[data-site-name]').forEach(el => el.textContent = name);
-        // Update page title
         if (document.title) document.title = document.title.replace('SyncralinkUS', name);
-    } catch(e) {}
+    }
+
+    // Apply cached name immediately (no flash)
+    const cached = localStorage.getItem('site_name');
+    if (cached) applyName(cached);
+
+    // Fetch fresh from API and update cache
+    fetch('/api/public/settings')
+        .then(r => r.json())
+        .then(json => {
+            const name = json.data?.site_name;
+            if (!name) return;
+            localStorage.setItem('site_name', name);
+            applyName(name);
+        })
+        .catch(() => {});
 })();
 
 // Get token from localStorage
