@@ -4,29 +4,6 @@
 
 const API_BASE = '/api';
 
-// Load site name — apply cached value instantly (no flash), then refresh from API
-(function applySiteName() {
-    function applyName(name) {
-        if (!name) return;
-        document.querySelectorAll('[data-site-name]').forEach(el => el.textContent = name);
-        if (document.title) document.title = document.title.replace('SyncralinkUS', name);
-    }
-
-    // Apply cached name immediately (no flash)
-    const cached = localStorage.getItem('site_name');
-    if (cached) applyName(cached);
-
-    // Fetch fresh from API and update cache
-    fetch('/api/public/settings')
-        .then(r => r.json())
-        .then(json => {
-            const name = json.data?.site_name;
-            if (!name) return;
-            localStorage.setItem('site_name', name);
-            applyName(name);
-        })
-        .catch(() => {});
-})();
 
 // Get token from localStorage
 function getToken() {
