@@ -1,6 +1,5 @@
-// Prevent site name flash — must be loaded in <head>
+// Prevent site name flash — must be loaded in <head> (admin version)
 (function () {
-    // 1. Inject CSS to hide brand elements BEFORE browser paints them
     var style = document.createElement('style');
     style.id = 'sn-hide';
     style.textContent = '[data-site-name]{visibility:hidden}';
@@ -23,12 +22,10 @@
     }
 
     function init() {
-        // If we have cached name: apply instantly + unhide (zero flash)
         if (cached) {
             applyName(cached);
             unhide();
         }
-        // Always fetch fresh from API in background
         fetch('/api/public/settings')
             .then(function (r) { return r.json(); })
             .then(function (json) {
@@ -37,11 +34,10 @@
                     localStorage.setItem('site_name', name);
                     applyName(name);
                 }
-                // If no cache: only unhide AFTER API returns (no flash of wrong name)
                 if (!cached) unhide();
             })
             .catch(function () {
-                unhide(); // fallback on error
+                unhide();
             });
     }
 
