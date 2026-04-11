@@ -6,13 +6,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-    --primary: #8B5CF6;
-    --primary-dark: #6D28D9;
-    --secondary: #EC4899;
-    --gradient: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
-    --gradient-soft: linear-gradient(135deg, #EDE9FE 0%, #FCE7F3 100%);
-    --dark: #1E1B4B;
-    --dark-2: #2D2B55;
+    --primary: #F47920;
+    --primary-dark: #E8620A;
+    --secondary: #00C8E8;
+    --gradient: linear-gradient(135deg, #F47920 0%, #E8620A 100%);
+    --gradient-soft: rgba(244,121,32,0.08);
+    --dark: #0a0c10;
+    --dark-2: #0f1015;
     --text: #374151;
     --text-light: #6B7280;
     --border: #E5E7EB;

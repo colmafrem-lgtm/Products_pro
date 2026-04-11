@@ -20,7 +20,7 @@
     border: 2px solid transparent; transition: all .15s;
   }
   .accent-opt:hover { transform: scale(1.1); }
-  .accent-opt.selected { border-color: #7c3aed; box-shadow: 0 0 0 2px rgba(139,92,246,.4); }
+  .accent-opt.selected { border-color: #7c3aed; box-shadow: 0 0 0 2px rgba(244,121,32,.4); }
   .upcoming-item {
     display: flex; align-items: center; justify-content: space-between;
     padding: 10px 14px; background: #f9fafb; border-radius: 8px;
@@ -39,7 +39,7 @@
 <aside class="sidebar">
   <div class="sidebar-logo">
     <div class="sidebar-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-    <div><div>SyncralinkUS</div><span>Admin Panel</span></div>
+    <div><span>Admin Panel</span></div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-group-label">Main</div>
@@ -74,7 +74,7 @@
         <a href="events.html" class="sidebar-sub-link active"><span class="dot"></span> Events Manager</a>
       </div>
     </div>
-    <a href="#" onclick="Admin.logout()" class="sidebar-link" style="color:rgba(239,68,68,0.75);"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Logout</a>
+    <a href="#" onclick="confirmLogout()" class="sidebar-link" style="color:rgba(239,68,68,0.75);"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Logout</a>
   </nav>
   <div class="sidebar-footer">Logged in as: <strong id="adminName">Admin</strong></div>
 </aside>
@@ -83,7 +83,7 @@
   <div class="topbar">
     <div class="topbar-title">Events Manager</div>
     <div class="topbar-right">
-      <div class="admin-avatar" id="adminInitial">A</div>
+      <button class="theme-toggle" id="darkModeToggle" onclick="toggleDarkMode()" aria-label="Toggle dark mode" title="Toggle dark mode"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></button>
     </div>
   </div>
 
@@ -198,7 +198,7 @@
           <div class="form-group">
             <label class="form-label">Tag Color</label>
             <div class="color-swatches" id="tagColorSwatches">
-              <div class="color-swatch selected" data-color="#7C3AED" data-bg="#EDE9FE" style="background:#7C3AED;" title="Purple"></div>
+              <div class="color-swatch selected" data-color="#F47920" data-bg="#EDE9FE" style="background:#F47920;" title="Purple"></div>
               <div class="color-swatch" data-color="#D97706" data-bg="#FEF3C7" style="background:#D97706;" title="Amber"></div>
               <div class="color-swatch" data-color="#065F46" data-bg="#D1FAE5" style="background:#065F46;" title="Green"></div>
               <div class="color-swatch" data-color="#4338CA" data-bg="#E0E7FF" style="background:#4338CA;" title="Indigo"></div>
@@ -207,21 +207,21 @@
               <div class="color-swatch" data-color="#B45309" data-bg="#FEF3C7" style="background:#B45309;" title="Orange"></div>
               <div class="color-swatch" data-color="#374151" data-bg="#F3F4F6" style="background:#374151;" title="Gray"></div>
             </div>
-            <input type="hidden" id="new_tagColor" value="#7C3AED">
+            <input type="hidden" id="new_tagColor" value="#F47920">
             <input type="hidden" id="new_tagBg" value="#EDE9FE">
           </div>
 
           <div class="form-group">
             <label class="form-label">Accent Color (Card Left Bar)</label>
             <div class="accent-options" id="accentOptions">
-              <div class="accent-opt selected" data-gradient="linear-gradient(#8B5CF6,#EC4899)" style="background:linear-gradient(#8B5CF6,#EC4899);" title="Purple–Pink"></div>
+              <div class="accent-opt selected" data-gradient="linear-gradient(#F47920,#00C8E8)" style="background:linear-gradient(#F47920,#00C8E8);" title="Purple–Pink"></div>
               <div class="accent-opt" data-gradient="linear-gradient(#F59E0B,#EF4444)" style="background:linear-gradient(#F59E0B,#EF4444);" title="Amber–Red"></div>
               <div class="accent-opt" data-gradient="linear-gradient(#10B981,#3B82F6)" style="background:linear-gradient(#10B981,#3B82F6);" title="Green–Blue"></div>
-              <div class="accent-opt" data-gradient="linear-gradient(#6366F1,#8B5CF6)" style="background:linear-gradient(#6366F1,#8B5CF6);" title="Indigo–Purple"></div>
-              <div class="accent-opt" data-gradient="linear-gradient(#EC4899,#F59E0B)" style="background:linear-gradient(#EC4899,#F59E0B);" title="Pink–Amber"></div>
+              <div class="accent-opt" data-gradient="linear-gradient(#6366F1,#F47920)" style="background:linear-gradient(#6366F1,#F47920);" title="Indigo–Purple"></div>
+              <div class="accent-opt" data-gradient="linear-gradient(#00C8E8,#F59E0B)" style="background:linear-gradient(#00C8E8,#F59E0B);" title="Pink–Amber"></div>
               <div class="accent-opt" data-gradient="linear-gradient(#3B82F6,#10B981)" style="background:linear-gradient(#3B82F6,#10B981);" title="Blue–Green"></div>
             </div>
-            <input type="hidden" id="new_accentColor" value="linear-gradient(#8B5CF6,#EC4899)">
+            <input type="hidden" id="new_accentColor" value="linear-gradient(#F47920,#00C8E8)">
           </div>
 
           <div class="section-save-btn">

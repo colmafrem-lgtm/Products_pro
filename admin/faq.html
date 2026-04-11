@@ -18,7 +18,7 @@
   }
   .faq-card-num {
     width: 28px; height: 28px; border-radius: 8px;
-    background: linear-gradient(135deg,#8B5CF6,#EC4899);
+    background: linear-gradient(135deg,#F47920,#00C8E8);
     color: #fff; font-size: 13px; font-weight: 800;
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
@@ -31,7 +31,7 @@
   .faq-card-body { padding: 14px 16px; font-size: 13px; color: #4b5563; line-height: 1.7; white-space: pre-wrap; }
   .add-faq-btn {
     display: flex; align-items: center; gap: 8px;
-    background: linear-gradient(135deg,#8B5CF6,#EC4899);
+    background: linear-gradient(135deg,#F47920,#00C8E8);
     color: #fff; border: none; border-radius: 10px;
     padding: 10px 20px; font-size: 14px; font-weight: 700;
     cursor: pointer; margin-bottom: 20px;
@@ -57,14 +57,14 @@
   }
   .form-group textarea { resize: vertical; min-height: 120px; }
   .form-group input:focus, .form-group textarea:focus {
-    outline: none; border-color: #8B5CF6;
-    box-shadow: 0 0 0 3px rgba(139,92,246,0.15);
+    outline: none; border-color: #F47920;
+    box-shadow: 0 0 0 3px rgba(244,121,32,0.15);
   }
   .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
   .btn-cancel { background: #f3f4f6; color: #374151; border: none; border-radius: 8px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; }
-  .btn-save { background: linear-gradient(135deg,#8B5CF6,#EC4899); color: #fff; border: none; border-radius: 8px; padding: 10px 24px; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .btn-save { background: linear-gradient(135deg,#F47920,#00C8E8); color: #fff; border: none; border-radius: 8px; padding: 10px 24px; font-size: 14px; font-weight: 700; cursor: pointer; }
   .save-all-btn {
-    background: linear-gradient(135deg,#8B5CF6,#EC4899);
+    background: linear-gradient(135deg,#F47920,#00C8E8);
     color: #fff; border: none; border-radius: 10px;
     padding: 11px 28px; font-size: 14px; font-weight: 700;
     cursor: pointer; display: flex; align-items: center; gap: 8px;
@@ -81,7 +81,7 @@
 <aside class="sidebar">
   <div class="sidebar-logo">
     <div class="sidebar-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-    <div><div>SyncralinkUS</div><span>Admin Panel</span></div>
+    <div><span>Admin Panel</span></div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-group-label">Main</div>
@@ -116,7 +116,7 @@
         <a href="faq.html" class="sidebar-sub-link active"><span class="dot"></span> FAQ Settings</a>
       </div>
     </div>
-    <a href="#" onclick="Admin.logout()" class="sidebar-link" style="color:rgba(239,68,68,0.75);"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Logout</a>
+    <a href="#" onclick="confirmLogout()" class="sidebar-link" style="color:rgba(239,68,68,0.75);"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Logout</a>
   </nav>
   <div class="sidebar-footer">Logged in as: <strong id="adminName">Admin</strong></div>
 </aside>

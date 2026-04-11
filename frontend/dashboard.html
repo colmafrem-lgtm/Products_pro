@@ -5,21 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard - SyncralinkUS</title>
 <link rel="stylesheet" href="css/style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
 <script src="js/sitename.js"></script>
 <style>
   .hero-dashboard {
-    background: var(--gradient);
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a0e00 60%, #0a0c10 100%);
     padding: 28px 20px 28px;
     position: relative;
     overflow: hidden;
   }
   .hero-dashboard::before {
     content:''; position:absolute; top:-60px; right:-60px;
-    width:200px; height:200px; background:rgba(255,255,255,0.08); border-radius:50%;
+    width:220px; height:220px;
+    background: radial-gradient(circle, rgba(244,121,32,0.18), transparent 70%);
+    border-radius:50%;
   }
   .hero-dashboard::after {
     content:''; position:absolute; bottom:-40px; left:-40px;
-    width:150px; height:150px; background:rgba(255,255,255,0.05); border-radius:50%;
+    width:160px; height:160px;
+    background: radial-gradient(circle, rgba(0,180,220,0.12), transparent 70%);
+    border-radius:50%;
   }
   .greeting { color:rgba(255,255,255,0.8); font-size:13px; font-weight:500; }
   .username { color:#fff; font-size:22px; font-weight:800; margin-top:3px; }
@@ -30,8 +36,8 @@
     padding: 22px 22px 20px;
     position: relative;
     overflow: hidden;
-    background: linear-gradient(135deg, #f093fb 0%, #c471ed 40%, #8B5CF6 100%);
-    box-shadow: 0 12px 36px rgba(139,92,246,0.38), 0 4px 12px rgba(196,113,237,0.25);
+    background: linear-gradient(135deg, #1a0e00 0%, #2a1400 40%, #0f0f0f 100%);
+    box-shadow: 0 12px 36px rgba(244,121,32,0.25), 0 4px 12px rgba(0,0,0,0.4);
     min-height: 175px;
     display: flex;
     flex-direction: column;
@@ -75,23 +81,24 @@
   .balance-label, .balance-amount, .balance-sub, .balance-actions { display:none; }
   /* ── Daily Progress Card ── */
   .daily-progress {
-    background: linear-gradient(135deg, #1E1B4B 0%, #2D2B55 60%, #3D1F6B 100%);
+    background: linear-gradient(135deg, #0a0c10 0%, #0f1015 60%, #0a0c10 100%);
     border-radius: 22px;
     padding: 22px 20px 20px;
     margin-top: 16px;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 12px 40px rgba(30,27,75,0.35), 0 4px 12px rgba(139,92,246,0.25);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 4px 12px rgba(244,121,32,0.1);
+    border: 1px solid rgba(255,255,255,0.06);
   }
   .daily-progress::before {
     content:''; position:absolute; top:-50px; right:-40px;
     width:160px; height:160px; border-radius:50%;
-    background: rgba(139,92,246,0.15);
+    background: radial-gradient(circle, rgba(244,121,32,0.12), transparent 70%);
   }
   .daily-progress::after {
     content:''; position:absolute; bottom:-60px; left:-30px;
     width:140px; height:140px; border-radius:50%;
-    background: rgba(236,72,153,0.1);
+    background: radial-gradient(circle, rgba(0,180,220,0.08), transparent 70%);
   }
   .dp-header { display:flex; align-items:center; justify-content:space-between; position:relative; z-index:2; margin-bottom:18px; }
   .dp-title { font-size:15px; font-weight:800; color:#fff; display:flex; align-items:center; gap:8px; }
@@ -121,7 +128,7 @@
   .dp-bar-track { height:5px; background:rgba(255,255,255,0.12); border-radius:50px; overflow:hidden; margin-top:14px; position:relative; z-index:2; }
   .dp-bar-fill {
     height:100%; border-radius:50px;
-    background: linear-gradient(90deg, #8B5CF6, #EC4899);
+    background: linear-gradient(90deg, #F47920, #00C8E8);
     transition: width 1s ease;
     position:relative; overflow:hidden;
   }
@@ -135,15 +142,17 @@
   .dp-bar-labels { display:flex; justify-content:space-between; font-size:10px; color:rgba(255,255,255,0.4); margin-top:4px; position:relative; z-index:2; }
   /* start button */
   .dp-btn {
-    margin-top:16px; width:100%; padding:13px;
+    margin-top:16px; width:100%; padding:14px;
     border:none; border-radius:14px; cursor:pointer; position:relative; z-index:2;
-    font-size:15px; font-weight:800; color:#fff;
-    background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
-    box-shadow: 0 4px 16px rgba(139,92,246,0.4);
+    font-size:15px; font-weight:600; color:#fff;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.5px;
+    background: linear-gradient(135deg, #F47920 0%, #E8620A 100%);
+    box-shadow: 0 4px 16px rgba(244,121,32,0.45);
     display:flex; align-items:center; justify-content:center; gap:8px;
     transition: transform .15s, box-shadow .15s;
   }
-  .dp-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(139,92,246,0.5); }
+  .dp-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(244,121,32,0.6); }
   .gauge-num { font-size:22px; font-weight:800; color:var(--dark); }
   .gauge-lbl { font-size:11px; color:var(--text-light); }
   .quick-actions { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:16px; }
@@ -153,9 +162,9 @@
     text-decoration:none; display:block; transition:transform .2s, box-shadow .2s;
     border:1px solid var(--border);
   }
-  .quick-action:hover { box-shadow:0 6px 20px rgba(139,92,246,0.15); transform:translateY(-2px); }
+  .quick-action:hover { box-shadow:0 6px 20px rgba(244,121,32,0.15); transform:translateY(-2px); }
   .quick-action:active { transform:scale(0.95); }
-  .qa-icon { display:flex; justify-content:center; margin-bottom:6px; color:var(--primary); }
+  .qa-icon { display:flex; justify-content:center; margin-bottom:6px; color:#F47920; }
   .qa-label { font-size:11px; color:var(--text-light); font-weight:600; }
 
   /* ── VIP Widget ── */
@@ -165,7 +174,7 @@
     padding:16px 20px 12px;
   }
   .vip-widget-head .title { font-size:16px; font-weight:700; color:var(--dark); display:flex; align-items:center; gap:8px; }
-  .vip-view-more { font-size:12px; color:var(--primary); font-weight:600; text-decoration:none; display:flex; align-items:center; gap:3px; }
+  .vip-view-more { font-size:12px; color:#F47920; font-weight:600; text-decoration:none; display:flex; align-items:center; gap:3px; }
 
   /* Icon row */
   .vip-icons-row { display:flex; gap:10px; padding:0 20px 16px; }
@@ -174,25 +183,25 @@
     cursor:pointer; padding:10px 6px; border-radius:12px; border:2px solid transparent;
     transition:all .2s; background:transparent;
   }
-  .vip-icon-btn.active { border-color:var(--primary); background:var(--gradient-soft); }
+  .vip-icon-btn.active { border-color:#F47920; background:rgba(244,121,32,0.08); }
   .vip-icon-btn .vip-badge-img {
     width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center;
     font-size:22px; font-weight:800;
   }
   .vip-icon-btn .vip-badge-name { font-size:10px; font-weight:700; color:var(--text-light); }
-  .vip-icon-btn.active .vip-badge-name { color:var(--primary); }
+  .vip-icon-btn.active .vip-badge-name { color:#F47920; }
 
   /* Detail panel */
   .vip-detail {
     margin:0 16px 16px; padding:16px; border-radius:12px;
-    background:var(--gradient-soft); border:1px solid rgba(139,92,246,0.15);
+    background:rgba(244,121,32,0.06); border:1px solid rgba(244,121,32,0.15);
   }
   .vip-detail-name { font-size:15px; font-weight:800; color:var(--dark); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
-  .vip-detail-name .current-tag { font-size:10px; background:var(--gradient); color:#fff; padding:2px 8px; border-radius:50px; font-weight:700; }
+  .vip-detail-name .current-tag { font-size:10px; background:linear-gradient(135deg,#F47920,#E8620A); color:#fff; padding:2px 8px; border-radius:50px; font-weight:700; }
   .vip-detail-rows { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
   .vip-stat { background:#fff; border-radius:10px; padding:10px 12px; }
   .vip-stat .vs-label { font-size:10px; color:var(--text-light); font-weight:600; text-transform:uppercase; letter-spacing:.5px; margin-bottom:3px; }
-  .vip-stat .vs-value { font-size:16px; font-weight:800; color:var(--primary); }
+  .vip-stat .vs-value { font-size:16px; font-weight:800; color:#F47920; }
   .vip-desc { font-size:12px; color:var(--text-light); line-height:1.6; margin-bottom:12px; }
   .vip-min-deposit { display:flex; align-items:center; justify-content:space-between; }
   .vip-min-deposit .label { font-size:12px; color:var(--text-light); }
@@ -300,7 +309,7 @@
 
   /* ── Withdrawal Ticker ── */
   .ticker-wrap {
-    background: linear-gradient(135deg, #1a0a2e, #2d1060);
+    background: linear-gradient(135deg, #050608, #0a0c10);
     overflow: hidden;
     padding: 9px 0;
     display: flex;
@@ -310,7 +319,7 @@
   }
   .ticker-label {
     flex-shrink: 0;
-    background: linear-gradient(135deg, #8B5CF6, #EC4899);
+    background: linear-gradient(135deg, #00C8E8, #0099CC);
     color: #fff;
     font-size: 10px;
     font-weight: 800;
@@ -344,11 +353,11 @@
   }
   .ticker-item .t-dot {
     width: 6px; height: 6px; border-radius: 50%;
-    background: #10B981; flex-shrink: 0;
+    background: #00C8E8; flex-shrink: 0;
     box-shadow: 0 0 6px rgba(16,185,129,0.8);
     animation: pulse-dot 2s ease-in-out infinite;
   }
-  .ticker-item .t-amount { color: #4ade80; font-weight: 800; }
+  .ticker-item .t-amount { color: #F47920; font-weight: 800; }
   .ticker-item .t-sep { color: rgba(255,255,255,0.2); margin: 0 4px; }
   @keyframes ticker-scroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
   @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(0.7)} }
@@ -416,18 +425,18 @@
     animation: slideUp .28s cubic-bezier(0.22,0.61,0.36,1);
   }
   @keyframes slideUp { from{transform:translateY(100%);opacity:0} to{transform:translateY(0);opacity:1} }
-  .invest-modal-img { width:100%;height:200px;object-fit:cover;background:var(--gradient-soft); }
+  .invest-modal-img { width:100%;height:200px;object-fit:cover;background:rgba(244,121,32,0.08); }
   .invest-modal-body { padding:20px 20px 36px; }
   .invest-modal-body h3 { font-size:20px;font-weight:800;color:var(--dark); }
-  .invest-modal-body .im-price { font-size:28px;font-weight:900;color:var(--primary);margin:6px 0 4px; }
+  .invest-modal-body .im-price { font-size:28px;font-weight:900;color:#F47920;margin:6px 0 4px; }
   .invest-modal-body .im-desc { font-size:13px;color:var(--text-light);line-height:1.65;margin-bottom:16px; }
   .invest-stats { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px; }
   .invest-stat { background:var(--bg);border-radius:12px;padding:12px 14px; }
   .invest-stat .is-label { font-size:10px;color:var(--text-light);font-weight:700;text-transform:uppercase;letter-spacing:.4px; }
   .invest-stat .is-value { font-size:18px;font-weight:800;color:var(--dark);margin-top:4px; }
   .invest-quick-btns { display:flex;gap:8px;margin-top:8px; }
-  .invest-quick-btn { flex:1;padding:6px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);font-size:12px;font-weight:700;color:var(--primary);cursor:pointer;transition:all .15s; }
-  .invest-quick-btn:hover { background:var(--gradient-soft);border-color:var(--primary); }
+  .invest-quick-btn { flex:1;padding:6px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);font-size:12px;font-weight:700;color:#F47920;cursor:pointer;transition:all .15s; }
+  .invest-quick-btn:hover { background:rgba(244,121,32,0.08);border-color:#F47920; }
 </style>
 <script src="js/maintenance.js"></script>
 </head>
@@ -588,10 +597,10 @@
 
     <!-- Card Actions -->
     <div class="cc-actions">
-      <a href="wallet.html" class="btn btn-primary" style="gap:6px;">
+      <a href="wallet.html" class="btn btn-primary" style="gap:6px;background:linear-gradient(135deg,#00C8E8,#0099CC);border:none;box-shadow:0 4px 16px rgba(0,180,220,0.4);">
         <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg> Deposit
       </a>
-      <a href="wallet.html?tab=withdraw" class="btn btn-outline" style="gap:6px;">
+      <a href="wallet.html?tab=withdraw" class="btn btn-outline" style="gap:6px;background:linear-gradient(135deg,#F47920,#E8620A);border:none;color:#fff;box-shadow:0 4px 16px rgba(244,121,32,0.4);">
         <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><circle cx="12" cy="12" r="10"/><polyline points="16 12 12 8 8 12"/><line x1="12" y1="16" x2="12" y2="8"/></svg> Withdraw
       </a>
     </div>
@@ -696,7 +705,7 @@
               <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);border:2px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:3;">
                 <svg viewBox="0 0 24 24" fill="white" style="width:24px;height:24px;"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
               </div>
-              <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#f093fb,#f5576c);border:2px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:-12px;z-index:2;">
+              <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#F47920,#E8620A);border:2px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:-12px;z-index:2;">
                 <svg viewBox="0 0 24 24" fill="white" style="width:24px;height:24px;"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
               </div>
               <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#4facfe,#00f2fe);border:2px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:-12px;z-index:1;">
@@ -744,7 +753,7 @@
     <div class="vip-widget">
       <div class="vip-widget-head">
         <div class="title">
-          <svg viewBox="0 0 24 24" style="color:var(--primary);width:20px;height:20px;stroke:var(--primary);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><polyline points="6 3 18 3 22 9 12 22 2 9 6 3"/><line x1="2" y1="9" x2="22" y2="9"/><line x1="12" y1="3" x2="6" y2="9"/><line x1="12" y1="3" x2="18" y2="9"/></svg>
+          <svg viewBox="0 0 24 24" style="color:#F47920;width:20px;height:20px;stroke:#F47920;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><polyline points="6 3 18 3 22 9 12 22 2 9 6 3"/><line x1="2" y1="9" x2="22" y2="9"/><line x1="12" y1="3" x2="6" y2="9"/><line x1="12" y1="3" x2="18" y2="9"/></svg>
           VIP Levels
         </div>
         <a href="#" class="vip-view-more" onclick="showVipPage()" data-no-transition>
@@ -753,32 +762,7 @@
       </div>
 
       <!-- 4 VIP icon buttons -->
-      <div class="vip-icons-row">
-        <button class="vip-icon-btn active" onclick="selectVip(0)" id="vipBtn0">
-          <div class="vip-badge-img" style="background:linear-gradient(135deg,#b45309,#92400e);">
-            <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg>
-          </div>
-          <div class="vip-badge-name">Bronze</div>
-        </button>
-        <button class="vip-icon-btn" onclick="selectVip(1)" id="vipBtn1">
-          <div class="vip-badge-img" style="background:linear-gradient(135deg,#64748b,#475569);">
-            <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg>
-          </div>
-          <div class="vip-badge-name">Silver</div>
-        </button>
-        <button class="vip-icon-btn" onclick="selectVip(2)" id="vipBtn2">
-          <div class="vip-badge-img" style="background:linear-gradient(135deg,#d97706,#b45309);">
-            <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z"/></svg>
-          </div>
-          <div class="vip-badge-name">Gold</div>
-        </button>
-        <button class="vip-icon-btn" onclick="selectVip(3)" id="vipBtn3">
-          <div class="vip-badge-img" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);">
-            <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/><circle cx="12" cy="12" r="3" fill="#fff" stroke="none"/></svg>
-          </div>
-          <div class="vip-badge-name">Platinum</div>
-        </button>
-      </div>
+      <div class="vip-icons-row" id="vipIconsRow"></div>
 
       <!-- Detail Panel -->
       <div class="vip-detail" id="vipDetail"></div>
@@ -852,7 +836,7 @@
     track.innerHTML = items.map(m => `
       <span class="ticker-item">
         <span class="t-dot"></span>
-        🎉 Congrats <strong style="color:#e9d5ff;">${m.user}</strong>
+        🎉 Congrats <strong style="color:#00C8E8;">${m.user}</strong>
         <span class="t-sep">—</span>
         Successful withdraw <span class="t-amount">${m.amount}</span>
         <span class="t-sep">·</span>
@@ -862,6 +846,28 @@
   })();
 
   requireAuth();
+
+  // ── Professional VIP Icons (Lucide-style line icons, matching admin panel) ──
+  function makeVipIcon(kind, color, size) {
+    const c = color || '#7c3aed';
+    const s = size || 44;
+    const base = `fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"`;
+    const paths = {
+      medal:   `<path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"/><path d="M11 12 5.12 2.2"/><path d="m13 12 5.88-9.8"/><path d="M8 7h8"/><circle cx="12" cy="17" r="5"/><path d="M12 18v-2h-.5"/>`,
+      shield:  `<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>`,
+      crown:   `<path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/>`,
+      diamond: `<path d="M6 3h12l4 6-10 12L2 9z"/><path d="M11 3 8 9l4 12 4-12-3-6"/><path d="M2 9h20"/>`
+    };
+    return `<svg viewBox="0 0 24 24" style="width:${s}px;height:${s}px;" ${base}>${paths[kind]||paths.shield}</svg>`;
+  }
+  const VIP_META = [
+    { kind:'medal',   color:'#cd7f32' }, // Bronze
+    { kind:'shield',  color:'#94a3b8' }, // Silver
+    { kind:'crown',   color:'#eab308' }, // Gold
+    { kind:'diamond', color:'#06b6d4' }  // Platinum
+  ];
+  const VIP_BADGES = VIP_META.map(m => makeVipIcon(m.kind, m.color, 44));
+  const VIP_BADGES_SM = VIP_META.map(m => makeVipIcon(m.kind, m.color, 22));
 
   // ── VIP Levels Data ──
   const VIP_LEVELS = [
@@ -893,13 +899,25 @@
 
   let currentVipLevel = 0; // will update from dashboard data
 
+  // Build VIP icon buttons dynamically with badge SVGs
+  (function initVipButtons() {
+    const names = ['Bronze','Silver','Gold','Platinum'];
+    const row = document.getElementById('vipIconsRow');
+    if (!row) return;
+    row.innerHTML = names.map((name, i) => `
+      <button class="vip-icon-btn${i===0?' active':''}" onclick="selectVip(${i})" id="vipBtn${i}">
+        <div class="vip-badge-img" style="background:none;width:52px;height:52px;">${VIP_BADGES[i]}</div>
+        <div class="vip-badge-name">${name}</div>
+      </button>`).join('');
+  })();
+
   function selectVip(idx) {
     document.querySelectorAll('.vip-icon-btn').forEach((b,i) => b.classList.toggle('active', i === idx));
     const v = VIP_LEVELS[idx];
     const isCurrent = idx === currentVipLevel;
     document.getElementById('vipDetail').innerHTML = `
       <div class="vip-detail-name">
-        ${v.icon} ${v.name}
+        ${VIP_BADGES_SM[idx]} ${v.name}
         ${isCurrent ? '<span class="current-tag">Current</span>' : ''}
       </div>
       <div class="vip-detail-rows">
@@ -1088,7 +1106,7 @@
       const hasSpins = d.spins_left > 0;
       card.innerHTML = `
         <div style="
-          background: linear-gradient(135deg, #7C3AED 0%, #EC4899 100%);
+          background: linear-gradient(135deg, #F47920 0%, #E8620A 100%);
           border-radius: var(--radius);
           padding: 18px 20px;
           display: flex;
@@ -1154,7 +1172,7 @@
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #F3F4F6;margin-top:20px;">
       <button onclick="closeLowBalance()" style="padding:16px;background:none;border:none;border-right:1px solid #F3F4F6;font-size:15px;font-weight:600;color:#6B7280;cursor:pointer;">Cancel</button>
-      <button onclick="closeLowBalance();navigateTo('wallet.html?tab=deposit')" style="padding:16px;background:none;border:none;font-size:15px;font-weight:600;color:#7C3AED;cursor:pointer;">Deposit</button>
+      <button onclick="closeLowBalance();navigateTo('wallet.html?tab=deposit')" style="padding:16px;background:none;border:none;font-size:15px;font-weight:600;color:#00C8E8;cursor:pointer;">Deposit</button>
     </div>
   </div>
 </div>
@@ -1169,7 +1187,7 @@
     <!-- Header -->
     <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid #F3F4F6;flex-shrink:0;">
       <div style="display:flex;align-items:center;gap:10px;">
-        <div style="width:36px;height:36px;background:linear-gradient(135deg,#8B5CF6,#EC4899);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+        <div style="width:36px;height:36px;background:linear-gradient(135deg,#F47920,#E8620A);border-radius:10px;display:flex;align-items:center;justify-content:center;">
           <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         </div>
         <div>
@@ -1188,16 +1206,16 @@
         <p style="margin:0 0 24px;">By using this website, you confirm that you are over <strong>18 years old</strong> and have read and agreed to the Terms and Conditions. Otherwise, you will not be authorized to download, install the software or use the services.</p>
 
         <!-- Section 1 -->
-        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #8B5CF6;">
-          <div style="font-size:14px;font-weight:800;color:#7C3AED;margin-bottom:10px;">1. Start Maintenance Products</div>
+        <div style="background:rgba(244,121,32,0.06);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #F47920;">
+          <div style="font-size:14px;font-weight:800;color:#F47920;margin-bottom:10px;">1. Start Maintenance Products</div>
           <p style="margin:0 0 8px;">1.1) Before starting a new round of maintenance, the account balance must be at least <strong>100 USDT</strong>.</p>
           <p style="margin:0 0 8px;">1.2) A new maintenance product requires a balance of at least <strong>100 USDT</strong> to reset the counter.</p>
           <p style="margin:0;">1.3) After the agent/user completes the full set of maintenance tasks, he/she can choose to withdraw the balance and recharge the account to reset the account, or complete 3~6 sets of maintenance tasks for easy withdrawal. Balance withdrawal can be carried out at any time.</p>
         </div>
 
         <!-- Section 2 -->
-        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #8B5CF6;">
-          <div style="font-size:14px;font-weight:800;color:#7C3AED;margin-bottom:10px;">2. Staff</div>
+        <div style="background:rgba(244,121,32,0.06);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #F47920;">
+          <div style="font-size:14px;font-weight:800;color:#F47920;margin-bottom:10px;">2. Staff</div>
           <p style="margin:0 0 8px;">2.1) If the account balance exceeds <strong>500 USDT</strong>, you will be automatically promoted to a mid-level staff. When the account balance exceeds <strong>1500 USDT</strong>, you need to apply for promotion to Senior Staff and realize full withdrawal. The funds required for the upgrade will be deposited into the working account.</p>
           <p style="margin:0 0 8px;">2.2) After the account is reset, the agent/user must complete the full set of product maintenance tasks before initiating a withdrawal request.</p>
           <p style="margin:0 0 8px;">2.3) Choosing to abandon or exit the maintenance process will result in ineligibility to apply for exit or refund.</p>
@@ -1207,24 +1225,24 @@
         </div>
 
         <!-- Section 3 -->
-        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #8B5CF6;">
-          <div style="font-size:14px;font-weight:800;color:#7C3AED;margin-bottom:10px;">3. Financial Security</div>
+        <div style="background:rgba(244,121,32,0.06);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #F47920;">
+          <div style="font-size:14px;font-weight:800;color:#F47920;margin-bottom:10px;">3. Financial Security</div>
           <p style="margin:0 0 8px;">3.1) All funds will be safely stored in the agent/user's account. After the maintenance of all items is completed, the agent/user can choose to withdraw the full amount.</p>
           <p style="margin:0 0 8px;">3.2) To prevent financial losses, all data will be automatically processed by the system without manual intervention.</p>
           <p style="margin:0;">3.3) The platform bears full responsibility for any unexpected financial losses.</p>
         </div>
 
         <!-- Section 4 -->
-        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #8B5CF6;">
-          <div style="font-size:14px;font-weight:800;color:#7C3AED;margin-bottom:10px;">4. Account Security</div>
+        <div style="background:rgba(244,121,32,0.06);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #F47920;">
+          <div style="font-size:14px;font-weight:800;color:#F47920;margin-bottom:10px;">4. Account Security</div>
           <p style="margin:0 0 8px;">4.1) Please do not disclose your login password and security code to others. The platform is not responsible for any losses caused by this.</p>
           <p style="margin:0 0 8px;">4.2) It is not recommended that users use birthdays, ID numbers, and phone numbers as security codes or login passwords.</p>
           <p style="margin:0;">4.3) If you forget your login password or security code, please contact our online customer service to help reset it.</p>
         </div>
 
         <!-- Section 5 -->
-        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #8B5CF6;">
-          <div style="font-size:14px;font-weight:800;color:#7C3AED;margin-bottom:10px;">5. Standard Products</div>
+        <div style="background:rgba(244,121,32,0.06);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #F47920;">
+          <div style="font-size:14px;font-weight:800;color:#F47920;margin-bottom:10px;">5. Standard Products</div>
           <p style="margin:0 0 8px;">5.1) Platform revenue is divided into ordinary product revenue and super order multiples (6 times and above). Each ordinary/senior agent/user can usually get up to 1-2 super order packages, which is normal. Up to 3 super orders can be encountered, which is not common. It includes all products in the package (super orders are a combination of 1-3 products).</p>
           <p style="margin:0 0 8px;">5.2) The main user can get a <strong>0.4% rebate</strong> for each ordinary maintenance plan purchased.</p>
           <p style="margin:0 0 8px;">5.3) The main user can get more than <strong>2.4% rebate</strong> for each super order product purchased.</p>
@@ -1234,8 +1252,8 @@
         </div>
 
         <!-- Section 6 -->
-        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #8B5CF6;">
-          <div style="font-size:14px;font-weight:800;color:#7C3AED;margin-bottom:10px;">6. Gifts</div>
+        <div style="background:rgba(244,121,32,0.06);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #F47920;">
+          <div style="font-size:14px;font-weight:800;color:#F47920;margin-bottom:10px;">6. Gifts</div>
           <p style="margin:0 0 8px;">6.1) The gift package contains 1-3 items, and users may not get all 3 items; ordinary items are randomly distributed by the system, and gift package users have a higher probability of getting 1-2 items.</p>
           <p style="margin:0 0 8px;">6.2) For each product in the gift package, agents/users will receive <strong>6 times</strong> the rebate of ordinary products.</p>
           <p style="margin:0 0 8px;">6.3) After receiving the items in the gift package, all funds will stop rolling and will be returned to your account after the maintenance of each item in the gift package is completed.</p>
@@ -1245,8 +1263,8 @@
         </div>
 
         <!-- Section 7 -->
-        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #8B5CF6;">
-          <div style="font-size:14px;font-weight:800;color:#7C3AED;margin-bottom:10px;">7. Deposit</div>
+        <div style="background:rgba(244,121,32,0.06);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #F47920;">
+          <div style="font-size:14px;font-weight:800;color:#F47920;margin-bottom:10px;">7. Deposit</div>
           <p style="margin:0 0 8px;">7.1) The deposit amount is determined by the user. It is recommended that each agent/user determine the deposit amount based on their own financial ability.</p>
           <p style="margin:0 0 8px;">7.2) If the agent/user needs to pay a deposit when receiving the gift package, it is recommended to prepay the deposit according to the difference displayed in the account.</p>
           <p style="margin:0 0 8px;">7.3) Before making a prepayment, the user needs to apply for the prepayment deposit details from the online customer service and confirm the deposit information.</p>
@@ -1254,8 +1272,8 @@
         </div>
 
         <!-- Section 8 -->
-        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #8B5CF6;">
-          <div style="font-size:14px;font-weight:800;color:#7C3AED;margin-bottom:10px;">8. Merchant Collaboration</div>
+        <div style="background:rgba(244,121,32,0.06);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #F47920;">
+          <div style="font-size:14px;font-weight:800;color:#F47920;margin-bottom:10px;">8. Merchant Collaboration</div>
           <p style="margin:0 0 8px;">8.1) The platform's online and offline products are different in each time period. If the products are not maintained for a long time, the merchant may downgrade the products and affect the merchant's reputation. It is recommended that the agent/user complete the maintenance of all products in time so that they can pick up the goods in time to avoid affecting the merchant's progress.</p>
           <p style="margin:0 0 8px;">8.2) The merchant will provide the user with deposit details so that the user can make a deposit.</p>
           <p style="margin:0 0 8px;">8.3) Any delay in completing product maintenance will have an adverse impact on the merchant and the process.</p>
@@ -1263,8 +1281,8 @@
         </div>
 
         <!-- Section 9 -->
-        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #8B5CF6;">
-          <div style="font-size:14px;font-weight:800;color:#7C3AED;margin-bottom:10px;">9. Agent/User Responsibilities</div>
+        <div style="background:rgba(244,121,32,0.06);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #F47920;">
+          <div style="font-size:14px;font-weight:800;color:#F47920;margin-bottom:10px;">9. Agent/User Responsibilities</div>
           <p style="margin:0 0 8px;">9.1) Agents/Users must complete the maintenance of the full set of goods within <strong>24 hours</strong> to ensure effective completion. Failure to complete will result in account freezing. Once the account is frozen, all funds in the account will stop accumulating. A <strong>30% unfreezing fee</strong> is required. If the agent/user requests an extension, a <strong>50% late payment fee</strong> will be charged (withdrawal can only be initiated after full payment).</p>
           <p style="margin:0 0 8px;">9.2) Agents/Users must complete three sets of maintenance tasks every day before signing in to meet the requirement of receiving the corresponding basic salary every two days.</p>
           <p style="margin:0 0 8px;">9.3) The system randomly assigns gift packages to agents/users. Agents/Users must clearly understand the platform rules and choose the recharge amount according to their own financial situation. After the gift package props are assigned, users can get an additional 6 times rebate, but they must complete 24 hours of maintenance and clear the gift package props/recharge gap, otherwise it may have a negative impact on the merchant's product reputation. Agents/Users must bear full responsibility for the deduction of account reputation points.</p>
@@ -1272,16 +1290,16 @@
         </div>
 
         <!-- Section 10 -->
-        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #8B5CF6;">
-          <div style="font-size:14px;font-weight:800;color:#7C3AED;margin-bottom:10px;">10. Invitation</div>
+        <div style="background:rgba(244,121,32,0.06);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #F47920;">
+          <div style="font-size:14px;font-weight:800;color:#F47920;margin-bottom:10px;">10. Invitation</div>
           <p style="margin:0 0 8px;">10.1) You can use your invitation code to invite other users.</p>
           <p style="margin:0 0 8px;">10.2) If your account has not been registered and has not reached the advanced user or mentor level, you cannot invite others.</p>
           <p style="margin:0;">10.3) The referrer will receive <strong>20%</strong> of the product rebate of the recommended user, excluding the recharge amount, only including the referrer's commission.</p>
         </div>
 
         <!-- Section 11 -->
-        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #8B5CF6;">
-          <div style="font-size:14px;font-weight:800;color:#7C3AED;margin-bottom:10px;">11. Taxation</div>
+        <div style="background:rgba(244,121,32,0.06);border-radius:14px;padding:16px;margin-bottom:16px;border-left:4px solid #F47920;">
+          <div style="font-size:14px;font-weight:800;color:#F47920;margin-bottom:10px;">11. Taxation</div>
           <p style="margin:0 0 8px;">11.1) When your account balance reaches the tax threshold (over <strong>10,000,000</strong>), you must comply with US tax regulations, monitor your account balance and income, and fulfill your tax obligations.</p>
           <p style="margin:0 0 8px;">11.2) The Company will refund any taxes paid. Please provide your address details within <strong>48 hours</strong> of the refund so that you can receive a tax certificate for registration with the local tax authorities.</p>
           <p style="margin:0;">11.3) Cryptocurrency taxation differs from fiat currency. Failure to comply with the platform's tax requirements may result in your funds being deemed illegal and non-circulating. The Company ensures compliance to avoid such issues.</p>
@@ -1293,7 +1311,7 @@
     </div>
     <!-- Footer Button -->
     <div style="padding:16px 20px;border-top:1px solid #F3F4F6;flex-shrink:0;">
-      <button onclick="closeTNC()" style="width:100%;padding:14px;background:linear-gradient(135deg,#8B5CF6,#EC4899);border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(139,92,246,0.35);">I Understand</button>
+      <button onclick="closeTNC()" style="width:100%;padding:14px;background:linear-gradient(135deg,#F47920,#E8620A);border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(244,121,32,0.35);">I Understand</button>
     </div>
   </div>
 </div>
@@ -1324,7 +1342,7 @@
     <!-- Header -->
     <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid #F3F4F6;flex-shrink:0;">
       <div style="display:flex;align-items:center;gap:10px;">
-        <div style="width:36px;height:36px;background:linear-gradient(135deg,#8B5CF6,#EC4899);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+        <div style="width:36px;height:36px;background:linear-gradient(135deg,#F47920,#E8620A);border-radius:10px;display:flex;align-items:center;justify-content:center;">
           <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         </div>
         <div>
@@ -1345,7 +1363,7 @@
     </div>
     <!-- Footer Button -->
     <div style="padding:16px 20px;border-top:1px solid #F3F4F6;flex-shrink:0;">
-      <button onclick="closeFAQ()" style="width:100%;padding:14px;background:linear-gradient(135deg,#8B5CF6,#EC4899);border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(139,92,246,0.35);">Got It</button>
+      <button onclick="closeFAQ()" style="width:100%;padding:14px;background:linear-gradient(135deg,#F47920,#E8620A);border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(244,121,32,0.35);">Got It</button>
     </div>
   </div>
 </div>
@@ -1374,8 +1392,8 @@
         return;
       }
       container.innerHTML = items.map((item, i) => `
-        <div style="background:linear-gradient(135deg,#F5F3FF,#FDF4FF);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid #8B5CF6;">
-          <div style="font-size:13px;font-weight:800;color:#7C3AED;margin-bottom:8px;">${i+1}. ${escapeHtml(item.question)}</div>
+        <div style="background:rgba(244,121,32,0.06);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid #F47920;">
+          <div style="font-size:13px;font-weight:800;color:#F47920;margin-bottom:8px;">${i+1}. ${escapeHtml(item.question)}</div>
           <p style="margin:0;font-size:13px;color:#374151;line-height:1.75;white-space:pre-wrap;">${escapeHtml(item.answer)}</p>
         </div>
       `).join('');

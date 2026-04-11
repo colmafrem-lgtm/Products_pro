@@ -8,38 +8,112 @@
 <script src="js/sitename.js"></script>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
-  body { min-height:100vh; display:flex; background:var(--bg); }
+  body { min-height:100vh; display:flex; background:#050608; }
+
+  /* ── LEFT PANEL ── */
   .auth-left {
-    flex:0 0 42%; background:var(--gradient);
+    flex:0 0 42%;
     display:flex; flex-direction:column; justify-content:center; align-items:center;
     padding:60px 48px; position:relative; overflow:hidden;
+    background:#050608;
+    background-image: url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=900&q=80&fit=crop');
+    background-size:cover; background-position:center;
   }
-  .auth-left::before { content:''; position:absolute; width:400px; height:400px; border-radius:50%; background:rgba(255,255,255,0.07); top:-100px; right:-100px; }
-  .auth-left::after  { content:''; position:absolute; width:300px; height:300px; border-radius:50%; background:rgba(255,255,255,0.05); bottom:-80px; left:-80px; }
+  .auth-left::before {
+    content:''; position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse 70% 55% at 15% 20%, rgba(244,121,32,0.38) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 50% at 85% 80%, rgba(0,180,220,0.3) 0%, transparent 65%),
+      linear-gradient(180deg, rgba(5,6,8,0.55) 0%, rgba(5,6,8,0.78) 100%);
+    z-index:0;
+  }
+  /* orange blob top */
+  .auth-left::after {
+    content:''; position:absolute;
+    width:320px; height:320px; border-radius:50%;
+    background: radial-gradient(circle, rgba(244,121,32,0.2), transparent 70%);
+    top:-80px; left:-80px; filter:blur(50px);
+    z-index:0;
+  }
+
   .auth-left-content { position:relative; z-index:1; color:#fff; text-align:center; }
-  .auth-brand { font-size:36px; font-weight:900; letter-spacing:-1.5px; margin-bottom:12px; }
-  .auth-brand span { opacity:.7; }
-  .auth-tagline { font-size:15px; opacity:.8; line-height:1.6; max-width:280px; }
+  .auth-brand { font-size:34px; font-weight:900; letter-spacing:-1.5px; margin-bottom:12px; color:#fff; }
+  .auth-tagline { font-size:15px; color:rgba(255,255,255,0.7); line-height:1.6; max-width:280px; }
   .auth-features { margin-top:48px; display:flex; flex-direction:column; gap:16px; text-align:left; }
-  .auth-feat { display:flex; align-items:center; gap:12px; font-size:14px; opacity:.9; }
-  .auth-feat-icon { width:36px; height:36px; background:rgba(255,255,255,0.15); border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-  .auth-right { flex:1; display:flex; align-items:center; justify-content:center; padding:40px 24px; }
+  .auth-feat { display:flex; align-items:center; gap:12px; font-size:14px; color:rgba(255,255,255,0.9); }
+  .auth-feat-icon {
+    width:36px; height:36px; border-radius:10px;
+    background:rgba(244,121,32,0.2); border:1px solid rgba(244,121,32,0.3);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+
+  /* ── RIGHT PANEL ── */
+  .auth-right {
+    flex:1; display:flex; align-items:center; justify-content:center;
+    padding:40px 24px;
+    background:#0a0c10;
+  }
   .auth-form-wrap { width:100%; max-width:420px; }
-  .auth-form-wrap h2 { font-size:28px; font-weight:800; color:var(--dark); margin-bottom:6px; }
-  .auth-form-wrap .sub { font-size:14px; color:var(--text-light); margin-bottom:32px; }
+  .auth-form-wrap h2 { font-size:28px; font-weight:800; color:#fff; margin-bottom:6px; }
+  .auth-form-wrap .sub { font-size:14px; color:rgba(255,255,255,0.45); margin-bottom:32px; }
+
+  /* inputs */
   .input-icon-wrap { position:relative; }
-  .input-icon-wrap .i-icon { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--text-light); width:18px; height:18px; pointer-events:none; }
+  .input-icon-wrap .i-icon {
+    position:absolute; left:14px; top:50%; transform:translateY(-50%);
+    color:rgba(255,255,255,0.3); width:18px; height:18px; pointer-events:none;
+  }
   .input-icon-wrap .form-control { padding-left:44px; }
-  .auth-footer { text-align:center; margin-top:16px; font-size:14px; color:var(--text-light); }
-  .auth-footer a { color:var(--primary); font-weight:600; text-decoration:none; }
+  .form-label { color:rgba(255,255,255,0.55); font-size:13px; font-weight:600; margin-bottom:6px; display:block; }
+  .form-control {
+    width:100%; background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:12px; padding:13px 16px;
+    font-size:14px; color:#fff; outline:none;
+    transition:border-color .2s, box-shadow .2s;
+  }
+  .form-control::placeholder { color:rgba(255,255,255,0.22); }
+  .form-control:focus {
+    border-color:rgba(244,121,32,0.6);
+    box-shadow:0 0 0 3px rgba(244,121,32,0.15);
+    background:rgba(255,255,255,0.1);
+  }
+  .form-group { margin-bottom:16px; }
+
+  /* Log In button — orange */
+  .btn-primary {
+    width:100%; padding:14px;
+    background:linear-gradient(135deg, #F47920, #E8620A);
+    border:none; border-radius:50px;
+    font-size:15px; font-weight:700;
+    color:#fff; cursor:pointer;
+    box-shadow:0 8px 28px rgba(244,121,32,0.45);
+    transition:transform .2s, box-shadow .2s;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    margin-top:8px;
+  }
+  .btn-primary:hover { transform:translateY(-2px); box-shadow:0 12px 36px rgba(244,121,32,0.6); }
+  .btn-primary:disabled { opacity:.6; transform:none; }
+
+  /* footer links */
+  .auth-footer { text-align:center; margin-top:16px; font-size:14px; color:rgba(255,255,255,0.35); }
+  .auth-footer a { color:#00C8E8; font-weight:600; text-decoration:none; }
+  .auth-footer a:hover { color:#F47920; }
+
+  /* alert */
+  .alert { border-radius:10px; padding:10px 14px; margin-bottom:12px; font-size:13px; }
+  .alert-danger { background:rgba(239,68,68,0.14); border:1px solid rgba(239,68,68,0.28); color:#fca5a5; }
+  .hidden { display:none; }
+
+  /* mobile */
   @media (max-width:768px) {
     .auth-left { display:none; }
-    .auth-right { padding:60px 24px; align-items:flex-start; }
+    .auth-right { padding:60px 24px; align-items:flex-start; background:#050608; }
     .mobile-brand { display:block !important; }
   }
   .mobile-brand { display:none; text-align:center; margin-bottom:32px; }
-  .mobile-brand .m-logo { font-size:28px; font-weight:900; letter-spacing:-1px; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-  .mobile-brand .m-tag { font-size:12px; color:var(--text-light); letter-spacing:1px; margin-top:4px; }
+  .mobile-brand .m-logo { font-size:28px; font-weight:900; letter-spacing:-1px; color:#F47920; }
+  .mobile-brand .m-tag { font-size:12px; color:rgba(255,255,255,0.4); letter-spacing:1px; margin-top:4px; text-transform:uppercase; }
 </style>
 </head>
 <body>
@@ -50,15 +124,15 @@
     <p class="auth-tagline">Earn real commissions by reviewing trending products daily.</p>
     <div class="auth-features">
       <div class="auth-feat">
-        <div class="auth-feat-icon"><i data-lucide="trending-up" style="width:18px;height:18px;color:#fff;"></i></div>
+        <div class="auth-feat-icon"><i data-lucide="trending-up" style="width:18px;height:18px;color:#F47920;"></i></div>
         <span>Earn up to 3% commission per task</span>
       </div>
       <div class="auth-feat">
-        <div class="auth-feat-icon"><i data-lucide="shield-check" style="width:18px;height:18px;color:#fff;"></i></div>
+        <div class="auth-feat-icon"><i data-lucide="shield-check" style="width:18px;height:18px;color:#F47920;"></i></div>
         <span>Secure &amp; trusted platform</span>
       </div>
       <div class="auth-feat">
-        <div class="auth-feat-icon"><i data-lucide="clock" style="width:18px;height:18px;color:#fff;"></i></div>
+        <div class="auth-feat-icon"><i data-lucide="clock" style="width:18px;height:18px;color:#F47920;"></i></div>
         <span>Withdraw earnings anytime</span>
       </div>
     </div>
@@ -69,7 +143,7 @@
   <div class="auth-form-wrap">
     <div class="mobile-brand">
       <div class="m-logo" id="mobileLogo" data-site-name>SyncralinkUS</div>
-      <div class="m-tag">SMART COMMISSION PLATFORM</div>
+      <div class="m-tag">Commission Platform</div>
     </div>
     <h2>Welcome back</h2>
     <p class="sub">Log in to continue earning commissions</p>
@@ -89,17 +163,24 @@
           <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
         </div>
       </div>
-      <button type="submit" id="loginBtn" class="btn btn-primary btn-block btn-lg" style="margin-top:8px;gap:8px;">
+      <button type="submit" id="loginBtn" class="btn-primary">
         <i data-lucide="log-in" style="width:18px;height:18px;"></i> Log In
       </button>
     </form>
-    <div class="auth-footer" style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
+    <div class="auth-footer" style="margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.07);">
       Don't have an account? <a href="register.html">Register here</a>
     </div>
     <div class="auth-footer" style="margin-top:10px;">
-      <a href="index.html" style="color:var(--text-light);font-size:13px;display:inline-flex;align-items:center;gap:4px;">
+      <a href="index.html" style="color:rgba(255,255,255,0.3);font-size:13px;display:inline-flex;align-items:center;gap:4px;">
         <i data-lucide="arrow-left" style="width:13px;height:13px;"></i> Back to Home
       </a>
+    </div>
+
+    <!-- Credit / Last Update -->
+    <div style="margin-top:40px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06);text-align:center;">
+      <div style="font-size:11px;color:rgba(255,255,255,0.45);letter-spacing:0.4px;">
+        © 2026 · All rights reserved
+      </div>
     </div>
   </div>
 </div>

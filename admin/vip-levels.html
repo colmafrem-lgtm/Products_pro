@@ -5,32 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VIP Levels - Admin Panel</title>
 <link rel="stylesheet" href="css/admin.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+  body, .vip-table, .vip-badge, .stat-chip, .btn-edit-vip, .btn-delete-vip, .btn-add-vip, .sum-card { font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; -webkit-font-smoothing:antialiased; }
   .vip-table { width:100%; border-collapse:collapse; background:#fff; border-radius:14px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,0.06); }
   .vip-table thead { background:linear-gradient(135deg,#7c3aed,#a855f7); color:#fff; }
-  .vip-table th { padding:14px 16px; text-align:left; font-size:12px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; border-right:1px solid rgba(255,255,255,0.15); }
+  .vip-table th { padding:14px 16px; text-align:left; font-size:11px; font-weight:700; letter-spacing:.6px; text-transform:uppercase; border-right:1px solid rgba(255,255,255,0.15); }
   .vip-table th:last-child { border-right:none; }
   .vip-table td { padding:14px 16px; font-size:14px; border-bottom:1px solid #e5e7eb; border-right:1px solid #f3f4f6; vertical-align:middle; }
   .vip-table td:last-child { border-right:none; }
   .vip-table tbody tr:last-child td { border-bottom:none; }
-  .vip-table tbody tr:nth-child(even) { background:#f5f3ff; }
-  .vip-table tbody tr:hover { background:#ede9fe; }
-  .vip-badge { display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:50px; font-size:14px; font-weight:700; }
-  .vip-badge .vip-icon { font-size:26px; line-height:1; }
-  .vip-color-dot { width:14px; height:14px; border-radius:50%; display:inline-block; border:2px solid rgba(0,0,0,0.1); }
-  .grade-num { font-weight:800; font-size:16px; color:#374151; }
-  .stat-chip { display:inline-block; background:#f3f4f6; border-radius:6px; padding:3px 8px; font-size:12px; font-weight:600; color:#374151; }
+  .vip-table tbody tr:nth-child(even) { background:#faf8ff; }
+  .vip-table tbody tr:hover { background:#f3efff; }
+  .vip-badge { display:inline-flex; align-items:center; gap:8px; padding:6px 14px 6px 10px; border-radius:50px; font-size:13px; font-weight:700; letter-spacing:.2px; }
+  .vip-badge .vip-icon { display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; }
+  .vip-badge .vip-icon svg { width:22px; height:22px; display:block; }
+  .vip-color-dot { width:12px; height:12px; border-radius:50%; display:inline-block; border:2px solid rgba(0,0,0,0.08); }
+  .grade-num { font-weight:700; font-size:15px; color:#374151; font-variant-numeric:tabular-nums; }
+  .stat-chip { display:inline-flex; align-items:center; background:#f3f4f6; border-radius:6px; padding:4px 10px; font-size:12px; font-weight:600; color:#374151; font-variant-numeric:tabular-nums; }
   .commission-chip { background:#dcfce7; color:#16a34a; }
   .tasks-chip { background:#dbeafe; color:#1d4ed8; }
   .deposit-chip { background:#fef3c7; color:#d97706; }
-  .btn-edit-vip { background:linear-gradient(135deg,#7c3aed,#a855f7); color:#fff; border:none; padding:8px 18px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; transition:opacity .2s; }
-  .btn-edit-vip:hover { opacity:.85; }
-  .btn-delete-vip { background:#fff; color:#ef4444; border:1.5px solid #fca5a5; padding:8px 14px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; transition:all .2s; }
+  .btn-edit-vip, .btn-delete-vip, .btn-add-vip { display:inline-flex; align-items:center; gap:6px; font-weight:600; cursor:pointer; transition:all .15s ease; letter-spacing:.1px; }
+  .btn-edit-vip svg, .btn-delete-vip svg, .btn-add-vip svg { width:14px; height:14px; stroke-width:2.2; flex-shrink:0; }
+  .btn-edit-vip { background:linear-gradient(135deg,#7c3aed,#a855f7); color:#fff; border:none; padding:8px 16px; border-radius:8px; font-size:13px; box-shadow:0 1px 2px rgba(124,58,237,.25); }
+  .btn-edit-vip:hover { opacity:.92; transform:translateY(-1px); box-shadow:0 3px 8px rgba(124,58,237,.3); }
+  .btn-delete-vip { background:#fff; color:#ef4444; border:1.5px solid #fca5a5; padding:7px 14px; border-radius:8px; font-size:13px; }
   .btn-delete-vip:hover { background:#fef2f2; border-color:#ef4444; }
-  .btn-add-vip { background:linear-gradient(135deg,#7c3aed,#a855f7); color:#fff; border:none; padding:10px 20px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:8px; transition:opacity .2s; }
-  .btn-add-vip:hover { opacity:.88; }
+  .btn-add-vip { background:linear-gradient(135deg,#7c3aed,#a855f7); color:#fff; border:none; padding:10px 20px; border-radius:10px; font-size:14px; font-weight:700; box-shadow:0 2px 6px rgba(124,58,237,.3); }
+  .btn-add-vip:hover { opacity:.92; transform:translateY(-1px); }
+  .btn-add-vip svg { width:16px; height:16px; }
   .summary-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
   .sum-card { background:#fff; border-radius:14px; padding:18px 20px; box-shadow:0 2px 8px rgba(0,0,0,0.06); display:flex; flex-direction:column; gap:4px; border-left:4px solid; }
+  .sum-card .sum-icon { width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:10px; margin-bottom:6px; }
+  .sum-card .sum-icon svg { width:24px; height:24px; }
 </style>
 </head>
 <body>
@@ -38,7 +46,7 @@
 <aside class="sidebar">
   <div class="sidebar-logo">
     <div class="sidebar-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-    <div><div>SyncralinkUS</div><span>Admin Panel</span></div>
+    <div><span>Admin Panel</span></div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-group-label">Main</div>
@@ -74,7 +82,7 @@
         <a href="faq.html" class="sidebar-sub-link"><span class="dot"></span> FAQ Settings</a>
       </div>
     </div>
-    <a href="#" onclick="Admin.logout()" class="sidebar-link" style="color:rgba(239,68,68,0.75);"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Logout</a>
+    <a href="#" onclick="confirmLogout()" class="sidebar-link" style="color:rgba(239,68,68,0.75);"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Logout</a>
   </nav>
   <div class="sidebar-footer">Logged in as: <strong id="adminName">Admin</strong></div>
 </aside>
@@ -83,7 +91,7 @@
   <div class="topbar">
     <div class="topbar-title">VIP Level Management</div>
     <div class="topbar-right">
-      <div class="admin-avatar" id="adminInitial">A</div>
+      <button class="theme-toggle" id="darkModeToggle" onclick="toggleDarkMode()" aria-label="Toggle dark mode" title="Toggle dark mode"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></button>
     </div>
   </div>
 
@@ -130,7 +138,7 @@
   <div class="modal" style="max-width:620px;max-height:90vh;overflow-y:auto;">
     <div class="modal-head" style="position:sticky;top:0;background:#fff;z-index:1;border-bottom:1px solid #f3f4f6;padding-bottom:14px;">
       <h3 id="vipModalTitle">Edit VIP Level</h3>
-      <button class="modal-close" onclick="closeVipModal()">✕</button>
+      <button class="modal-close" onclick="closeVipModal()" aria-label="Close"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div id="vipModalAlert" class="hidden" style="margin-top:12px;"></div>
     <input type="hidden" id="editVipId">
@@ -148,8 +156,8 @@
       <div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid #f3f4f6;">
         <div style="width:160px;text-align:right;font-size:13px;color:#374151;font-weight:600;flex-shrink:0;">Badge Color</div>
         <div style="display:flex;gap:8px;align-items:center;flex:1;">
-          <input type="color" id="editVipColor" value="#8B5CF6" style="width:44px;height:40px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;padding:2px;flex-shrink:0;">
-          <input type="text" id="editVipColorHex" class="form-control" placeholder="#8B5CF6" oninput="syncColorPicker()">
+          <input type="color" id="editVipColor" value="#F47920" style="width:44px;height:40px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;padding:2px;flex-shrink:0;">
+          <input type="text" id="editVipColorHex" class="form-control" placeholder="#F47920" oninput="syncColorPicker()">
         </div>
       </div>
 
@@ -238,7 +246,27 @@
     document.getElementById('adminInitial').textContent = (info.username || 'A')[0].toUpperCase();
   }
 
-  const LEVEL_ICONS = ['🥉','🥈','🥇','💎','👑'];
+  // Professional line-icon set (Lucide-style). Each function takes a color and returns an inline SVG.
+  function makeIcon(kind, color) {
+    const c = color || '#7c3aed';
+    const base = `fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"`;
+    const icons = {
+      medal:   `<svg viewBox="0 0 24 24" ${base}><path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"/><path d="M11 12 5.12 2.2"/><path d="m13 12 5.88-9.8"/><path d="M8 7h8"/><circle cx="12" cy="17" r="5"/><path d="M12 18v-2h-.5"/></svg>`,
+      shield:  `<svg viewBox="0 0 24 24" ${base}><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>`,
+      crown:   `<svg viewBox="0 0 24 24" ${base}><path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/></svg>`,
+      diamond: `<svg viewBox="0 0 24 24" ${base}><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M11 3 8 9l4 12 4-12-3-6"/><path d="M2 9h20"/></svg>`,
+      trophy:  `<svg viewBox="0 0 24 24" ${base}><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>`
+    };
+    return icons[kind] || icons.shield;
+  }
+  const LEVEL_META = [
+    { kind:'medal',   color:'#cd7f32' }, // Bronze
+    { kind:'shield',  color:'#94a3b8' }, // Silver
+    { kind:'crown',   color:'#eab308' }, // Gold
+    { kind:'diamond', color:'#06b6d4' }, // Platinum
+    { kind:'trophy',  color:'#a855f7' }  // Extra
+  ];
+  const LEVEL_ICONS = LEVEL_META.map(m => makeIcon(m.kind, m.color));
   let allLevels = [];
 
   async function loadVipLevels() {
@@ -254,26 +282,49 @@
     renderTable(allLevels);
   }
 
+  const EDIT_ICON   = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4z"/></svg>`;
+  const DELETE_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>`;
+
+  // Detect very light colors (like #E5E4E2) that would be invisible on white.
+  function isTooLight(hex) {
+    if (!hex || !/^#?[0-9a-f]{6}$/i.test(hex)) return true;
+    const h = hex.replace('#','');
+    const r = parseInt(h.slice(0,2),16), g = parseInt(h.slice(2,4),16), b = parseInt(h.slice(4,6),16);
+    return (0.299*r + 0.587*g + 0.114*b) > 215;
+  }
+  function displayColor(v, i) {
+    const meta = LEVEL_META[i] || LEVEL_META[LEVEL_META.length - 1];
+    return isTooLight(v.color) ? meta.color : v.color;
+  }
+  function iconForLevel(v, i) {
+    const meta = LEVEL_META[i] || LEVEL_META[LEVEL_META.length - 1];
+    return makeIcon(meta.kind, displayColor(v, i));
+  }
+
   function renderSummaryCards(levels) {
-    const colors = ['#7c3aed','#2563eb','#d97706','#dc2626'];
-    const icons  = ['🥉','🥈','🥇','💎'];
-    document.getElementById('summaryCards').innerHTML = levels.map((v, i) => `
-      <div class="sum-card" style="border-left-color:${v.color||colors[i%colors.length]}">
-        <div style="font-size:22px">${icons[i] || '⭐'}</div>
-        <div style="font-size:15px;font-weight:800;color:#111;">${v.name}</div>
-        <div style="font-size:12px;color:#6b7280;">Min: $${parseFloat(v.min_deposit).toFixed(2)}</div>
+    document.getElementById('summaryCards').innerHTML = levels.map((v, i) => {
+      const meta = LEVEL_META[i] || LEVEL_META[LEVEL_META.length - 1];
+      const col  = displayColor(v, i);
+      return `
+      <div class="sum-card" style="border-left-color:${col}">
+        <div class="sum-icon" style="background:${col}18;">${makeIcon(meta.kind, col)}</div>
+        <div style="font-size:15px;font-weight:700;color:#111;letter-spacing:.1px;">${v.name}</div>
+        <div style="font-size:12px;color:#6b7280;font-weight:500;">Min: $${parseFloat(v.min_deposit).toFixed(2)}</div>
         <div style="font-size:12px;color:#16a34a;font-weight:600;">${v.commission_rate}% / task</div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
   }
 
   function renderTable(levels) {
-    const icons = ['🥉','🥈','🥇','💎','👑'];
-    document.getElementById('vipTableBody').innerHTML = levels.map((v, i) => `
+    document.getElementById('vipTableBody').innerHTML = levels.map((v, i) => {
+      const col    = displayColor(v, i);
+      const rawCol = v.color || (LEVEL_META[i]||LEVEL_META[0]).color;
+      return `
       <tr>
         <td><div class="grade-num">${v.level}</div></td>
         <td>
-          <div class="vip-badge" style="background:${v.color||'#8B5CF6'}22;color:${v.color||'#8B5CF6'};">
-            <span class="vip-icon">${icons[i]||'⭐'}</span> ${v.name}
+          <div class="vip-badge" style="background:${col}18;color:${col};">
+            <span class="vip-icon">${iconForLevel(v, i)}</span>${v.name}
           </div>
         </td>
         <td><span class="stat-chip deposit-chip">$${parseFloat(v.min_deposit).toFixed(2)}</span></td>
@@ -282,17 +333,18 @@
         <td style="max-width:200px;color:#6b7280;font-size:13px;">${v.description||'—'}</td>
         <td>
           <div style="display:flex;align-items:center;gap:6px;">
-            <span class="vip-color-dot" style="background:${v.color||'#8B5CF6'};"></span>
-            <span style="font-size:12px;color:#9ca3af;">${v.color||'#8B5CF6'}</span>
+            <span class="vip-color-dot" style="background:${rawCol};"></span>
+            <span style="font-size:12px;color:#9ca3af;font-variant-numeric:tabular-nums;">${rawCol}</span>
           </div>
         </td>
         <td>
           <div style="display:flex;gap:8px;align-items:center;">
-            <button class="btn-edit-vip" onclick="openEditModal(${v.id})">✏️ Edit</button>
-            <button class="btn-delete-vip" onclick="confirmDeleteVip(${v.id},'${v.name.replace(/'/g,"\\'")}')">🗑️ Delete</button>
+            <button class="btn-edit-vip" onclick="openEditModal(${v.id})">${EDIT_ICON} Edit</button>
+            <button class="btn-delete-vip" onclick="confirmDeleteVip(${v.id},'${v.name.replace(/'/g,"\\'")}')">${DELETE_ICON} Delete</button>
           </div>
         </td>
-      </tr>`).join('');
+      </tr>`;
+    }).join('');
   }
 
   let vipModalMode = 'edit'; // 'edit' or 'add'
@@ -311,8 +363,8 @@
     document.getElementById('editVipMaxWithdrawal').value  = '1000';
     document.getElementById('editVipTxFee').value          = '0';
     document.getElementById('editVipDesc').value           = '';
-    document.getElementById('editVipColor').value          = '#8B5CF6';
-    document.getElementById('editVipColorHex').value       = '#8B5CF6';
+    document.getElementById('editVipColor').value          = '#F47920';
+    document.getElementById('editVipColorHex').value       = '#F47920';
     document.getElementById('vipModalTitle').textContent   = 'Add New Membership Level';
     document.getElementById('saveVipBtn').textContent      = 'Create Level';
     document.getElementById('vipModalAlert').classList.add('hidden');
@@ -335,8 +387,8 @@
     document.getElementById('editVipMaxWithdrawal').value   = v.max_withdrawal || 1000;
     document.getElementById('editVipTxFee').value           = v.transaction_fee_rate || 0;
     document.getElementById('editVipDesc').value            = v.description || '';
-    document.getElementById('editVipColor').value           = v.color || '#8B5CF6';
-    document.getElementById('editVipColorHex').value        = v.color || '#8B5CF6';
+    document.getElementById('editVipColor').value           = v.color || '#F47920';
+    document.getElementById('editVipColorHex').value        = v.color || '#F47920';
     document.getElementById('vipModalTitle').textContent    = `Edit — ${v.name} (Level ${v.level})`;
     document.getElementById('saveVipBtn').textContent       = 'Save Changes';
     document.getElementById('vipModalAlert').classList.add('hidden');
@@ -410,7 +462,7 @@
     }
 
     closeVipModal();
-    showGlobalAlert(vipModalMode === 'add' ? '✅ VIP level created successfully!' : '✅ VIP level updated successfully!', 'success');
+    showGlobalAlert(vipModalMode === 'add' ? 'VIP level created successfully.' : 'VIP level updated successfully.', 'success');
     loadVipLevels();
   }
 
@@ -421,7 +473,7 @@
       showGlobalAlert(res?.data?.message || 'Failed to delete.', 'danger');
       return;
     }
-    showGlobalAlert(`✅ "${name}" level deleted.`, 'success');
+    showGlobalAlert(`"${name}" level deleted.`, 'success');
     loadVipLevels();
   }
 

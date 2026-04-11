@@ -45,7 +45,7 @@
 <aside class="sidebar">
   <div class="sidebar-logo">
     <div class="sidebar-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-    <div><div>SyncralinkUS</div><span>Admin Panel</span></div>
+    <div><span>Admin Panel</span></div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-group-label">Main</div>
@@ -90,7 +90,7 @@
   <div class="topbar">
     <div class="topbar-title">User Management</div>
     <div class="topbar-right">
-      <div class="admin-avatar" id="adminInitial">A</div>
+      <button class="theme-toggle" id="darkModeToggle" onclick="toggleDarkMode()" aria-label="Toggle dark mode" title="Toggle dark mode"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></button>
     </div>
   </div>
 
@@ -260,7 +260,7 @@
       <button class="modal-close" onclick="closeModal('balanceModal')">✕</button>
     </div>
     <p style="font-size:13px;color:var(--text-light);margin-bottom:4px;">User: <strong id="modalUsername">-</strong></p>
-    <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;">Current Balance: <strong id="modalCurrentBalance" style="color:#7C3AED;">-</strong></p>
+    <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;">Current Balance: <strong id="modalCurrentBalance" style="color:#F47920;">-</strong></p>
     <div id="modalAlert" class="hidden"></div>
     <div class="form-group">
       <label class="form-label">Action</label>
@@ -460,7 +460,7 @@
           style="position:relative;width:100%;height:200px;border:2px dashed #c4b5fd;border-radius:14px;cursor:pointer;background:#f9f5ff;overflow:hidden;transition:border-color .2s;"
           onmouseenter="this.style.borderColor='#7c3aed'" onmouseleave="this.style.borderColor='#c4b5fd'">
           <div id="etUploadPlaceholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
-            <div style="width:56px;height:56px;background:linear-gradient(135deg,#8B5CF6,#EC4899);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;">📷</div>
+            <div style="width:56px;height:56px;background:linear-gradient(135deg,#F47920,#00C8E8);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;">📷</div>
             <div style="font-size:14px;color:#7c3aed;font-weight:700;">Click to upload image</div>
             <div style="font-size:11px;color:#a78bfa;">PNG, JPG, WEBP — max 5MB</div>
           </div>

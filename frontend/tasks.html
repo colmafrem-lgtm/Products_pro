@@ -76,7 +76,7 @@
 
   /* ── Spin Wheel Banner ── */
   .spin-banner {
-    background: linear-gradient(135deg, #7C3AED 0%, #EC4899 100%);
+    background: linear-gradient(135deg, #F47920 0%, #E8620A 100%);
     border-radius: var(--radius);
     padding: 16px 20px;
     display: flex;
@@ -132,7 +132,7 @@
     width: 0; height: 0;
     border-left: 12px solid transparent;
     border-right: 12px solid transparent;
-    border-top: 22px solid #1E1B4B;
+    border-top: 22px solid #050608;
     z-index: 10;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
   }
@@ -149,7 +149,7 @@
   #spinTriggerBtn {
     margin-top: 20px; width: 100%;
     padding: 14px; font-size: 16px; font-weight: 800;
-    background: linear-gradient(135deg, #7C3AED 0%, #EC4899 100%);
+    background: linear-gradient(135deg, #F47920 0%, #E8620A 100%);
     color: #fff; border: none; border-radius: 14px; cursor: pointer;
     transition: opacity .2s;
   }
@@ -560,7 +560,7 @@
 
           <div style="margin-top:16px;padding:16px;background:rgba(124,58,237,0.06);border:1.5px dashed rgba(124,58,237,0.3);border-radius:14px;text-align:center;">
             <div style="font-size:22px;margin-bottom:6px;">⏳</div>
-            <div style="font-size:14px;font-weight:700;color:#7C3AED;">Tasks Coming Soon</div>
+            <div style="font-size:14px;font-weight:700;color:#F47920;">Tasks Coming Soon</div>
             <div style="font-size:12px;color:var(--text-light);margin-top:4px;">Your account balance qualifies you for tasks.<br>Please wait for admin to configure products.</div>
           </div>
         </div>
@@ -882,7 +882,7 @@
       ctx.beginPath(); ctx.moveTo(cx, cy);
       ctx.arc(cx, cy, r, startAngle, startAngle + angle);
       ctx.closePath();
-      ctx.fillStyle = prize.color || '#8B5CF6'; ctx.fill();
+      ctx.fillStyle = prize.color || '#F47920'; ctx.fill();
       ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.5; ctx.stroke();
 
       if (angle > 0.15) {

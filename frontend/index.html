@@ -8,7 +8,7 @@
 <script src="js/sitename.js"></script>
 <style>
   /* ── Reset for this page ── */
-  body { background: #0f0c1d; overflow: hidden; }
+  body { background: #050608; overflow: hidden; }
 
   /* ── Full screen split layout ── */
   .welcome-wrap {
@@ -27,45 +27,45 @@
     justify-content: flex-end;
     padding: 48px 40px;
     overflow: hidden;
-    background: #0f0c1d;
+    background: #050608;
     background-image: url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=900&q=80&fit=crop');
     background-size: cover;
     background-position: center;
   }
 
-  /* Gradient background blobs */
+  /* Gradient overlay — black + orange glow + cyan glow */
   .left-panel::before {
     content: '';
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(139,92,246,0.45) 0%, transparent 70%),
-      radial-gradient(ellipse 60% 50% at 80% 80%, rgba(236,72,153,0.35) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 40% at 50% 50%, rgba(109,40,217,0.2) 0%, transparent 70%);
+      radial-gradient(ellipse 70% 55% at 15% 15%, rgba(244,121,32,0.35) 0%, transparent 65%),
+      radial-gradient(ellipse 55% 45% at 85% 75%, rgba(0,180,220,0.28) 0%, transparent 65%),
+      linear-gradient(180deg, rgba(5,6,8,0.55) 0%, rgba(5,6,8,0.75) 100%);
     z-index: 0;
   }
 
-  /* Decorative circles */
+  /* Decorative blobs */
   .blob-1 {
     position: absolute;
-    width: 300px; height: 300px;
+    width: 340px; height: 340px;
     border-radius: 50%;
-    background: linear-gradient(135deg, rgba(139,92,246,0.3), rgba(236,72,153,0.2));
-    top: -80px; left: -80px;
-    filter: blur(40px);
-    animation: float1 8s ease-in-out infinite;
+    background: radial-gradient(circle, rgba(244,121,32,0.22), transparent 70%);
+    top: -100px; left: -100px;
+    filter: blur(50px);
+    animation: float1 9s ease-in-out infinite;
   }
   .blob-2 {
     position: absolute;
-    width: 200px; height: 200px;
+    width: 260px; height: 260px;
     border-radius: 50%;
-    background: linear-gradient(135deg, rgba(236,72,153,0.25), rgba(139,92,246,0.15));
-    bottom: 100px; right: -60px;
-    filter: blur(30px);
-    animation: float2 10s ease-in-out infinite;
+    background: radial-gradient(circle, rgba(0,180,220,0.2), transparent 70%);
+    bottom: 80px; right: -70px;
+    filter: blur(40px);
+    animation: float2 11s ease-in-out infinite;
   }
-  @keyframes float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(20px,30px)} }
-  @keyframes float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-15px,-20px)} }
+  @keyframes float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(22px,28px)} }
+  @keyframes float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-18px,-22px)} }
 
   .left-content { position: relative; z-index: 1; display: flex; flex-direction: column; }
 
@@ -74,16 +74,7 @@
     font-weight: 900;
     letter-spacing: -1px;
     margin-bottom: 48px;
-    background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .brand-logo span {
-    background: linear-gradient(135deg, #8B5CF6, #EC4899);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #fff;
   }
 
   .welcome-label {
@@ -91,7 +82,7 @@
     font-weight: 600;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: rgba(139,92,246,0.9);
+    color: rgba(244,121,32,0.9);
     margin-bottom: 12px;
   }
 
@@ -112,48 +103,121 @@
     max-width: 300px;
   }
 
-  /* CTA Buttons */
+  /* ── Glass Card CTA Buttons ── */
   .cta-group {
     display: flex;
-    gap: 12px;
+    gap: 18px;
     flex-wrap: wrap;
   }
 
-  .btn-login {
-    padding: 14px 36px;
+  /* Outer glassmorphism card */
+  .btn-glass {
+    position: relative;
+    padding: 14px;
+    border-radius: 64px;
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(22px) saturate(140%);
+    -webkit-backdrop-filter: blur(22px) saturate(140%);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow:
+      0 8px 32px rgba(0,0,0,0.35),
+      inset 0 1px 0 rgba(255,255,255,0.18),
+      inset 0 -1px 0 rgba(0,0,0,0.2);
+    text-decoration: none;
+    display: inline-flex;
+    cursor: pointer;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    overflow: visible;
+  }
+  .btn-glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.15));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Inner glowing pill */
+  .btn-glass .pill {
+    position: relative;
+    padding: 16px 40px;
     border-radius: 50px;
-    background: linear-gradient(135deg, #8B5CF6, #EC4899);
     color: #fff;
     font-size: 15px;
-    font-weight: 700;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
+    font-weight: 800;
+    letter-spacing: .3px;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    box-shadow: 0 8px 30px rgba(139,92,246,0.5);
-    transition: transform .2s, box-shadow .2s;
+    gap: 10px;
+    white-space: nowrap;
+    isolation: isolate;
   }
-  .btn-login:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(139,92,246,0.6); }
-
-  .btn-register {
-    padding: 14px 36px;
+  .btn-glass .pill::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    z-index: -2;
+  }
+  /* Top highlight on pill (glossy) */
+  .btn-glass .pill::after {
+    content: '';
+    position: absolute;
+    left: 10%; right: 10%; top: 3px; height: 40%;
     border-radius: 50px;
-    background: transparent;
-    color: rgba(255,255,255,0.8);
-    font-size: 15px;
-    font-weight: 600;
-    border: 1.5px solid rgba(255,255,255,0.2);
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: all .2s;
-    backdrop-filter: blur(10px);
+    background: linear-gradient(to bottom, rgba(255,255,255,0.35), rgba(255,255,255,0));
+    pointer-events: none;
+    z-index: -1;
   }
-  .btn-register:hover { border-color: rgba(255,255,255,0.5); color: #fff; background: rgba(255,255,255,0.08); }
+
+  /* Login — brand orange */
+  .btn-login.btn-glass .pill::before {
+    background: linear-gradient(135deg, #FF8A30 0%, #F47920 45%, #E8620A 100%);
+    box-shadow:
+      0 0 0 1px rgba(244,121,32,0.4),
+      0 10px 30px rgba(244,121,32,0.55),
+      0 0 40px rgba(244,121,32,0.35);
+  }
+  .btn-login.btn-glass:hover {
+    transform: translateY(-3px);
+    border-color: rgba(244,121,32,0.35);
+    box-shadow:
+      0 14px 44px rgba(244,121,32,0.35),
+      inset 0 1px 0 rgba(255,255,255,0.22);
+  }
+  .btn-login.btn-glass:hover .pill::before {
+    box-shadow:
+      0 0 0 1px rgba(244,121,32,0.55),
+      0 14px 38px rgba(244,121,32,0.7),
+      0 0 56px rgba(244,121,32,0.5);
+  }
+
+  /* Register — brand cyan */
+  .btn-register.btn-glass .pill::before {
+    background: linear-gradient(135deg, #2DD4F0 0%, #00C8E8 45%, #0099CC 100%);
+    box-shadow:
+      0 0 0 1px rgba(0,200,232,0.4),
+      0 10px 30px rgba(0,200,232,0.5),
+      0 0 40px rgba(0,200,232,0.3);
+  }
+  .btn-register.btn-glass:hover {
+    transform: translateY(-3px);
+    border-color: rgba(0,200,232,0.35);
+    box-shadow:
+      0 14px 44px rgba(0,200,232,0.32),
+      inset 0 1px 0 rgba(255,255,255,0.22);
+  }
+  .btn-register.btn-glass:hover .pill::before {
+    box-shadow:
+      0 0 0 1px rgba(0,200,232,0.55),
+      0 14px 38px rgba(0,200,232,0.65),
+      0 0 56px rgba(0,200,232,0.45);
+  }
 
   /* Stats row */
   .stats-row {
@@ -165,7 +229,7 @@
     padding-bottom: 20px;
     border-bottom: 1px solid rgba(255,255,255,0.08);
   }
-  .stat-item .s-num { font-size: 22px; font-weight: 800; color: #fff; }
+  .stat-item .s-num { font-size: 22px; font-weight: 800; color: #F47920; }
   .stat-item .s-lbl { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 3px; letter-spacing: 0.5px; }
 
   /* ── RIGHT PANEL ── */
@@ -173,7 +237,7 @@
     flex: 1;
     position: relative;
     overflow: hidden;
-    background: #0a0714;
+    background: #050608;
   }
 
   /* Dark gradient fade on left edge */
@@ -182,7 +246,7 @@
     position: absolute;
     left: 0; top: 0; bottom: 0;
     width: 80px;
-    background: linear-gradient(to right, #0f0c1d, transparent);
+    background: linear-gradient(to right, #050608, transparent);
     z-index: 10;
     pointer-events: none;
   }
@@ -192,7 +256,7 @@
     position: absolute;
     right: 0; top: 0; bottom: 0;
     width: 60px;
-    background: linear-gradient(to left, #0a0714, transparent);
+    background: linear-gradient(to left, #050608, transparent);
     z-index: 10;
     pointer-events: none;
   }
@@ -206,7 +270,7 @@
     font-weight: 700;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.2);
     z-index: 20;
   }
 
@@ -239,7 +303,7 @@
   .p-card {
     border-radius: 14px;
     overflow: hidden;
-    background: #1a1530;
+    background: #0e1015;
     border: 1px solid rgba(255,255,255,0.06);
     flex-shrink: 0;
     transition: transform .3s, box-shadow .3s;
@@ -247,8 +311,8 @@
   }
   .p-card:hover {
     transform: scale(1.02);
-    box-shadow: 0 8px 30px rgba(139,92,246,0.3);
-    border-color: rgba(139,92,246,0.3);
+    box-shadow: 0 8px 30px rgba(244,121,32,0.25);
+    border-color: rgba(244,121,32,0.25);
   }
   .p-card img {
     width: 100%;
@@ -270,15 +334,12 @@
   .p-card .p-price {
     font-size: 14px;
     font-weight: 800;
-    background: linear-gradient(135deg, #8B5CF6, #EC4899);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #F47920;
     margin-top: 3px;
   }
   .p-card .p-rate {
     font-size: 10px;
-    color: rgba(255,255,255,0.3);
+    color: rgba(0,180,220,0.6);
     margin-top: 2px;
   }
 
@@ -298,9 +359,9 @@
       display: none; /* hide product showcase on small mobile */
     }
 
-    /* Show a slim horizontal product strip on mobile instead */
+    /* Show 2-row product grid on mobile */
     .mobile-products {
-      display: block !important;
+      display: flex !important;
     }
 
     .brand-logo { margin-bottom: 32px; }
@@ -312,38 +373,40 @@
     .mobile-products { display: none; }
   }
 
-  /* Mobile product strip */
+  /* Mobile product grid — 2 rows scrolling */
   .mobile-products {
     display: none;
     overflow: hidden;
     width: 100%;
-    height: 160px;
     margin-top: 28px;
     position: relative;
+    gap: 8px;
+    flex-direction: column;
   }
 
-  .mobile-strip {
+  .mobile-row {
     display: flex;
-    gap: 10px;
-    padding: 0 24px;
-    animation: scrollRight 120s linear infinite;
+    gap: 8px;
     width: max-content;
   }
+  .mobile-row-1 { animation: scrollLeft  220s linear infinite; }
+  .mobile-row-2 { animation: scrollRight 260s linear infinite; }
 
-  @keyframes scrollRight { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+  @keyframes scrollLeft  { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+  @keyframes scrollRight { 0%{transform:translateX(-50%)} 100%{transform:translateX(0)} }
 
   .m-card {
-    width: 110px;
+    width: 118px;
     flex-shrink: 0;
     border-radius: 12px;
     overflow: hidden;
-    background: rgba(255,255,255,0.06);
+    background: #0e1015;
     border: 1px solid rgba(255,255,255,0.08);
   }
-  .m-card img { width:100%; height:70px; object-fit:cover; }
-  .m-card .m-info { padding: 7px 8px; }
-  .m-card .m-name { font-size:10px; color:rgba(255,255,255,0.7); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .m-card .m-price { font-size:11px; font-weight:800; background:linear-gradient(135deg,#8B5CF6,#EC4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .m-card img { width:100%; height:74px; object-fit:cover; display:block; }
+  .m-card .m-info { padding: 7px 9px 9px; }
+  .m-card .m-name { font-size:10px; color:rgba(255,255,255,0.75); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .m-card .m-price { font-size:11px; font-weight:800; color:#F47920; margin-top:2px; }
 </style>
 </head>
 <body>
@@ -352,7 +415,7 @@
 
   <!-- ══ LEFT PANEL ══ -->
   <div class="left-panel">
-    <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(15,12,29,0.85) 0%,rgba(109,40,217,0.4) 50%,rgba(15,12,29,0.9) 100%);z-index:0;"></div>
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,6,8,0.6) 0%,rgba(5,6,8,0.82) 100%);z-index:0;"></div>
     <div class="blob-1"></div>
     <div class="blob-2"></div>
 
@@ -364,8 +427,8 @@
       <p class="welcome-sub">Earn real commissions by reviewing trending products. Join thousands already earning daily.</p>
 
       <div class="cta-group">
-        <a href="login.html" class="btn-login">Log In</a>
-        <a href="register.html" class="btn-register">Register</a>
+        <a href="login.html" class="btn-login btn-glass"><span class="pill">Log In</span></a>
+        <a href="register.html" class="btn-register btn-glass"><span class="pill">Register</span></a>
       </div>
 
       <div class="stats-row">
@@ -384,9 +447,10 @@
       </div>
     </div>
 
-    <!-- Mobile product strip (shown only on small screens) -->
-    <div class="mobile-products">
-      <div class="mobile-strip" id="mobileStrip"></div>
+    <!-- Mobile product grid 2 rows (shown only on small screens) -->
+    <div class="mobile-products" id="mobileProducts">
+      <div class="mobile-row mobile-row-1" id="mobileRow1"></div>
+      <div class="mobile-row mobile-row-2" id="mobileRow2"></div>
     </div>
   </div>
 
@@ -479,10 +543,17 @@
   }
 
   function buildMobileStrip(products) {
-    const strip = document.getElementById('mobileStrip');
-    if (!strip) return;
-    const doubled = [...products, ...products];
-    strip.innerHTML = doubled.map((p, i) => makeMobileCard(p, i)).join('');
+    const row1 = document.getElementById('mobileRow1');
+    const row2 = document.getElementById('mobileRow2');
+    if (!row1 || !row2) return;
+    // Split products into 2 rows alternating, duplicate for infinite loop
+    const r1 = products.filter((_, i) => i % 2 === 0);
+    const r2 = products.filter((_, i) => i % 2 === 1);
+    // Triple to ensure enough content for seamless loop
+    const fill1 = [...r1, ...r1, ...r1];
+    const fill2 = [...r2, ...r2, ...r2];
+    row1.innerHTML = fill1.map((p, i) => makeMobileCard(p, i)).join('');
+    row2.innerHTML = fill2.map((p, i) => makeMobileCard(p, i)).join('');
   }
 
   async function loadProducts() {
